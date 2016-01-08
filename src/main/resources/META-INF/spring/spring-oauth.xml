@@ -34,12 +34,12 @@
 
     <!-- This is where we tells spring security what URL should be protected
      and what roles have access to them -->
-    <http pattern="/api/**" create-session="never"
+    <http pattern="/**" create-session="never"
           entry-point-ref="oauthAuthenticationEntryPoint"
           access-decision-manager-ref="accessDecisionManager"
           xmlns="http://www.springframework.org/schema/security">
         <anonymous enabled="false" />
-        <intercept-url pattern="/api/**" access="ROLE_APP" />
+        <intercept-url pattern="/**" access="ROLE_APP" />
         <custom-filter ref="resourceServerFilter" before="PRE_AUTH_FILTER" />
         <access-denied-handler ref="oauthAccessDeniedHandler" />
     </http>
