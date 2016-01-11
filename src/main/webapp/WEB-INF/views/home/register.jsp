@@ -12,7 +12,7 @@
 
 <html>
 <head>
-    <title>Title</title>
+    <title>用户注册</title>
 </head>
 <body>
 
