@@ -39,7 +39,7 @@
           access-decision-manager-ref="accessDecisionManager"
           xmlns="http://www.springframework.org/schema/security">
         <anonymous enabled="false" />
-        <intercept-url pattern="/**" access="ROLE_APP" />
+        <intercept-url pattern="/**" access="ROLE_USER" />
         <custom-filter ref="resourceServerFilter" before="PRE_AUTH_FILTER" />
         <access-denied-handler ref="oauthAccessDeniedHandler" />
     </http>
@@ -86,16 +86,23 @@
      credentials from DB -->
     <authentication-manager alias="authenticationManager"
                             xmlns="http://www.springframework.org/schema/security">
-        <authentication-provider>
-            <user-service>
-                <user name="beingjavaguys" password="spring@java" authorities="ROLE_APP" />
-            </user-service>
-        </authentication-provider>
+        <!--<authentication-provider>-->
+            <!--<user-service>-->
+                <!--<user name="beingjavaguys" password="spring@java" authorities="ROLE_USER" />-->
+            <!--</user-service>-->
+        <!--</authentication-provider>-->
+        <authentication-provider ref="userDetailsService" />
     </authentication-manager>
 
     <bean id="clientDetailsUserService"
           class="org.springframework.security.oauth2.provider.client.ClientDetailsUserDetailsService">
         <constructor-arg ref="clientDetails" />
+    </bean>
+
+
+    <bean id="userDetailsService"
+          class="net.snnmo.service.UserDetailsService">
+        <property name="userDao" ref="userDaoImpl" />
     </bean>
 
 
@@ -136,11 +143,11 @@
         <!-- client -->
         <oauth:client client-id="restapp"
                       authorized-grant-types="authorization_code,client_credentials"
-                      authorities="ROLE_APP" scope="read,write,trust" secret="secret" />
+                      authorities="ROLE_USER" scope="read,write,trust" secret="secret" />
 
         <oauth:client client-id="restapp"
                       authorized-grant-types="password,authorization_code,refresh_token,implicit"
-                      secret="restapp" authorities="ROLE_APP" />
+                      secret="restapp" authorities="ROLE_USER" />
 
     </oauth:client-details-service>
 

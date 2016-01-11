@@ -3,6 +3,7 @@ package net.snnmo.dao;
 import net.snnmo.entity.UserEntity;
 import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
@@ -39,5 +40,15 @@ public class UserDaoImpl implements IUserDAO {
     @Transactional
     public void saveOrUpdate(UserEntity user) {
         this.sessionFactory.getCurrentSession().saveOrUpdate(user);
+    }
+
+
+    @Override
+    @Transactional
+    public UserEntity findByName(String username) {
+        Criteria criteria = this.sessionFactory.getCurrentSession().createCriteria(UserEntity.class);
+        criteria.add(Restrictions.eq("name", username));
+
+        return (UserEntity)criteria.uniqueResult();
     }
 }

@@ -1,11 +1,13 @@
 package net.snnmo.entity;
 
 import net.snnmo.assist.UserStatus;
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.security.Principal;
 import java.util.Date;
 
 /**
@@ -24,9 +26,10 @@ public class UserEntity implements Serializable {
     private String name;
 
     @Column(name="PASSWD", nullable = false, length=100)
+    @JsonIgnore
     private String passwd;
 
-    @Column(name="EMAIL", length=65)
+    @Column(name="EMAIL", unique = true, length=65)
     private String email;
 
     @Column(name="PHONE", length=65)
@@ -47,8 +50,8 @@ public class UserEntity implements Serializable {
     @Enumerated(EnumType.STRING)
     private UserStatus userStatus = UserStatus.ACTIVE;
 
-    @Column(name="ROLES", length=15)
-    private String roles;
+    @Column(name="ROLES", nullable = false, length=15)
+    private String roles = "ROLE_USER";
 
     @Column(name="GENDER", length=5)
     private String gender;

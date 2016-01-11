@@ -35,8 +35,7 @@ import java.util.Date;
 /**
  * Created by TTong on 16-1-8.
  */
-@Controller
-public class HomeController {
+public class HomeController extends BaseController {
 
     private IUserDAO userDao;
 
@@ -48,22 +47,11 @@ public class HomeController {
     }
 
 
-    @RequestMapping(value="/api/test/users", method = RequestMethod.GET)
-    public ResponseEntity<Collection<String>> testUsers() {
-
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-        System.out.println(user.getUsername());
-
-        for(GrantedAuthority authority : user.getAuthorities()) {
-           System.out.println(authority.getAuthority());
-        }
-
-        Collection<String> coll = new ArrayList<String>();
-        coll.add("keesh");
-        coll.add("jenny");
-        coll.add("tongtong");
-        return new ResponseEntity<Collection<String>>(coll, HttpStatus.OK);
+    @RequestMapping(value="/me", method = RequestMethod.GET)
+    public ResponseEntity<UserEntity> me() {
+        String userName = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
+        return new ResponseEntity<UserEntity>(userDao.findByName(userName), HttpStatus.OK);
+        //return new ResponseEntity<String>(userName, HttpStatus.OK);
     }
 
 
@@ -80,16 +68,6 @@ public class HomeController {
                 mv.addObject("user", user);
                 return mv;
             }
-//
-//            Configuration configuration = new Configuration().configure();
-//            ServiceRegistry serviceRegistry
-//                    = new StandardServiceRegistryBuilder()
-//                    .applySettings(configuration.getProperties()).build();
-//
-//            // builds a session factory from the service registry
-//            SessionFactory sessionFactory = configuration.buildSessionFactory(serviceRegistry);
-//
-//            userDao = new UserDaoImpl(sessionFactory);
 
             // save user to db
             userDao.saveOrUpdate(user);
@@ -99,21 +77,25 @@ public class HomeController {
         return mv;
     }
 
-
-    @InitBinder
-    public void initBinder(WebDataBinder binder) {
-        binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
-
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-        binder.registerCustomEditor(Date.class, new CustomDateEditor(format, true));
-    }
-
-
     public IUserDAO getUserDao() {
         return userDao;
     }
 
     public void setUserDao(IUserDAO userDao) {
         this.userDao = userDao;
+    }
+
+
+
+
+
+    @RequestMapping(value="/api/test/users", method = RequestMethod.GET)
+    public ResponseEntity<Collection<String>> testUsers() {
+
+        Collection<String> coll = new ArrayList<String>();
+        coll.add("keesh");
+        coll.add("jenny");
+        coll.add("tongtong");
+        return new ResponseEntity<Collection<String>>(coll, HttpStatus.OK);
     }
 }

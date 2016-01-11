@@ -12,4 +12,5 @@ public interface IUserDAO {
     public UserEntity get(String userid);
     public void delete(String userid);
     public void saveOrUpdate(UserEntity user);
+    public UserEntity findByName(String username);
 }
