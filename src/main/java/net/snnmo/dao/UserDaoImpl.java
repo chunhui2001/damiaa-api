@@ -51,4 +51,42 @@ public class UserDaoImpl implements IUserDAO {
 
         return (UserEntity)criteria.uniqueResult();
     }
+
+
+    @Override
+    @Transactional
+    public void addRoles(String userid, String[] listOfRoles) {
+        if (listOfRoles == null || listOfRoles.length == 0) return;
+
+        UserEntity user = this.get(userid);
+
+        if (user == null) {
+            return;
+        }
+
+        String userRoles = user.getRoles();
+
+        if (userRoles == null) userRoles = "";
+
+        for (String role : listOfRoles) {
+            if (userRoles.indexOf(role) == -1) {
+                userRoles = userRoles + "," + role;
+            }
+        }
+
+        if (userRoles.charAt(0) == ',') {
+            userRoles = userRoles.substring(1);
+        }
+
+        user.setRoles(userRoles);
+
+        this.saveOrUpdate(user);
+    }
+
+
+    @Override
+    @Transactional
+    public void removeRoles(String userid, String[] listOfRoles) {
+
+    }
 }

@@ -13,4 +13,6 @@ public interface IUserDAO {
     public void delete(String userid);
     public void saveOrUpdate(UserEntity user);
     public UserEntity findByName(String username);
+    public void addRoles(String userid, String[] listOfRoles);
+    public void removeRoles(String userid, String[] listOfRoles);
 }

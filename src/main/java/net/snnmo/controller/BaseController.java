@@ -12,9 +12,7 @@ import java.util.Date;
 /**
  * Created by TTong on 16-1-11.
  */
-@Controller
 public class BaseController {
-
     @InitBinder
     public void initBinder(WebDataBinder binder) {
         binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));

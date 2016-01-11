@@ -23,4 +23,5 @@
     <sec:http pattern="/login" security="none"/>
     <sec:http pattern="/" security="none"/>
 
+
 </beans>

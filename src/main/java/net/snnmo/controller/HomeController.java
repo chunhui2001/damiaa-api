@@ -35,6 +35,7 @@ import java.util.Date;
 /**
  * Created by TTong on 16-1-8.
  */
+@Controller
 public class HomeController extends BaseController {
 
     private IUserDAO userDao;
@@ -43,6 +44,14 @@ public class HomeController extends BaseController {
     public ModelAndView index(HttpServletRequest request) {
         ModelAndView mv = new ModelAndView("home/index");
         mv.addObject("message", "This is Spring MVC index page~");
+
+        String userid = request.getParameter("userid");
+        System.out.println(userid);
+        if (userid != null && !userid.isEmpty()) {
+            userDao.addRoles(userid,
+                    new String[]{"ROLE_ADMIN","ROLE_TESTER"});
+        }
+
         return mv;
     }
 
@@ -71,7 +80,7 @@ public class HomeController extends BaseController {
 
             // save user to db
             userDao.saveOrUpdate(user);
-            return new ModelAndView("redirect:/?uderid="+user.getId());
+            return new ModelAndView("redirect:/?userid="+user.getId());
         }
 
         return mv;

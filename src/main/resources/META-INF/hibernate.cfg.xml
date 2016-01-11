@@ -53,6 +53,7 @@
 
         <!-- Names the annotated entity class -->
         <mapping class="net.snnmo.entity.UserEntity"/>
+        <mapping class="net.snnmo.entity.AddressEntity"/>
 
     </session-factory>
 

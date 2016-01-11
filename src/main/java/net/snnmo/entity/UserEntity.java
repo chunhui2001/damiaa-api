@@ -4,11 +4,15 @@ import net.snnmo.assist.UserStatus;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.security.Principal;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 
 /**
@@ -36,8 +40,10 @@ public class UserEntity implements Serializable {
     @Column(name="PHONE", length=65)
     private String phone;
 
-    @Column(name="ADDRESS", length=65)
-    private String address;
+
+    @OneToMany(mappedBy = "user")
+    @LazyCollection(LazyCollectionOption.FALSE)
+    private Collection<AddressEntity> listOfAddresses = new ArrayList<>();
 
     @Column(name="DOB")
     @Temporal(TemporalType.DATE)
@@ -51,7 +57,7 @@ public class UserEntity implements Serializable {
     @Enumerated(EnumType.STRING)
     private UserStatus userStatus = UserStatus.ACTIVE;
 
-    @Column(name="ROLES", nullable = false, length=15)
+    @Column(name="ROLES", nullable = false, length=955)
     private String roles = "ROLE_USER";
 
     @Column(name="GENDER", length=5)
@@ -97,13 +103,15 @@ public class UserEntity implements Serializable {
         this.phone = phone;
     }
 
-    public String getAddress() {
-        return address;
+
+    public Collection<AddressEntity> getListOfAddresses() {
+        return listOfAddresses;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setListOfAddresses(Collection<AddressEntity> listOfAddresses) {
+        this.listOfAddresses = listOfAddresses;
     }
+
 
     public Date getBirthday() {
         return birthday;
