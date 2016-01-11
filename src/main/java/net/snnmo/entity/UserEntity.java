@@ -2,6 +2,7 @@ package net.snnmo.entity;
 
 import net.snnmo.assist.UserStatus;
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;

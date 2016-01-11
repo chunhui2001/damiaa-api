@@ -34,6 +34,7 @@
 
     <import resource="classpath:META-INF/spring/spring-security.xml" />
     <import resource="classpath:META-INF/spring/spring-oauth.xml" />
+    <import resource="classpath:META-INF/spring/oauth-client-details.xml" />
     <import resource="classpath:META-INF/hibernate/jdbc-configuration.xml" />
 
 </beans>

@@ -52,7 +52,7 @@
 
     <bean id="clientAuthenticationEntryPoint"
           class="org.springframework.security.oauth2.provider.error.OAuth2AuthenticationEntryPoint">
-        <property name="realmName" value="test/client" />
+        <property name="realmName" value="springsec/client" />
         <property name="typeName" value="Basic" />
     </bean>
 
@@ -139,17 +139,6 @@
     <oauth:resource-server id="resourceServerFilter"
                            resource-id="test" token-services-ref="tokenServices" />
 
-    <oauth:client-details-service id="clientDetails">
-        <!-- client -->
-        <oauth:client client-id="restapp"
-                      authorized-grant-types="authorization_code,client_credentials"
-                      authorities="ROLE_USER" scope="read,write,trust" secret="secret" />
-
-        <oauth:client client-id="restapp"
-                      authorized-grant-types="password,authorization_code,refresh_token,implicit"
-                      secret="restapp" authorities="ROLE_USER" />
-
-    </oauth:client-details-service>
 
     <sec:global-method-security
             pre-post-annotations="enabled" proxy-target-class="true">
