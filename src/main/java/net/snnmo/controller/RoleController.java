@@ -3,12 +3,16 @@ package net.snnmo.controller;
 import com.sun.management.DiagnosticCommandMBean;
 import net.snnmo.assist.ApiResult;
 import net.snnmo.dao.IUserDAO;
+import net.snnmo.entity.UserEntity;
 import org.codehaus.jackson.map.deser.ValueInstantiators;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.common.exceptions.OAuth2Exception;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -30,7 +34,17 @@ public class RoleController extends BaseController {
 
     private IUserDAO userDao;
 
-    @RequestMapping(value = "/", method = RequestMethod.GET)
+    @PostConstruct
+    public void init() {
+        String userName = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
+        UserEntity user = userDao.findByName(userName);
+
+        if (user.getRoles().indexOf("ROLE_ADMIN") == -1) {
+            throw new OAuth2Exception("User not have permission to manager roles");
+        }
+    }
+
+    @RequestMapping(value = {"/", ""}, method = RequestMethod.GET)
     public ResponseEntity<String> index() {
         return new ResponseEntity<String>("HELLLO", HttpStatus.OK);
     }
@@ -47,7 +61,12 @@ public class RoleController extends BaseController {
             result.setMessage("roles empty");
             result.setStatus(HttpStatus.BAD_REQUEST);
         } else {
-            userDao.removeRoles(userid, listOfRoles.toArray(new String[listOfRoles.size()]));
+            try {
+                userDao.removeRoles(userid, listOfRoles.toArray(new String[listOfRoles.size()]));
+            } catch (Exception e) {
+                result.setMessage(e.getMessage());
+                result.setStatus(HttpStatus.BAD_REQUEST);
+            }
         }
 
         return new ResponseEntity<ApiResult>(result, result.getStatus());
@@ -65,7 +84,12 @@ public class RoleController extends BaseController {
             result.setMessage("roles empty");
             result.setStatus(HttpStatus.BAD_REQUEST);
         } else {
-            userDao.addRoles(userid, listOfRoles.toArray(new String[listOfRoles.size()]));
+            try {
+                userDao.addRoles(userid, listOfRoles.toArray(new String[listOfRoles.size()]));
+            } catch (Exception e) {
+                result.setMessage(e.getMessage());
+                result.setStatus(HttpStatus.BAD_REQUEST);
+            }
         }
 
         return new ResponseEntity<ApiResult>(result, result.getStatus());

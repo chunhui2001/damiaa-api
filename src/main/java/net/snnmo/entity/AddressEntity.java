@@ -91,4 +91,12 @@ public class AddressEntity {
     public void setPincode(String pincode) {
         this.pincode = pincode;
     }
+
+    public UserEntity getUser() {
+        return user;
+    }
+
+    public void setUser(UserEntity user) {
+        this.user = user;
+    }
 }

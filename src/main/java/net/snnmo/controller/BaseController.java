@@ -2,6 +2,7 @@ package net.snnmo.controller;
 
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
@@ -21,4 +22,7 @@ public class BaseController {
         binder.registerCustomEditor(Date.class, new CustomDateEditor(format, true));
     }
 
+    public String getCurrentUserName() {
+        return SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
+    }
 }

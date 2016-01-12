@@ -48,8 +48,8 @@ public class HomeController extends BaseController {
         String userid = request.getParameter("userid");
         System.out.println(userid);
         if (userid != null && !userid.isEmpty()) {
-            userDao.addRoles(userid,
-                    new String[]{"ROLE_ADMIN","ROLE_TESTER"});
+//            userDao.addRoles(userid,
+//                    new String[]{"ROLE_ADMIN","ROLE_TESTER"});
         }
 
         return mv;
@@ -57,10 +57,10 @@ public class HomeController extends BaseController {
 
 
     @RequestMapping(value="/me", method = RequestMethod.GET)
-    public ResponseEntity<UserEntity> me() {
-        String userName = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
-        return new ResponseEntity<UserEntity>(userDao.findByName(userName), HttpStatus.OK);
-        //return new ResponseEntity<String>(userName, HttpStatus.OK);
+    public ResponseEntity<String> me() {
+        UserEntity user = userDao.findByName(this.getCurrentUserName());
+
+        return new ResponseEntity<String>(user.getName(), HttpStatus.OK);
     }
 
 

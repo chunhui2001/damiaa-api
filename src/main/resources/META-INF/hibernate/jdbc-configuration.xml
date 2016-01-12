@@ -42,12 +42,28 @@
     </bean>
 
 
+
+
+
+
+
     <bean id="userDaoImpl"
           class="net.snnmo.dao.UserDaoImpl">
         <constructor-arg>
             <ref bean="sessionFactory" />
         </constructor-arg>
     </bean>
+
+    <bean id="addrDaoImpl"
+          class="net.snnmo.dao.AddrDaoImpl">
+        <constructor-arg>
+            <ref bean="sessionFactory" />
+        </constructor-arg>
+    </bean>
+
+
+
+
 
     <bean id="homeController" class="net.snnmo.controller.HomeController" scope="prototype">
         <property name="userDao" ref="userDaoImpl" />
@@ -56,4 +72,11 @@
     <bean id="roleController" class="net.snnmo.controller.RoleController" scope="prototype">
         <property name="userDao" ref="userDaoImpl" />
     </bean>
+
+
+    <bean id="addrController" class="net.snnmo.controller.AddrController" scope="prototype">
+        <property name="userDao" ref="userDaoImpl" />
+        <property name="addrDao" ref="addrDaoImpl" />
+    </bean>
+
 </beans>

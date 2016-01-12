@@ -55,13 +55,13 @@ public class UserDaoImpl implements IUserDAO {
 
     @Override
     @Transactional
-    public void addRoles(String userid, String[] listOfRoles) {
+    public void addRoles(String userid, String[] listOfRoles) throws Exception {
         if (listOfRoles == null || listOfRoles.length == 0) return;
 
         UserEntity user = this.get(userid);
 
         if (user == null) {
-            return;
+            throw new Exception("userid not valid: " + userid);
         }
 
         String userRoles = user.getRoles();
@@ -86,14 +86,14 @@ public class UserDaoImpl implements IUserDAO {
 
     @Override
     @Transactional
-    public void removeRoles(String userid, String[] listOfRoles) {
+    public void removeRoles(String userid, String[] listOfRoles) throws Exception {
         if (listOfRoles == null || listOfRoles.length ==0) return;
         if (userid == null || userid.isEmpty()) return;
 
         UserEntity user = this.get(userid);
 
         if (user == null) {
-            return;
+            throw new Exception("userid not valid: " + userid);
         }
 
         String userRoles = user.getRoles();
