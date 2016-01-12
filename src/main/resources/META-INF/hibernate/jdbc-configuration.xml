@@ -52,4 +52,8 @@
     <bean id="homeController" class="net.snnmo.controller.HomeController" scope="prototype">
         <property name="userDao" ref="userDaoImpl" />
     </bean>
+
+    <bean id="roleController" class="net.snnmo.controller.RoleController" scope="prototype">
+        <property name="userDao" ref="userDaoImpl" />
+    </bean>
 </beans>

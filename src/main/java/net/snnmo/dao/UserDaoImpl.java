@@ -87,6 +87,29 @@ public class UserDaoImpl implements IUserDAO {
     @Override
     @Transactional
     public void removeRoles(String userid, String[] listOfRoles) {
+        if (listOfRoles == null || listOfRoles.length ==0) return;
+        if (userid == null || userid.isEmpty()) return;
 
+        UserEntity user = this.get(userid);
+
+        if (user == null) {
+            return;
+        }
+
+        String userRoles = user.getRoles();
+
+        if (userRoles == null || userRoles.isEmpty()) return;
+
+        for (String role : listOfRoles) {
+            userRoles = userRoles.replace(role+",", "");
+            userRoles = userRoles.replace(","+role, "");
+            userRoles = userRoles.replace(role, "");
+        }
+
+        if (userRoles.isEmpty()) userRoles = null;
+
+        user.setRoles(userRoles);
+
+        this.saveOrUpdate(user);
     }
 }
