@@ -39,7 +39,7 @@ public class RoleController extends BaseController {
         String userName = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
         UserEntity user = userDao.findByName(userName);
 
-        if (user.getRoles().indexOf("ROLE_ADMIN") == -1) {
+        if (user.getRoles().indexOf("ROLE_ADMIN2") == -1) {
             throw new OAuth2Exception("User not have permission to manager roles");
         }
     }
