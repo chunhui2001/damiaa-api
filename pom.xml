@@ -9,7 +9,7 @@
   <url>http://maven.apache.org</url>
 
   <properties>
-    <java-version>1.8</java-version>
+    <java-version>1.7</java-version>
     <spring-framework-version>4.2.4.RELEASE</spring-framework-version>
     <spring.security.version>3.2.5.RELEASE</spring.security.version>
   </properties>
@@ -133,6 +133,13 @@
           <artifactId>mysql-connector-java</artifactId>
           <version>5.1.30</version>
       </dependency>
+      <dependency>
+          <groupId>hsqldb</groupId>
+          <artifactId>hsqldb</artifactId>
+          <version>1.8.0.10</version>
+      </dependency>
+
+
 
 
       <dependency>
@@ -169,6 +176,10 @@
               <groupId>org.apache.tomcat.maven</groupId>
               <artifactId>tomcat7-maven-plugin</artifactId>
               <version>2.2</version>
+              <configuration>
+                  <port>8088</port>
+                  <path>/</path>
+              </configuration>
           </plugin>
       </plugins>
   </build>

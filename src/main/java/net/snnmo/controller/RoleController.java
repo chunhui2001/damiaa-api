@@ -1,6 +1,5 @@
 package net.snnmo.controller;
 
-import com.sun.management.DiagnosticCommandMBean;
 import net.snnmo.assist.ApiResult;
 import net.snnmo.dao.IUserDAO;
 import net.snnmo.entity.UserEntity;
@@ -25,11 +24,7 @@ import java.util.Map;
 public class RoleController extends BaseController {
 
 //
-//        curl -v -X PUT
-//                -H "Accept: application/json"
-//                -H "Content-Type: application/json"
-//                -H "Authorization: Bearer 5c7e46c8-9c56-45b6-b72d-b26f2226d53d"
-//        http://192.168.88.142:8080/damiaa-api/roles/sfsdfs
+// curl -v -X PUT -H "Accept: application/json" -H "Content-Type: application/json" -H "Authorization: Bearer 5c7e46c8-9c56-45b6-b72d-b26f2226d53d" http://192.168.88.142:8080/damiaa-api/roles/sfsdfs
 //
 
     private IUserDAO userDao;
@@ -39,8 +34,8 @@ public class RoleController extends BaseController {
         String userName = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
         UserEntity user = userDao.findByName(userName);
 
-        if (user.getRoles().indexOf("ROLE_ADMIN2") == -1) {
-            throw new OAuth2Exception("User not have permission to manager roles");
+        if (user.getRoles().indexOf("ROLE_ADMIN") == -1) {
+            throw new OAuth2Exception("permission deny for manager roles");
         }
     }
 

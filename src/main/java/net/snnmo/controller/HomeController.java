@@ -1,6 +1,5 @@
 package net.snnmo.controller;
 
-import javafx.print.Collation;
 import net.snnmo.dao.IUserDAO;
 import net.snnmo.dao.UserDaoImpl;
 import net.snnmo.entity.UserEntity;
@@ -41,11 +40,7 @@ public class HomeController extends BaseController {
     private IUserDAO userDao;
 
 
-    //http://localhost:8080/damiaa-api/oauth/token?grant_type=password
-    // &client_id=ios-clients&client_secret=ios
-    // &username=keesh.zhang&password=111111
-
-
+    //http://localhost:8080/damiaa-api/oauth/token?grant_type=password&client_id=ios-clients&client_secret=ios&username=keesh.zhang&password=111111
     //http://localhost:8080/damiaa-api/me/?access_token=35d54933-2eff-46c8-a100-e5cb083580f9
 
     @RequestMapping(value={"/", "/index", "/welcome"}, method = RequestMethod.GET)

@@ -7,8 +7,9 @@ import org.springframework.http.HttpStatus;
  */
 public class ApiResult {
 
+    private boolean error       = false;
     private String message;
-    private HttpStatus status = HttpStatus.OK;
+    private HttpStatus status   = HttpStatus.OK;
 
     public ApiResult() {};
 
@@ -31,5 +32,13 @@ public class ApiResult {
 
     public void setStatus(HttpStatus status) {
         this.status = status;
+    }
+
+    public void serError(boolean error) {
+        this.error = error;
+    }
+
+    public boolean getError() {
+        return this.error;
     }
 }
