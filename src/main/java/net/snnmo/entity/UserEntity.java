@@ -1,13 +1,15 @@
 package net.snnmo.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import net.snnmo.assist.UserStatus;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
+import org.hibernate.annotations.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.security.Principal;
@@ -22,8 +24,13 @@ import java.util.Date;
 @Table(name="USERS")
 public class UserEntity implements Serializable {
     @Id @Column(name="USER_ID")
-    @GenericGenerator(name="system-uuid", strategy = "uuid")
-    @GeneratedValue(generator = "system-uuid")
+//    @GenericGenerator(name="system-uuid", strategy = "uuid")
+//    @GeneratedValue(generator = "system-uuid")
+    @GenericGenerator(name="ObjectIdGenerator",
+          strategy = "net.snnmo.assist.ObjectIdGenerator",
+          parameters = {@org.hibernate.annotations.Parameter(name="prefix", value="UU-")}
+    )
+    @GeneratedValue(generator = "ObjectIdGenerator")
     private String id;
 
     @Column(name="USER_NAME", nullable = false, unique = true, length=65)
@@ -51,6 +58,7 @@ public class UserEntity implements Serializable {
 
     @Column(name="CREATED_TIME", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss")
     private Date createdTime = new Date();
 
     @Column(name="USER_STATUS", nullable = false, length=15)

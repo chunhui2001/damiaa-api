@@ -10,10 +10,12 @@ public class ApiResult {
     private boolean error       = false;
     private String message;
     private HttpStatus status   = HttpStatus.OK;
+    private Object data;
 
     public ApiResult() {};
 
     public ApiResult(String message, HttpStatus status) {
+
         this.message = message;
         this.status = status;
     }
@@ -31,7 +33,12 @@ public class ApiResult {
     }
 
     public void setStatus(HttpStatus status) {
+
         this.status = status;
+
+        if (status == HttpStatus.BAD_REQUEST) {
+            this.error = true;
+        }
     }
 
     public void serError(boolean error) {
@@ -40,5 +47,13 @@ public class ApiResult {
 
     public boolean getError() {
         return this.error;
+    }
+
+    public Object getData() {
+        return data;
+    }
+
+    public void setData(Object data) {
+        this.data = data;
     }
 }

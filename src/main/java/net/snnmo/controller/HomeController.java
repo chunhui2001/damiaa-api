@@ -1,5 +1,6 @@
 package net.snnmo.controller;
 
+import net.snnmo.assist.ApiResult;
 import net.snnmo.dao.IUserDAO;
 import net.snnmo.dao.UserDaoImpl;
 import net.snnmo.entity.UserEntity;
@@ -18,10 +19,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -43,32 +41,66 @@ public class HomeController extends BaseController {
     //http://localhost:8080/damiaa-api/oauth/token?grant_type=password&client_id=ios-clients&client_secret=ios&username=keesh.zhang&password=111111
     //http://localhost:8080/damiaa-api/me/?access_token=35d54933-2eff-46c8-a100-e5cb083580f9
 
+    //
+    // curl -v -X PUT
+    // -H "Accept: application/json"
+    // -H "Content-Type: application/json"
+    // -H "Authorization: Bearer 5c7e46c8-9c56-45b6-b72d-b26f2226d53d"
+    // http://192.168.88.142:8080/damiaa-api/roles/sfsdfs
+    //
+
+
     @RequestMapping(value={"/", "/index", "/welcome"}, method = RequestMethod.GET)
     public ModelAndView index(HttpServletRequest request) {
         ModelAndView mv = new ModelAndView("home/index");
         mv.addObject("message", "This is Spring MVC index page~");
-
-        String userid = request.getParameter("userid");
-        System.out.println(userid);
-        if (userid != null && !userid.isEmpty()) {
-//            userDao.addRoles(userid,
-//                    new String[]{"ROLE_ADMIN","ROLE_TESTER"});
-        }
-
         return mv;
     }
 
 
     @RequestMapping(value="/me", method = RequestMethod.GET)
-    public ResponseEntity<String> me() {
+    public ResponseEntity<ApiResult> me() {
+
+        ApiResult result = new ApiResult();
+
         UserEntity user = userDao.findByName(this.getCurrentUserName());
 
-        return new ResponseEntity<String>(user.getName(), HttpStatus.OK);
+        user.setPasswd(null);
+        result.setData(user);
+
+        return new ResponseEntity<ApiResult>(result, HttpStatus.OK);
     }
 
+    @ModelAttribute
+    @RequestMapping(value = "/register", method = RequestMethod.POST, headers="Accept=application/json", produces = {"application/json"})
+    public ResponseEntity<ApiResult> register(
+            @Valid @RequestBody UserEntity user, BindingResult bindResult) {
+
+        ApiResult result = new ApiResult();
+
+        if (bindResult.hasErrors()) {
+            result.setMessage(bindResult.getAllErrors().toString());
+            result.setStatus(HttpStatus.BAD_REQUEST);
+        } else {
+            // save user to db
+            try {
+                userDao.saveOrUpdate(user);
+            } catch (Exception e) {
+                result.setMessage(e.getMessage());
+                result.setStatus(HttpStatus.BAD_REQUEST);
+            }
+
+            if (result.getStatus() != HttpStatus.BAD_REQUEST) {
+                //result.setMessage(user.getId());
+                result.setData(user.getId());
+            }
+        }
+
+        return new ResponseEntity<ApiResult>(result, HttpStatus.OK);
+    }
 
     @ModelAttribute
-    @RequestMapping(value = "/register")
+    @RequestMapping(value = "/register", headers="Accept=text/html")
     public ModelAndView register(
             @Valid @ModelAttribute("user1") UserEntity user, BindingResult bindResult, HttpServletRequest request) {
         ModelAndView mv = new ModelAndView("home/register");
