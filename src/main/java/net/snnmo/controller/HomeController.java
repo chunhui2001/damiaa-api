@@ -1,6 +1,7 @@
 package net.snnmo.controller;
 
 import net.snnmo.assist.ApiResult;
+import net.snnmo.dao.IAddrDAO;
 import net.snnmo.dao.IUserDAO;
 import net.snnmo.dao.UserDaoImpl;
 import net.snnmo.entity.UserEntity;
@@ -35,8 +36,24 @@ import java.util.*;
 public class HomeController extends BaseController {
 
     private IUserDAO userDao;
+    private IAddrDAO addrDao;
+
+    public IUserDAO getUserDao() {
+        return userDao;
+    }
+
+    public void setUserDao(IUserDAO userDao) {
+        this.userDao = userDao;
+    }
 
 
+    public IAddrDAO getAddrDao() {
+        return addrDao;
+    }
+
+    public void setAddrDao(IAddrDAO addrDao) {
+        this.addrDao = addrDao;
+    }
     //http://localhost:8080/damiaa-api/oauth/token?grant_type=password&client_id=ios-clients&client_secret=ios&username=keesh.zhang&password=111111
     //http://localhost:8080/damiaa-api/me/?access_token=35d54933-2eff-46c8-a100-e5cb083580f9
 
@@ -70,8 +87,9 @@ public class HomeController extends BaseController {
 
         int orderCount  = 100;
 
+
         userInfo.put("name", user.getName());
-        userInfo.put("addressCount", -1 + "");//user.getListOfAddresses().size() + "");
+        userInfo.put("addressCount", addrDao.userAddrList(user.getId()).size() + "");
         userInfo.put("orderCount", orderCount > 99 ? "99+" : orderCount+"");
 
 
@@ -169,13 +187,6 @@ public class HomeController extends BaseController {
         return mv;
     }
 
-    public IUserDAO getUserDao() {
-        return userDao;
-    }
-
-    public void setUserDao(IUserDAO userDao) {
-        this.userDao = userDao;
-    }
 
 
 
