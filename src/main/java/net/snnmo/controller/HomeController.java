@@ -4,6 +4,7 @@ import net.snnmo.assist.ApiResult;
 import net.snnmo.dao.IUserDAO;
 import net.snnmo.dao.UserDaoImpl;
 import net.snnmo.entity.UserEntity;
+import org.codehaus.jackson.node.ObjectNode;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
@@ -25,9 +26,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
+import java.util.*;
 
 /**
  * Created by TTong on 16-1-8.
@@ -65,11 +64,51 @@ public class HomeController extends BaseController {
 
         UserEntity user = userDao.findByName(this.getCurrentUserName());
 
-        user.setPasswd(null);
-        result.setData(user);
+        //user.setPasswd(null);
+
+        Map<String, String> userInfo = new HashMap<>();
+
+        int orderCount  = 100;
+
+        userInfo.put("name", user.getName());
+        userInfo.put("addressCount", user.getListOfAddresses().size() + "");
+        userInfo.put("orderCount", orderCount > 99 ? "99+" : orderCount+"");
+
+
+        result.setData(userInfo);
 
         return new ResponseEntity<ApiResult>(result, HttpStatus.OK);
     }
+
+
+    @ModelAttribute
+    @RequestMapping(value="/resetpwd",
+            method = RequestMethod.POST,
+            headers="Accept=application/json",
+            produces = {"application/json"})
+    public ResponseEntity<ApiResult> resetpwd(
+            @RequestBody Map<String, String> params) throws Exception {
+
+        ApiResult result = new ApiResult();
+
+        String oldPwd = params.get("oldPwd");
+        String newPwd = params.get("newPwd");
+
+        String errorMessage     = null;
+
+       // UserEntity user = userDao.findByName(this.getCurrentUserName());
+
+        errorMessage = userDao.resetPassword(this.getCurrentUserName(), oldPwd, newPwd);
+
+        if (errorMessage != null) {
+            result.setMessage(errorMessage);
+            result.setStatus(HttpStatus.BAD_REQUEST);
+        }
+
+        return new ResponseEntity<ApiResult>(result, HttpStatus.OK);
+    }
+
+
 
     @ModelAttribute
     @RequestMapping(value = "/register", method = RequestMethod.POST, headers="Accept=application/json", produces = {"application/json"})
@@ -82,6 +121,15 @@ public class HomeController extends BaseController {
             result.setMessage(bindResult.getAllErrors().toString());
             result.setStatus(HttpStatus.BAD_REQUEST);
         } else {
+            Boolean isExists = userDao.findByName(user.getName()) != null;
+
+            if (isExists) {
+                result.setMessage("用户名已经存在!");
+                result.setStatus(HttpStatus.BAD_REQUEST);
+
+                return new ResponseEntity<ApiResult>(result, HttpStatus.OK);
+            }
+
             // save user to db
             try {
                 userDao.saveOrUpdate(user);

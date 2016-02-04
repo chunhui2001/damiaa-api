@@ -112,4 +112,30 @@ public class UserDaoImpl implements IUserDAO {
 
         this.saveOrUpdate(user);
     }
+
+    @Override
+    @Transactional
+    public String resetPassword(String username, String oldPwd, String newPwd)  throws Exception {
+        String errorMessage = null;
+
+        UserEntity user = this.findByName(username);
+
+        if (user == null) {
+            return errorMessage = "用户名不存在!";
+        }
+
+        if(!user.getPasswd().equals(oldPwd)) {
+            return errorMessage = "原始密码不正确!";
+        }
+
+        if(newPwd == null || newPwd.isEmpty() || (newPwd != null && (newPwd.length() < 6 || newPwd.length() > 16))) {
+            return errorMessage = "新密码不能为空, 且新密码长度6-16位, 首尾不能有空格！";
+        }
+
+        user.setPasswd(newPwd);
+
+        this.saveOrUpdate(user);
+
+        return errorMessage;
+    }
 }
