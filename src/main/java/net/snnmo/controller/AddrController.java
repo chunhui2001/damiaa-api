@@ -8,6 +8,7 @@ import net.snnmo.entity.AddressEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -41,7 +42,29 @@ public class AddrController extends BaseController {
 //        curl -v -X POST -H "Accept: application/json" -H "Content-Type: application/json" -H "Authorization: Bearer 32c0a3b2-2bf8-4ba3-b72c-30a1651a5051"
 //        --data '{"area":"朝阳区", "city":"北京市", "detail":"123", "province":"pp", "street":"ss"}' http://192.168.88.142:8080/damiaa-api/addr
 
+
+
         addrDao.add(userDao.findByName(this.getCurrentUserName()), addressEntity);
+
+        return new ResponseEntity<ApiResult>(result, HttpStatus.OK);
+    }
+    @RequestMapping(value={"/list"}, method = RequestMethod.GET)
+    public ResponseEntity<ApiResult> list() {
+
+        ApiResult result = new ApiResult();
+
+//        String province  = (String)commandBean.get("province");
+//        String city      = (String)commandBean.get("city");
+//        String area      = (String)commandBean.get("area");
+//        String street    = (String)commandBean.get("street");
+//        String detail    = (String)commandBean.get("detail");
+//        String pincode   = (String)commandBean.get("pincode");
+
+//        curl -v -X POST -H "Accept: application/json" -H "Content-Type: application/json" -H "Authorization: Bearer 32c0a3b2-2bf8-4ba3-b72c-30a1651a5051"
+//        --data '{"area":"朝阳区", "city":"北京市", "detail":"123", "province":"pp", "street":"ss"}' http://192.168.88.142:8080/damiaa-api/addr
+
+
+        result.setData(addrDao.userAddrList(userDao.findByName(this.getCurrentUserName()).getId()));
 
         return new ResponseEntity<ApiResult>(result, HttpStatus.OK);
     }

@@ -49,7 +49,7 @@ public class UserEntity implements Serializable {
 
 
     @OneToMany(mappedBy = "user")
-    @LazyCollection(LazyCollectionOption.FALSE)
+    //@LazyCollection(LazyCollectionOption.FALSE)
     private Collection<AddressEntity> listOfAddresses = new ArrayList<>();
 
     @Column(name="DOB")
@@ -112,13 +112,13 @@ public class UserEntity implements Serializable {
     }
 
 
-    public Collection<AddressEntity> getListOfAddresses() {
-        return listOfAddresses;
-    }
+//    public Collection<AddressEntity> getListOfAddresses() {
+//        return listOfAddresses;
+//    }
 
-    public void setListOfAddresses(Collection<AddressEntity> listOfAddresses) {
-        this.listOfAddresses = listOfAddresses;
-    }
+//    public void setListOfAddresses(Collection<AddressEntity> listOfAddresses) {
+//        this.listOfAddresses = listOfAddresses;
+//    }
 
 
     public Date getBirthday() {

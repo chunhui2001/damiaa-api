@@ -1,5 +1,6 @@
 package net.snnmo.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -10,6 +11,11 @@ import javax.persistence.*;
 @Entity
 @Table(name="USER_ADDR")
 public class AddressEntity {
+
+    public  AddressEntity() {
+
+    }
+
     @Id @Column(name="ADDR_ID")
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
@@ -31,6 +37,9 @@ public class AddressEntity {
 
     @Column(name = "PINCODE", nullable = true, length=15)
     private String pincode;
+
+    @Column(name = "IS_DEFAULT", nullable = false)
+    private Boolean detault = false;
 
     @ManyToOne
     @JoinColumn(name="USER_ID")
@@ -92,11 +101,20 @@ public class AddressEntity {
         this.pincode = pincode;
     }
 
+    @JsonIgnore
     public UserEntity getUser() {
         return user;
     }
 
     public void setUser(UserEntity user) {
         this.user = user;
+    }
+
+    public Boolean getDetault() {
+        return detault;
+    }
+
+    public void setDetault(Boolean detault) {
+        this.detault = detault;
     }
 }

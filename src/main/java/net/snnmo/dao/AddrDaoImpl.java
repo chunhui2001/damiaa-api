@@ -2,10 +2,13 @@ package net.snnmo.dao;
 
 import net.snnmo.entity.AddressEntity;
 import net.snnmo.entity.UserEntity;
+import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
+import java.util.List;
 
 /**
  * Created by TTong on 16-1-12.
@@ -38,7 +41,18 @@ public class AddrDaoImpl implements IAddrDAO {
     }
 
     @Override
+    @Transactional
     public AddressEntity get(long addrid) {
         return (AddressEntity)this.sessionFactory.getCurrentSession().get(AddressEntity.class, addrid);
+    }
+
+
+    @Override
+    @Transactional
+    public List<AddressEntity> userAddrList(String userid) {
+        Criteria criteria = this.sessionFactory.getCurrentSession().createCriteria(AddressEntity.class);
+        criteria.add(Restrictions.eq("user.id", userid));
+
+        return criteria.list();
     }
 }

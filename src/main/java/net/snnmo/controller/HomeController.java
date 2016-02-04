@@ -71,7 +71,7 @@ public class HomeController extends BaseController {
         int orderCount  = 100;
 
         userInfo.put("name", user.getName());
-        userInfo.put("addressCount", user.getListOfAddresses().size() + "");
+        userInfo.put("addressCount", -1 + "");//user.getListOfAddresses().size() + "");
         userInfo.put("orderCount", orderCount > 99 ? "99+" : orderCount+"");
 
 
