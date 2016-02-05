@@ -2,6 +2,7 @@ package net.snnmo.dao;
 
 import net.snnmo.entity.AddressEntity;
 import net.snnmo.entity.UserEntity;
+import net.snnmo.exception.DbException;
 
 import java.util.Collection;
 import java.util.List;
@@ -15,4 +16,5 @@ public interface IAddrDAO {
     public void update(String userid, AddressEntity addr);
     public AddressEntity get(long addrid);
     public List<AddressEntity> userAddrList(String userid);
+    public void setDefault(String userid, long addrid) throws DbException;
 }

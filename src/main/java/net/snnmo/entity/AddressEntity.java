@@ -39,7 +39,7 @@ public class AddressEntity {
     private String pincode;
 
     @Column(name = "IS_DEFAULT", nullable = false)
-    private Boolean detault = false;
+    private Boolean defaults = false;
 
     @ManyToOne
     @JoinColumn(name="USER_ID")
@@ -110,11 +110,11 @@ public class AddressEntity {
         this.user = user;
     }
 
-    public Boolean getDetault() {
-        return detault;
+    public Boolean getDefaults() {
+        return defaults;
     }
 
-    public void setDetault(Boolean detault) {
-        this.detault = detault;
+    public void setDefaults(Boolean defaults) {
+        this.defaults = defaults;
     }
 }

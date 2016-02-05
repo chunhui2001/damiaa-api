@@ -17,7 +17,9 @@ public class ExceptionControllerAdvice {
         ApiResult result = new ApiResult();
 
         result.serError(true);
-        result.setMessage(e.getCause().getMessage());
+
+        result.setMessage(e.getCause() == null ? e.getMessage() : e.getCause().getMessage());
+
         result.setStatus(HttpStatus.BAD_REQUEST);
 
         return new ResponseEntity<ApiResult>(result, result.getStatus());
