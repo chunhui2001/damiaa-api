@@ -26,10 +26,10 @@ public class AddrDaoImpl implements IAddrDAO {
 
     @Override
     @Transactional
-    public long add(UserEntity user, AddressEntity addr) {
+    public AddressEntity add(UserEntity user, AddressEntity addr) {
         addr.setUser(user);
         this.sessionFactory.getCurrentSession().save(addr);
-        return addr.getId();
+        return addr;
     }
 
     @Override

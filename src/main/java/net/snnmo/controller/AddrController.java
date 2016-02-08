@@ -45,9 +45,9 @@ public class AddrController extends BaseController {
 //        --data '{"area":"南岗区", "city":"南岗区", "detail":"闽江小区13栋4单元302", "province":"黑龙江省", "street":"闽江路", "linkMan": "张春晖", "linkPone": "18500183080"}' http://127.0.0.1:8088/addr
 
 
-        long newId = addrDao.add(userDao.findByName(this.getCurrentUserName()), addressEntity);
+        AddressEntity newAddr = addrDao.add(userDao.findByName(this.getCurrentUserName()), addressEntity);
 
-        result.setData(newId);
+        result.setData(newAddr);
 
         return new ResponseEntity<ApiResult>(result, HttpStatus.OK);
     }
