@@ -20,16 +20,23 @@ public class AddressEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
+    @Column(name = "LINK_MAN", nullable = false, length=35)
+    private String linkMan;
+
+    @Column(name = "LINK_PHONE", nullable = false, length=35)
+    private String linkPone;
+
     @Column(name = "PROVINCE", nullable = false, length=35)
     private String province;
 
     @Column(name = "CITY", nullable = false, length=65)
+
     private String city;
 
     @Column(name = "AREA", nullable = false, length=35)
     private String area;
 
-    @Column(name = "STREET", nullable = false, length=65)
+    @Column(name = "STREET", nullable = true, length=65)
     private String street;
 
     @Column(name = "DETAIL", nullable = false, length=165)
@@ -51,6 +58,22 @@ public class AddressEntity {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public String getLinkMan() {
+        return linkMan;
+    }
+
+    public void setLinkMan(String linkMan) {
+        this.linkMan = linkMan;
+    }
+
+    public String getLinkPone() {
+        return linkPone;
+    }
+
+    public void setLinkPone(String linkPone) {
+        this.linkPone = linkPone;
     }
 
     public String getProvince() {

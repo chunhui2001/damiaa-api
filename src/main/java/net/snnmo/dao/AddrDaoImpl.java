@@ -4,6 +4,7 @@ import net.snnmo.entity.AddressEntity;
 import net.snnmo.entity.UserEntity;
 import net.snnmo.exception.DbException;
 import org.hibernate.*;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.security.oauth2.common.exceptions.OAuth2Exception;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,9 +26,10 @@ public class AddrDaoImpl implements IAddrDAO {
 
     @Override
     @Transactional
-    public void add(UserEntity user, AddressEntity addr) {
+    public long add(UserEntity user, AddressEntity addr) {
         addr.setUser(user);
         this.sessionFactory.getCurrentSession().save(addr);
+        return addr.getId();
     }
 
     @Override
@@ -54,6 +56,7 @@ public class AddrDaoImpl implements IAddrDAO {
     public List<AddressEntity> userAddrList(String userid) {
         Criteria criteria = this.sessionFactory.getCurrentSession().createCriteria(AddressEntity.class);
         criteria.add(Restrictions.eq("user.id", userid));
+        criteria.addOrder(Order.desc("id"));
 
         return criteria.list();
     }

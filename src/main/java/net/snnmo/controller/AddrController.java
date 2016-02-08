@@ -41,12 +41,13 @@ public class AddrController extends BaseController {
 //        String detail    = (String)commandBean.get("detail");
 //        String pincode   = (String)commandBean.get("pincode");
 
-//        curl -v -X POST -H "Accept: application/json" -H "Content-Type: application/json" -H "Authorization: Bearer 32c0a3b2-2bf8-4ba3-b72c-30a1651a5051"
-//        --data '{"area":"朝阳区", "city":"北京市", "detail":"123", "province":"pp", "street":"ss"}' http://192.168.88.142:8080/damiaa-api/addr
+//        curl -v -X POST -H "Accept: application/json" -H "Content-Type: application/json" -H "Authorization: Bearer 95296aa6-f759-4369-8b33-d2a53b7caae3"
+//        --data '{"area":"南岗区", "city":"南岗区", "detail":"闽江小区13栋4单元302", "province":"黑龙江省", "street":"闽江路", "linkMan": "张春晖", "linkPone": "18500183080"}' http://127.0.0.1:8088/addr
 
 
+        long newId = addrDao.add(userDao.findByName(this.getCurrentUserName()), addressEntity);
 
-        addrDao.add(userDao.findByName(this.getCurrentUserName()), addressEntity);
+        result.setData(newId);
 
         return new ResponseEntity<ApiResult>(result, HttpStatus.OK);
     }
