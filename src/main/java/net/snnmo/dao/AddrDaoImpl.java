@@ -34,8 +34,17 @@ public class AddrDaoImpl implements IAddrDAO {
 
     @Override
     @Transactional
-    public void delete(String userid, long addrid) {
-        this.sessionFactory.getCurrentSession().delete(this.get(addrid));
+    public int delete(String userid, long addrid) {
+
+        Session session = this.sessionFactory.getCurrentSession();
+
+        Query query = session.createQuery("DELETE AddressEntity "  +
+                "WHERE id = :addrid and user.id = :userid");
+
+        query.setParameter("addrid", addrid);
+        query.setParameter("userid", userid);
+
+        return query.executeUpdate();
     }
 
     @Override

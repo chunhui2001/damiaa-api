@@ -52,6 +52,17 @@ public class AddrController extends BaseController {
         return new ResponseEntity<ApiResult>(result, HttpStatus.OK);
     }
 
+
+    @RequestMapping(value={"/{addrid}"}, method = RequestMethod.DELETE)
+    public ResponseEntity<ApiResult> del(@PathVariable("addrid") long addrid) {
+
+        ApiResult result = new ApiResult();
+
+        result.setData(addrDao.delete(userDao.findByName(this.getCurrentUserName()).getId(), addrid));
+
+        return new ResponseEntity<ApiResult>(result, HttpStatus.OK);
+    }
+
     @RequestMapping(value={"/list"},
             method = RequestMethod.GET,
             headers="Accept=application/json",

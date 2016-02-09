@@ -12,7 +12,7 @@ import java.util.List;
  */
 public interface IAddrDAO {
     public AddressEntity add(UserEntity user, AddressEntity addr);
-    public void delete(String userid, long addrid);
+    public int delete(String userid, long addrid);
     public void update(String userid, AddressEntity addr);
     public AddressEntity get(long addrid);
     public List<AddressEntity> userAddrList(String userid);
