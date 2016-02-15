@@ -68,6 +68,20 @@
         </constructor-arg>
     </bean>
 
+    <bean id="orderDaoImpl"
+          class="net.snnmo.dao.OrderDaoImpl">
+        <constructor-arg>
+            <ref bean="sessionFactory" />
+        </constructor-arg>
+    </bean>
+
+
+    <bean id="goodsDaoImpl"
+          class="net.snnmo.dao.GoodsDaoImpl">
+        <constructor-arg>
+            <ref bean="sessionFactory" />
+        </constructor-arg>
+    </bean>
 
 
 
@@ -85,6 +99,15 @@
     <bean id="addrController" class="net.snnmo.controller.AddrController" scope="prototype">
         <property name="userDao" ref="userDaoImpl" />
         <property name="addrDao" ref="addrDaoImpl" />
+    </bean>
+
+
+
+    <bean id="orderController" class="net.snnmo.controller.OrderController" scope="prototype">
+        <property name="userDao" ref="userDaoImpl" />
+        <property name="orderDao" ref="orderDaoImpl" />
+        <property name="addrDao" ref="addrDaoImpl" />
+        <property name="goodsDao" ref="goodsDaoImpl" />
     </bean>
 
 </beans>

@@ -15,6 +15,7 @@ public interface IAddrDAO {
     public int delete(String userid, long addrid);
     public void update(String userid, AddressEntity addr);
     public AddressEntity get(long addrid);
+    public AddressEntity get(long addrid, String userid);
     public List<AddressEntity> userAddrList(String userid);
     public void setDefault(String userid, long addrid) throws DbException;
 }

@@ -54,6 +54,8 @@
         <!-- Names the annotated entity class -->
         <mapping class="net.snnmo.entity.UserEntity"/>
         <mapping class="net.snnmo.entity.AddressEntity"/>
+        <mapping class="net.snnmo.entity.OrderEntity"/>
+        <mapping class="net.snnmo.entity.GoodsEntity"/>
 
     </session-factory>
 

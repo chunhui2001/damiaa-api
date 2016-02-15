@@ -59,6 +59,21 @@ public class AddrDaoImpl implements IAddrDAO {
         return (AddressEntity)this.sessionFactory.getCurrentSession().get(AddressEntity.class, addrid);
     }
 
+    @Override
+    @Transactional
+    public AddressEntity get(long addrid, String userid) {
+
+        Session session = this.sessionFactory.getCurrentSession();
+
+        Query query = session.createQuery("from AddressEntity "  +
+                "WHERE id = :addrid and user.id = :userid");
+
+
+        query.setParameter("addrid", addrid);
+        query.setParameter("userid", userid);
+
+        return (AddressEntity) query.uniqueResult();
+    }
 
     @Override
     @Transactional
