@@ -85,10 +85,10 @@ public class OrderDaoImpl implements IOrderDAO {
             orderItem.setTotalPrice(price * currentCount);
             orderItem.setSpecialAttribute(null);
 
-            //listOfOrderItems.add(orderItem);
+            listOfOrderItems.add(orderItem);
 
 
-            this.sessionFactory.getCurrentSession().save(orderItem);
+            //this.sessionFactory.getCurrentSession().save(orderItem);
         }
 
         orderMoney = itemMoney + freightMoney - exemptionMoney;
@@ -98,7 +98,7 @@ public class OrderDaoImpl implements IOrderDAO {
         order.setItemMoney(itemMoney);                   // 商品总金额
         order.setOrderMoney(orderMoney);                 // 订单总金额
 
-        //order.setListOfItems(listOfOrderItems);
+        order.setListOfItems(listOfOrderItems);
 
         this.sessionFactory.getCurrentSession().save(order);
 

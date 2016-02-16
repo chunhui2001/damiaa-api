@@ -63,7 +63,8 @@ public class GoodsEntity implements Serializable {
     private String detail;              // 商品详情
 
     @OneToMany(mappedBy = "goods")
-    @LazyCollection(LazyCollectionOption.TRUE)
+    //@OneToMany(mappedBy = "goods")
+    //@LazyCollection(LazyCollectionOption.FALSE)
     private Collection<OrderItemsEntity> listOfOrderItems = new ArrayList<>();
 
     public String getId() {
@@ -170,10 +171,10 @@ public class GoodsEntity implements Serializable {
         this.detail = detail;
     }
 
-
-    public Collection<OrderItemsEntity> getListOfOrderItems() {
-        return listOfOrderItems;
-    }
+//
+//    public Collection<OrderItemsEntity> getListOfOrderItems() {
+//        return listOfOrderItems;
+//    }
 
     public void setListOfOrderItems(Collection<OrderItemsEntity> listOfOrderItems) {
         this.listOfOrderItems = listOfOrderItems;

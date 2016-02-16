@@ -66,7 +66,7 @@ public class OrderEntity implements Serializable {
     @Column(name="RECEIVE_MEN", nullable = false, length=55)
     private String receiveMan;  // 收获人
 
-    @OneToMany(mappedBy = "order")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "order", cascade = CascadeType.ALL)
     @LazyCollection(LazyCollectionOption.TRUE)
     private Collection<OrderItemsEntity> listOfItems = new ArrayList<>();
 
@@ -167,9 +167,9 @@ public class OrderEntity implements Serializable {
         this.receiveMan = receiveMan;
     }
 
-    public Collection<OrderItemsEntity> getListOfItems() {
-        return listOfItems;
-    }
+//    public Collection<OrderItemsEntity> getListOfItems() {
+//        return listOfItems;
+//    }
 
     public void setListOfItems(Collection<OrderItemsEntity> listOfItems) {
         this.listOfItems = listOfItems;
