@@ -21,10 +21,8 @@
     <sec:http pattern="/resources/**" security="none"/>
     <sec:http pattern="/register" security="none"/>
     <sec:http pattern="/login" security="none"/>
+    <sec:http pattern="/goods/" security="none"/>
     <sec:http pattern="/" security="none"/>
-
-
-
 
 
 </beans>

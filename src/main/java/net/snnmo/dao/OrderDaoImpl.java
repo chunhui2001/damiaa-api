@@ -2,13 +2,12 @@ package net.snnmo.dao;
 
 import net.snnmo.assist.OrderStatus;
 import net.snnmo.assist.PayMethod;
-import net.snnmo.entity.AddressEntity;
-import net.snnmo.entity.GoodsEntity;
-import net.snnmo.entity.OrderEntity;
-import net.snnmo.entity.UserEntity;
+import net.snnmo.entity.*;
 import org.hibernate.SessionFactory;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Map;
 
 /**
@@ -31,8 +30,10 @@ public class OrderDaoImpl implements IOrderDAO {
         order.setUserId(user.getId());
         order.setPayMethod(payMethod);
         order.setStatus(OrderStatus.PENDING);
-        order.setAddress(addr.getProvince() + " " + addr.getCity() + " " + addr.getArea()
-                + " " + addr.getStreet() + " " + addr.getDetail());
+        order.setAddress(addr.getProvince().split("\\(")[0] +
+                " " + addr.getCity().split("\\(")[0] +
+                " " + addr.getArea().split("\\(")[0] +
+                " " + addr.getStreet() + " " + addr.getDetail());
         order.setPhone(addr.getLinkPone());
         order.setReceiveMan(addr.getLinkMan());
 
@@ -42,6 +43,8 @@ public class OrderDaoImpl implements IOrderDAO {
         double freightMoney     = 0.00;
         double orderMoney       = 0.00;
         double exemptionMoney   = 0.00;
+
+        Collection<OrderItemsEntity> listOfOrderItems = new ArrayList<>();
 
         for (Map.Entry<GoodsEntity, Integer> goodsEntityIntegerEntry : goodsList.entrySet()) {
 
@@ -71,6 +74,21 @@ public class OrderDaoImpl implements IOrderDAO {
 
             freightMoney += freight;
 
+            OrderItemsEntity orderItem = new OrderItemsEntity();
+
+            orderItem.setOrder(order);
+            orderItem.setGoods(currentGoods);
+            orderItem.setCount(currentCount);
+            orderItem.setFreight(freight);
+            orderItem.setGoodsName(currentGoods.getName());
+            orderItem.setSinglePrice(price);
+            orderItem.setTotalPrice(price * currentCount);
+            orderItem.setSpecialAttribute(null);
+
+            //listOfOrderItems.add(orderItem);
+
+
+            this.sessionFactory.getCurrentSession().save(orderItem);
         }
 
         orderMoney = itemMoney + freightMoney - exemptionMoney;
@@ -79,6 +97,8 @@ public class OrderDaoImpl implements IOrderDAO {
         order.setFreightMoney(freightMoney);             // 运费
         order.setItemMoney(itemMoney);                   // 商品总金额
         order.setOrderMoney(orderMoney);                 // 订单总金额
+
+        //order.setListOfItems(listOfOrderItems);
 
         this.sessionFactory.getCurrentSession().save(order);
 

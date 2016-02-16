@@ -144,12 +144,11 @@ public class OrderController extends BaseController {
         if (goodsList.size() == 0)
             throw new DbException("请提供商品列表");
 
-        result.setData(payMethod);
+        //result.setData(payMethod);
 
-        // TODO:
-        //OrderEntity order = orderDao.create(user, payMethod, addrEntity, goodsList);
+        OrderEntity order = orderDao.create(user, payMethod, addrEntity, goodsList);
 
-        //result.setData(order);
+        result.setData(order);
 
         return new ResponseEntity<ApiResult>(result, HttpStatus.OK);
     }

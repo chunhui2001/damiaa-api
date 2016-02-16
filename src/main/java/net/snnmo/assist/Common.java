@@ -1,5 +1,7 @@
 package net.snnmo.assist;
 
+import com.google.common.base.CharMatcher;
+
 import java.util.UUID;
 
 /**
@@ -15,6 +17,9 @@ public class Common {
         do {
 
             rancomNumbers  = UUID.randomUUID().toString().replaceAll("[^0-9]+", "");
+
+            if (rancomNumbers.indexOf('0') == 0)
+                rancomNumbers = CharMatcher.is('0').trimFrom(rancomNumbers);
 
             if (rancomNumbers.length() >= numberCount) {
                 rancomNumbers = rancomNumbers.substring(0, numberCount);

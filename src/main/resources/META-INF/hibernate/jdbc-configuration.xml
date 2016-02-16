@@ -110,4 +110,10 @@
         <property name="goodsDao" ref="goodsDaoImpl" />
     </bean>
 
+
+    <bean id="goodsController" class="net.snnmo.controller.GoodsController" scope="prototype">
+        <property name="userDao" ref="userDaoImpl" />
+        <property name="goodsDao" ref="goodsDaoImpl" />
+    </bean>
+
 </beans>

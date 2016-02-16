@@ -55,6 +55,7 @@
         <mapping class="net.snnmo.entity.UserEntity"/>
         <mapping class="net.snnmo.entity.AddressEntity"/>
         <mapping class="net.snnmo.entity.OrderEntity"/>
+        <mapping class="net.snnmo.entity.OrderItemsEntity"/>
         <mapping class="net.snnmo.entity.GoodsEntity"/>
 
     </session-factory>

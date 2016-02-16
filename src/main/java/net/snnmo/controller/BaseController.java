@@ -23,6 +23,7 @@ public class BaseController {
     }
 
     public String getCurrentUserName() {
-        return SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
+        return SecurityContextHolder.getContext().getAuthentication() == null ? null :
+                SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
     }
 }

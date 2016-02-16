@@ -3,9 +3,13 @@ package net.snnmo.entity;
 import net.snnmo.assist.OrderStatus;
 import net.snnmo.assist.PayMethod;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 
 /**
@@ -31,7 +35,7 @@ public class OrderEntity implements Serializable {
     @Enumerated(EnumType.STRING)
     private OrderStatus status = OrderStatus.PENDING;
 
-    @Column(name="USER_ID", nullable = false, length=25)
+    @Column(name="USER_ID", nullable = false, length=100)
     private String userId;
 
     @Column(name="ITEM_MONEY", nullable = false)
@@ -61,6 +65,10 @@ public class OrderEntity implements Serializable {
 
     @Column(name="RECEIVE_MEN", nullable = false, length=55)
     private String receiveMan;  // 收获人
+
+    @OneToMany(mappedBy = "order")
+    @LazyCollection(LazyCollectionOption.TRUE)
+    private Collection<OrderItemsEntity> listOfItems = new ArrayList<>();
 
     public String getId() {
         return id;
@@ -159,4 +167,11 @@ public class OrderEntity implements Serializable {
         this.receiveMan = receiveMan;
     }
 
+    public Collection<OrderItemsEntity> getListOfItems() {
+        return listOfItems;
+    }
+
+    public void setListOfItems(Collection<OrderItemsEntity> listOfItems) {
+        this.listOfItems = listOfItems;
+    }
 }

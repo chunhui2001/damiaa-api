@@ -2,9 +2,13 @@ package net.snnmo.entity;
 
 import net.snnmo.assist.GoodsUnit;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
 
 /**
  * Created by cc on 16/2/15.
@@ -21,7 +25,7 @@ public class GoodsEntity implements Serializable {
     @GeneratedValue(generator = "GoodsIdGenerator")
     private String id;
 
-    @Column(name="GOODS_NAME", nullable = false, length=25)
+    @Column(name="GOODS_NAME", nullable = false, length=25, unique = true)
     private String name;                // 商品名称
 
     @Column(name="GOODS_HTML_NAME", nullable = false, length=255)
@@ -40,6 +44,7 @@ public class GoodsEntity implements Serializable {
     private double superVIPPrice;       // 超级会员价
 
     @Column(name="UNIT", nullable = false, length = 10)
+    @Enumerated(EnumType.STRING)
     private GoodsUnit unit;             // 单位
 
     @Column(name="WEIGHT", nullable = true, length = 10)
@@ -57,7 +62,9 @@ public class GoodsEntity implements Serializable {
     @Column(name="DETAIL", nullable = true, length = 2048)
     private String detail;              // 商品详情
 
-
+    @OneToMany(mappedBy = "goods")
+    @LazyCollection(LazyCollectionOption.TRUE)
+    private Collection<OrderItemsEntity> listOfOrderItems = new ArrayList<>();
 
     public String getId() {
         return id;
@@ -161,5 +168,14 @@ public class GoodsEntity implements Serializable {
 
     public void setDetail(String detail) {
         this.detail = detail;
+    }
+
+
+    public Collection<OrderItemsEntity> getListOfOrderItems() {
+        return listOfOrderItems;
+    }
+
+    public void setListOfOrderItems(Collection<OrderItemsEntity> listOfOrderItems) {
+        this.listOfOrderItems = listOfOrderItems;
     }
 }
