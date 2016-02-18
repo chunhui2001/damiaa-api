@@ -89,6 +89,7 @@
     <bean id="homeController" class="net.snnmo.controller.HomeController" scope="prototype">
         <property name="userDao" ref="userDaoImpl" />
         <property name="addrDao" ref="addrDaoImpl" />
+        <property name="orderDao" ref="orderDaoImpl" />
     </bean>
 
     <bean id="roleController" class="net.snnmo.controller.RoleController" scope="prototype">

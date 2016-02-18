@@ -2,6 +2,7 @@ package net.snnmo.controller;
 
 import net.snnmo.assist.ApiResult;
 import net.snnmo.dao.IAddrDAO;
+import net.snnmo.dao.IOrderDAO;
 import net.snnmo.dao.IUserDAO;
 import net.snnmo.dao.UserDaoImpl;
 import net.snnmo.entity.UserEntity;
@@ -35,8 +36,19 @@ import java.util.*;
 @Controller
 public class HomeController extends BaseController {
 
-    private IUserDAO userDao;
-    private IAddrDAO addrDao;
+    private IUserDAO    userDao;
+    private IAddrDAO    addrDao;
+    private IOrderDAO   orderDao;
+
+
+
+    public IOrderDAO getOrderDao() {
+        return orderDao;
+    }
+
+    public void setOrderDao(IOrderDAO orderDao) {
+        this.orderDao = orderDao;
+    }
 
     public IUserDAO getUserDao() {
         return userDao;
@@ -85,8 +97,7 @@ public class HomeController extends BaseController {
 
         Map<String, String> userInfo = new HashMap<>();
 
-        int orderCount  = 100;
-
+        long orderCount  = orderDao.count(user.getId());
 
         userInfo.put("name", user.getName());
         userInfo.put("addressCount", addrDao.userAddrList(user.getId()).size() + "");
@@ -94,6 +105,24 @@ public class HomeController extends BaseController {
 
 
         result.setData(userInfo);
+
+        return new ResponseEntity<ApiResult>(result, HttpStatus.OK);
+    }
+
+    @RequestMapping(value="/statistic", method = RequestMethod.GET)
+    public ResponseEntity<ApiResult> statistic() {
+        ApiResult result = new ApiResult();
+
+        UserEntity user = userDao.findByName(this.getCurrentUserName());
+
+        Map<String, String> statistic = new HashMap<>();
+
+        long orderCount  = orderDao.count(user.getId());
+
+        statistic.put("addressCount", addrDao.userAddrList(user.getId()).size() + "");
+        statistic.put("orderCount", orderCount > 99 ? "99+" : orderCount+"");
+
+        result.setData(statistic);
 
         return new ResponseEntity<ApiResult>(result, HttpStatus.OK);
     }

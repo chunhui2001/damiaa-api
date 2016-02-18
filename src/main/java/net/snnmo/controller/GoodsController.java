@@ -79,7 +79,7 @@ public class GoodsController extends BaseController {
         /*
             curl -v -X POST -H "Accept: application/json"
             -H "Content-Type: application/json"
-            -H "Authorization: Bearer a2f22c51-5428-4534-8f47-33a1f489babd"
+            -H "Authorization: Bearer 812d866f-de27-478b-90c8-b1e2a5ebef16"
             --data '{"name":"AA精米 2015新米上市 精米现磨",
                      "htmlName": "AA精米 2015新米上市<br />精米现磨",
                      "unit": "袋", "marketPrice": 136.00, "tradePrice": 136.00,
@@ -104,7 +104,7 @@ public class GoodsController extends BaseController {
             result.setData(goodsDao.saveOrUpdate(goods));
         }
 
-        result.setData(777);
+        //result.setData(goods.getId());
 
         return new ResponseEntity<ApiResult>(result, HttpStatus.OK);
 

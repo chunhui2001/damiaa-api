@@ -82,7 +82,7 @@ public class OrderController extends BaseController {
 
 //        curl -v -X POST -H "Accept: application/json"
 //                -H "Content-Type: application/json"
-//                -H "Authorization: Bearer a2ab056c-c1a1-4859-9fef-e60828afeaf9"
+//                -H "Authorization: Bearer 812d866f-de27-478b-90c8-b1e2a5ebef16"
 //                --data '{"payMethod": "2"}' http://127.0.0.1:8088/order/
 
 
@@ -159,8 +159,11 @@ public class OrderController extends BaseController {
             headers="Accept=application/json",
             produces = { "application/json" })
     public ResponseEntity<ApiResult> index(HttpServletRequest request) {
+
         ApiResult result = new ApiResult();
 
+        UserEntity user = userDao.findByName(this.getCurrentUserName());
+        result.setData(orderDao.list(user.getId()));
 
         return new ResponseEntity<ApiResult>(result, HttpStatus.OK);
     }
@@ -180,6 +183,21 @@ public class OrderController extends BaseController {
             result.setData("delete a order by " + orderId);
 
 
+
+        return new ResponseEntity<ApiResult>(result, HttpStatus.OK);
+    }
+
+
+    @RequestMapping(value={"/{orderid}", "index"},
+            method = {RequestMethod.GET},
+            headers="Accept=application/json",
+            produces = { "application/json" })
+    public ResponseEntity<ApiResult> index(@PathVariable("orderid") String orderId) {
+        ApiResult result = new ApiResult();
+
+        UserEntity user = userDao.findByName(this.getCurrentUserName());
+
+        result.setData(orderDao.get(orderId, user.getId()));
 
         return new ResponseEntity<ApiResult>(result, HttpStatus.OK);
     }

@@ -3,6 +3,8 @@ package net.snnmo.dao;
 import net.snnmo.assist.OrderStatus;
 import net.snnmo.assist.PayMethod;
 import net.snnmo.entity.*;
+import org.hibernate.Query;
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +20,34 @@ public class OrderDaoImpl implements IOrderDAO {
 
     public OrderDaoImpl(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
+    }
+
+    @Override
+    @Transactional
+    public Collection<OrderEntity> list(String userid) {
+        Session s = this.sessionFactory.getCurrentSession();
+
+        Query query = s.createQuery("from OrderEntity where userId=:userId");
+
+        query.setParameter("userId", userid);
+
+        return query.list();
+    }
+
+    @Override
+    @Transactional
+    public long count(String userid) {
+        long orderCount = 0;
+
+        Session s = this.sessionFactory.getCurrentSession();
+
+        Query query = s.createQuery("select count(*) from OrderEntity where userId=:userId");
+
+        query.setParameter("userId", userid);
+
+        orderCount = (long)query.uniqueResult();
+
+        return orderCount;
     }
 
     @Override
@@ -103,5 +133,18 @@ public class OrderDaoImpl implements IOrderDAO {
         this.sessionFactory.getCurrentSession().save(order);
 
         return order;
+    }
+
+    @Override
+    @Transactional
+    public OrderEntity get(String orderid, String userid) {
+        Session session = this.sessionFactory.getCurrentSession();
+
+        Query query = session.createQuery("from OrderEntity where id=:orderid and userId=:userid");
+
+        query.setParameter("orderid", orderid);
+        query.setParameter("userid", userid);
+
+        return (OrderEntity)query.uniqueResult();
     }
 }
