@@ -1,10 +1,7 @@
 package net.snnmo.dao;
 
 import net.snnmo.assist.PayMethod;
-import net.snnmo.entity.AddressEntity;
-import net.snnmo.entity.GoodsEntity;
-import net.snnmo.entity.OrderEntity;
-import net.snnmo.entity.UserEntity;
+import net.snnmo.entity.*;
 
 import java.util.Collection;
 import java.util.Map;
@@ -21,4 +18,6 @@ public interface IOrderDAO {
     public long count(String userid);
 
     public OrderEntity get(String orderid, String userid);
+
+    public Collection<OrderItemsEntity> items(String orderid);
 }

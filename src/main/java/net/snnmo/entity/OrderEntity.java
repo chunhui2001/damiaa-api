@@ -1,5 +1,6 @@
 package net.snnmo.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import net.snnmo.assist.OrderStatus;
 import net.snnmo.assist.PayMethod;
 import org.hibernate.annotations.GenericGenerator;
@@ -29,6 +30,7 @@ public class OrderEntity implements Serializable {
 
 
     @Column(name="CREATED_TIME", nullable = false)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy年MM月dd日 HH点mm分", timezone="GMT+8")
     private Date createTime = new Date();
 
     @Column(name="ORDER_STATUS", nullable = false, length=15)

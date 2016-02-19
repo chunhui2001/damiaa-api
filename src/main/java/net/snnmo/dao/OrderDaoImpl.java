@@ -147,4 +147,17 @@ public class OrderDaoImpl implements IOrderDAO {
 
         return (OrderEntity)query.uniqueResult();
     }
+
+    @Override
+    @Transactional
+    public Collection<OrderItemsEntity> items(String orderid) {
+
+        Session session = this.sessionFactory.getCurrentSession();
+
+        Query query = session.createQuery("from OrderItemsEntity where order.id = :orderid");
+
+        query.setParameter("orderid", orderid);
+
+        return query.list();
+    }
 }

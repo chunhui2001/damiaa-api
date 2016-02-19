@@ -14,14 +14,13 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.common.exceptions.OAuth2Exception;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by cc on 16/2/16.
@@ -65,6 +64,31 @@ public class GoodsController extends BaseController {
     public ResponseEntity<ApiResult> index(HttpServletRequest request) {
         ApiResult result = new ApiResult();
         result.setData(goodsDao.list());
+        return new ResponseEntity<ApiResult>(result, HttpStatus.OK);
+    }
+
+    @RequestMapping(value={"/{goodsid}", "index"},
+            method = {RequestMethod.GET})
+    public ResponseEntity<ApiResult> index(@PathVariable("goodsid") String goodsid) {
+        ApiResult result    = new ApiResult();
+        UserEntity user     = userDao.findByName(this.getCurrentUserName());
+        GoodsEntity currentGoods    = goodsDao.get(goodsid);
+
+        Map<String, Object> goodsDetail     = new HashMap<>();
+
+        goodsDetail.put("goods", currentGoods);
+
+        if (user.getRoles().indexOf("ROLE_VIP") != -1) {
+            goodsDetail.put("specialPrice", currentGoods.getVipPrice());
+        }
+
+        if (user.getRoles().indexOf("ROLE_SUPER_VIP") != -1) {
+            goodsDetail.put("specialPrice", currentGoods.getSuperVIPPrice());
+        }
+
+
+        result.setData(goodsDetail);
+
         return new ResponseEntity<ApiResult>(result, HttpStatus.OK);
     }
 

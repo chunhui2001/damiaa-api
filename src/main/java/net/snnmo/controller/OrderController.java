@@ -197,7 +197,12 @@ public class OrderController extends BaseController {
 
         UserEntity user = userDao.findByName(this.getCurrentUserName());
 
-        result.setData(orderDao.get(orderId, user.getId()));
+        Map<String, Object> orderDetail = new HashMap<>();
+
+        orderDetail.put("order", orderDao.get(orderId, user.getId()));
+        orderDetail.put("orderItems", orderDao.items(orderId));
+
+        result.setData(orderDetail);
 
         return new ResponseEntity<ApiResult>(result, HttpStatus.OK);
     }
