@@ -54,9 +54,9 @@ public class OrderItemsEntity implements Serializable {
 //        this.id = id;
 //    }
 
-    public OrderEntity getOrder() {
-        return order;
-    }
+//    public OrderEntity getOrder() {
+//        return order;
+//    }
 
     public void setOrder(OrderEntity order) {
         this.order = order;

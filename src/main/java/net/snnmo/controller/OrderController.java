@@ -168,14 +168,11 @@ public class OrderController extends BaseController {
 
         orderList   = orderDao.list(user.getId());
 
-        System.out.println(orderList.size());
-
         for (OrderEntity o : orderList) {
             Map<String, Object> currentMap  = new HashMap<>();
             Field[] attributes = o.getClass().getDeclaredFields();
 
             for (Field f : attributes) {
-                System.out.println(f.getName());
 
                 try {
                     currentMap.put(f.getName(), PropertyUtils.getProperty(o, f.getName()));
@@ -198,6 +195,8 @@ public class OrderController extends BaseController {
                 }
 
             }
+
+            currentMap.put("listOfItems", orderDao.items(o.getId()));
 
             orderListMap.add(currentMap);
         }
