@@ -13,6 +13,8 @@ import net.snnmo.entity.GoodsEntity;
 import net.snnmo.entity.OrderEntity;
 import net.snnmo.entity.UserEntity;
 import net.snnmo.exception.DbException;
+import org.apache.commons.beanutils.PropertyUtils;
+import org.springframework.cglib.core.CollectionUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -21,10 +23,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.util.*;
 
 /**
  * Created by cc on 16/2/14.
@@ -158,12 +159,50 @@ public class OrderController extends BaseController {
             method = {RequestMethod.GET},
             headers="Accept=application/json",
             produces = { "application/json" })
-    public ResponseEntity<ApiResult> index(HttpServletRequest request) {
+    public ResponseEntity<ApiResult> index(HttpServletRequest request) throws IllegalAccessException {
 
         ApiResult result = new ApiResult();
-
+        Collection<OrderEntity> orderList   = null;
+        Collection<Map<String, Object>> orderListMap = new ArrayList<>();
         UserEntity user = userDao.findByName(this.getCurrentUserName());
-        result.setData(orderDao.list(user.getId()));
+
+        orderList   = orderDao.list(user.getId());
+
+        System.out.println(orderList.size());
+
+        for (OrderEntity o : orderList) {
+            Map<String, Object> currentMap  = new HashMap<>();
+            Field[] attributes = o.getClass().getDeclaredFields();
+
+            for (Field f : attributes) {
+                System.out.println(f.getName());
+
+                try {
+                    currentMap.put(f.getName(), PropertyUtils.getProperty(o, f.getName()));
+
+                    if (f.getName().toLowerCase().equals("status")) {
+                        switch (PropertyUtils.getProperty(o, f.getName()).toString()) {
+                            case "PENDING":
+                                currentMap.put("statusText", "待付款");
+                                break;
+                            default:
+                                currentMap.put("statusText", PropertyUtils.getProperty(o, f.getName()));
+                        }
+
+                    }
+
+                } catch (NoSuchMethodException e) {
+
+                } catch (InvocationTargetException e) {
+                   // e.printStackTrace();
+                }
+
+            }
+
+            orderListMap.add(currentMap);
+        }
+
+        result.setData(orderListMap);
 
         return new ResponseEntity<ApiResult>(result, HttpStatus.OK);
     }
