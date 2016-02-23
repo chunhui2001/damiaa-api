@@ -27,7 +27,7 @@ public class OrderDaoImpl implements IOrderDAO {
     public Collection<OrderEntity> list(String userid) {
         Session s = this.sessionFactory.getCurrentSession();
 
-        Query query = s.createQuery("from OrderEntity where userId=:userId");
+        Query query = s.createQuery("from OrderEntity where userId=:userId order by id desc");
 
         query.setParameter("userId", userid);
 

@@ -175,12 +175,25 @@ public class OrderController extends BaseController {
             for (Field f : attributes) {
 
                 try {
+
                     currentMap.put(f.getName(), PropertyUtils.getProperty(o, f.getName()));
 
                     if (f.getName().toLowerCase().equals("status")) {
-                        switch (PropertyUtils.getProperty(o, f.getName()).toString()) {
+                        switch (PropertyUtils.getProperty(o, f.getName()).toString().toUpperCase()) {
                             case "PENDING":
                                 currentMap.put("statusText", "待付款");
+                                break;
+                            case "CANCEL":
+                                currentMap.put("statusText", "已取消");
+                                break;
+                            case "RECEIVED":
+                                currentMap.put("statusText", "已签收");
+                                break;
+                            case "CASHED":
+                                currentMap.put("statusText", "已付款");
+                                break;
+                            case "SENDED":
+                                currentMap.put("statusText", "已发货");
                                 break;
                             default:
                                 currentMap.put("statusText", PropertyUtils.getProperty(o, f.getName()));
