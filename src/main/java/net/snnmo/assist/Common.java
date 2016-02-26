@@ -69,7 +69,7 @@ public class Common {
     public static void SendSimpleMessage(String domainName, String apiKey, String username
             , String from, String[] to, String subject, String content, String contentType) {
 
-        //Runnable task = () -> {
+        Runnable task = () -> {
             Client client = Client.create();
             client.addFilter(new HTTPBasicAuthFilter("api", apiKey));
 
@@ -91,10 +91,9 @@ public class Common {
 
             ClientResponse res = webResource.type(MediaType.APPLICATION_FORM_URLENCODED).
                     post(ClientResponse.class, formData);
-            System.out.println(1);
-//        };
-//
-//        Thread thread = new Thread(task);
-//        thread.start();
+        };
+
+        Thread thread = new Thread(task);
+        thread.start();
     }
 }

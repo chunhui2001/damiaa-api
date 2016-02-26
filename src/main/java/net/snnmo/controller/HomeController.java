@@ -90,7 +90,6 @@ public class HomeController extends BaseController {
                 , new String[]{"chunhui2001@gmail.com", "18500183080@163.com"}
                 , "text subject2", "<h1>text content2</h1>", "html");
 
-        System.out.println(2);
         return mv;
     }
 
