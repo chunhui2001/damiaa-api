@@ -110,24 +110,24 @@
 
     <!-- This defined token store, we have used inmemory tokenstore for now
      but this can be changed to a user defined one -->
-    <bean id="tokenStore"
-          class="org.springframework.security.oauth2.provider.token.store.InMemoryTokenStore" />
+    <!--<bean id="tokenStore"-->
+          <!--class="org.springframework.security.oauth2.provider.token.store.InMemoryTokenStore" />-->
 
 
     <!-- RedisToken Store -->
-    <!--<bean id="tokenStore"-->
-          <!--class="org.springframework.security.oauth2.provider.token.store.redis.RedisTokenStore">-->
-        <!--<constructor-arg name="connectionFactory" ref="redisConnectionFactory"/>-->
-    <!--</bean>-->
+    <bean id="tokenStore"
+          class="org.springframework.security.oauth2.provider.token.store.redis.RedisTokenStore">
+        <constructor-arg name="connectionFactory" ref="redisConnectionFactory"/>
+    </bean>
 
     <!--&lt;!&ndash;create redis connection factory and set db 1&ndash;&gt;-->
-    <!--<bean id="redisConnectionFactory"-->
-                <!--class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory">-->
-        <!--<property name="hostName" value="localhost"/>-->
-        <!--<property name="port" value="6379"/>-->
-        <!--<property name="password" value=""/>-->
-        <!--<property name="database" value="1"/>-->
-    <!--</bean>-->
+    <bean id="redisConnectionFactory"
+                class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory">
+        <property name="hostName" value="localhost"/>
+        <property name="port" value="6379"/>
+        <property name="password" value=""/>
+        <property name="database" value="1"/>
+    </bean>
 
     <!-- This is where we defined token based configurations, token validity
      and other things -->
