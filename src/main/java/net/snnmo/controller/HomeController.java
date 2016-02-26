@@ -84,11 +84,11 @@ public class HomeController extends BaseController {
         ModelAndView mv = new ModelAndView("home/index");
         mv.addObject("message", "This is Spring MVC index page~");
 
-        Common.SendSimpleMessage(
-                "snnmo.com", "key-a5179b50c49cbbea7aedcf1b12165d70"
-                , "Chunhui Zhang", "76920104@qq.com"
-                , new String[]{"chunhui2001@gmail.com", "18500183080@163.com"}
-                , "text subject2", "<h1>text content2</h1>", "html");
+//        Common.SendSimpleMessage(
+//                "snnmo.com", "key-a5179b50c49cbbea7aedcf1b12165d70"
+//                , "Chunhui Zhang", "76920104@qq.com"
+//                , new String[]{"chunhui2001@gmail.com", "18500183080@163.com"}
+//                , "text subject2", "<h1>text content2</h1>", "html");
 
         return mv;
     }
