@@ -57,6 +57,7 @@
         <mapping class="net.snnmo.entity.OrderEntity"/>
         <mapping class="net.snnmo.entity.OrderItemsEntity"/>
         <mapping class="net.snnmo.entity.GoodsEntity"/>
+        <mapping class="net.snnmo.entity.OrderEventEntity"/>
 
     </session-factory>
 

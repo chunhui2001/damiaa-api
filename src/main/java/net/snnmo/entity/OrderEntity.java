@@ -19,6 +19,11 @@ import java.util.Date;
 @Entity
 @Table(name="ORDERS")
 public class OrderEntity implements Serializable {
+
+    public OrderEntity() {
+
+    }
+
     @Id
     @Column(name="ORDER_ID")
     @GenericGenerator(name="OrderIdGenerator",
@@ -71,6 +76,10 @@ public class OrderEntity implements Serializable {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "order", cascade = CascadeType.ALL)
     @LazyCollection(LazyCollectionOption.TRUE)
     private Collection<OrderItemsEntity> listOfItems = new ArrayList<>();
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "order", cascade = CascadeType.ALL)
+    @LazyCollection(LazyCollectionOption.TRUE)
+    private Collection<OrderEventEntity> listOfEvents = new ArrayList<>();
 
     public String getId() {
         return id;
@@ -175,5 +184,13 @@ public class OrderEntity implements Serializable {
 
     public void setListOfItems(Collection<OrderItemsEntity> listOfItems) {
         this.listOfItems = listOfItems;
+    }
+
+//    public Collection<OrderEventEntity> getListOfEvents() {
+//        return listOfEvents;
+//    }
+
+    public void setListOfEvents(Collection<OrderEventEntity> listOfEvents) {
+        this.listOfEvents = listOfEvents;
     }
 }

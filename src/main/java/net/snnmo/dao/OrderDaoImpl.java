@@ -1,5 +1,6 @@
 package net.snnmo.dao;
 
+import net.snnmo.assist.OrderEventType;
 import net.snnmo.assist.OrderStatus;
 import net.snnmo.assist.PayMethod;
 import net.snnmo.entity.*;
@@ -10,12 +11,24 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Map;
 
 /**
  * Created by cc on 16/2/15.
  */
 public class OrderDaoImpl implements IOrderDAO {
+
+    private IOrderEventDAO orderEventDao;
+
+    public IOrderEventDAO getOrderEventDao() {
+        return orderEventDao;
+    }
+
+    public void setOrderEventDao(IOrderEventDAO orderEventDao) {
+        this.orderEventDao = orderEventDao;
+    }
+
     private SessionFactory sessionFactory;
 
     public OrderDaoImpl(SessionFactory sessionFactory) {
@@ -27,9 +40,10 @@ public class OrderDaoImpl implements IOrderDAO {
     public Collection<OrderEntity> list(String userid) {
         Session s = this.sessionFactory.getCurrentSession();
 
-        Query query = s.createQuery("from OrderEntity where userId=:userId order by id desc");
+        Query query = s.createQuery("from OrderEntity where userId=:userId and status != :status order by id desc");
 
         query.setParameter("userId", userid);
+        query.setParameter("status", OrderStatus.DELETED);
 
         return query.list();
     }
@@ -41,9 +55,10 @@ public class OrderDaoImpl implements IOrderDAO {
 
         Session s = this.sessionFactory.getCurrentSession();
 
-        Query query = s.createQuery("select count(*) from OrderEntity where userId=:userId");
+        Query query = s.createQuery("select count(*) from OrderEntity where userId=:userId and status != :status");
 
         query.setParameter("userId", userid);
+        query.setParameter("status", OrderStatus.DELETED);
 
         orderCount = (long)query.uniqueResult();
 
@@ -130,9 +145,52 @@ public class OrderDaoImpl implements IOrderDAO {
 
         order.setListOfItems(listOfOrderItems);
 
+
         this.sessionFactory.getCurrentSession().save(order);
+        this.addEvent(OrderEventType.CREATE, order, null);
 
         return order;
+    }
+
+
+    @Override
+    @Transactional
+    public void update(OrderEntity order) {
+        this.sessionFactory.getCurrentSession().update(order);
+    }
+
+    private void addEvent(OrderEventType eventType, OrderEntity order, String message) {
+
+        OrderEventEntity eventEntity = new OrderEventEntity();
+
+        eventEntity.setEventTime(new Date());
+        eventEntity.setOrder(order);
+        eventEntity.setType(eventType);
+
+        if (OrderEventType.CREATE == eventType)
+            eventEntity.setMessage("创建订单");
+
+        if (OrderEventType.CANCEL == eventType)
+            eventEntity.setMessage("取消订单");
+
+        if (OrderEventType.DELETED == eventType)
+            eventEntity.setMessage("删除订单");
+
+        if (OrderEventType.INFO == eventType)
+            eventEntity.setMessage(message);
+
+        if (OrderEventType.PAYMENT == eventType)
+            eventEntity.setMessage("完成支付");
+
+        if (OrderEventType.SENDED == eventType)
+            eventEntity.setMessage("已发货");
+
+        if (OrderEventType.SIGNED == eventType)
+            eventEntity.setMessage("已签收");
+
+        if (message != null) eventEntity.setMessage(message);
+
+        orderEventDao.addEvent(eventEntity);
     }
 
     @Override

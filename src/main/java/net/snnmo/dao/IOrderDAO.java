@@ -11,7 +11,9 @@ import java.util.Map;
  */
 public interface IOrderDAO {
     public OrderEntity create(UserEntity user, PayMethod payMethod, AddressEntity addr
-            , Map<GoodsEntity, Integer> goodsList) ;
+            , Map<GoodsEntity, Integer> goodsList);
+
+    public void update(OrderEntity order);
 
     public Collection<OrderEntity> list(String userid);
 

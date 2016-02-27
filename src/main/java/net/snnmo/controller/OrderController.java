@@ -25,6 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -176,7 +177,11 @@ public class OrderController extends BaseController {
 
                 try {
 
-                    currentMap.put(f.getName(), PropertyUtils.getProperty(o, f.getName()));
+                    if (f.getName().toLowerCase().equals("createtime")) {
+                        SimpleDateFormat format = new SimpleDateFormat("yyyy年MM月dd日 HH点mm分");
+                        currentMap.put(f.getName(), format.format(PropertyUtils.getProperty(o, f.getName())));
+                    } else
+                        currentMap.put(f.getName(), PropertyUtils.getProperty(o, f.getName()));
 
                     if (f.getName().toLowerCase().equals("status")) {
                         switch (PropertyUtils.getProperty(o, f.getName()).toString().toUpperCase()) {
@@ -201,6 +206,8 @@ public class OrderController extends BaseController {
 
                     }
 
+
+
                 } catch (NoSuchMethodException e) {
 
                 } catch (InvocationTargetException e) {
@@ -224,18 +231,36 @@ public class OrderController extends BaseController {
             method = {RequestMethod.PUT, RequestMethod.DELETE},
             headers="Accept=application/json",
             produces = { "application/json" })
-    public ResponseEntity<ApiResult> index(@PathVariable("orderid") String orderId, HttpServletRequest request) {
+    public ResponseEntity<ApiResult> index(
+            @PathVariable("orderid") String orderId
+            , @RequestBody Map<String, Object> params
+            , HttpServletRequest request) {
         ApiResult result = new ApiResult();
 
-        if (request.getMethod().toLowerCase().equals("put"))
-            result.setData("update a order by " + orderId);
+        UserEntity user     = userDao.findByName(this.getCurrentUserName());
+        OrderEntity order   = orderDao.get(orderId, user.getId());
 
-        if (request.getMethod().toLowerCase().equals("delete"))
-            result.setData("delete a order by " + orderId);
+        if (request.getMethod().toLowerCase().equals("put")) {
+            try {
+                if (((String)params.get("action")).equals("updateStatus")) {
+                    OrderStatus status = OrderStatus.valueOf ((String)params.get("status"));
+                    order.setStatus(status);
 
+                    orderDao.update(order);
+                }
+            } catch (Exception e) {
+                result.setStatus(HttpStatus.BAD_REQUEST);
+                result.setMessage(e.getMessage());
+            }
+        }
 
+        if (request.getMethod().toLowerCase().equals("delete")) {
+            order.setStatus(OrderStatus.DELETED);
 
-        return new ResponseEntity<ApiResult>(result, HttpStatus.OK);
+            orderDao.update(order);
+        }
+
+        return new ResponseEntity<ApiResult>(result, result.getStatus());
     }
 
 

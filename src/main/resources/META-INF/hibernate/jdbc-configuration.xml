@@ -73,11 +73,20 @@
         <constructor-arg>
             <ref bean="sessionFactory" />
         </constructor-arg>
+        <property name="orderEventDao" ref="orderEventDaoImpl" />
     </bean>
 
 
     <bean id="goodsDaoImpl"
           class="net.snnmo.dao.GoodsDaoImpl">
+        <constructor-arg>
+            <ref bean="sessionFactory" />
+        </constructor-arg>
+    </bean>
+
+
+    <bean id="orderEventDaoImpl"
+          class="net.snnmo.dao.OrderEventImpl">
         <constructor-arg>
             <ref bean="sessionFactory" />
         </constructor-arg>

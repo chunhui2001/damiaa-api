@@ -28,12 +28,12 @@ public class OrderIdGenerator implements IdentifierGenerator, Configurable {
 
     @Override
     public Serializable generate(SessionImplementor sessionImplementor, Object o) throws HibernateException {
-        String orderid  = Common.randomNumbers(8);
+        String orderid  = Common.randomNumbers(4) + Common.randomNumbers(2);
 
         long unixTime = System.currentTimeMillis() / 1000L;
 
 
-        Serializable result = unixTime + orderid;
+        Serializable result = (unixTime + orderid).substring(3);
 
         return result;
     }
