@@ -1,6 +1,5 @@
 package net.snnmo.dao;
 
-import net.snnmo.assist.OrderEventType;
 import net.snnmo.assist.OrderStatus;
 import net.snnmo.assist.PayMethod;
 import net.snnmo.assist.UserRole;
@@ -10,6 +9,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -156,8 +156,8 @@ public class OrderDaoImpl implements IOrderDAO {
         order.setListOfItems(listOfOrderItems);
 
 
+        this.addEvent(OrderStatus.CREATE, order, null);
         this.sessionFactory.getCurrentSession().save(order);
-        this.addEvent(OrderEventType.CREATE, order, null);
 
         return order;
     }
@@ -169,7 +169,8 @@ public class OrderDaoImpl implements IOrderDAO {
         this.sessionFactory.getCurrentSession().update(order);
     }
 
-    private void addEvent(OrderEventType eventType, OrderEntity order, String message) {
+    @Override
+    public void addEvent(OrderStatus eventType, OrderEntity order, String message) {
 
         OrderEventEntity eventEntity = new OrderEventEntity();
 
@@ -177,30 +178,37 @@ public class OrderDaoImpl implements IOrderDAO {
         eventEntity.setOrder(order);
         eventEntity.setType(eventType);
 
-        if (OrderEventType.CREATE == eventType)
-            eventEntity.setMessage("创建订单");
 
-        if (OrderEventType.CANCEL == eventType)
-            eventEntity.setMessage("取消订单");
+        SimpleDateFormat format = new SimpleDateFormat("yyyy年MM月dd日 HH点mm分");
 
-        if (OrderEventType.DELETED == eventType)
-            eventEntity.setMessage("删除订单");
+        //OrderStatus
+        if (OrderStatus.CREATE == eventType)
+            eventEntity.setMessage("该订单创建于 " + format.format(order.getCreateTime()));
 
-        if (OrderEventType.INFO == eventType)
+        if (OrderStatus.CANCEL == eventType)
+            eventEntity.setMessage("该订单于 " + format.format(order.getCreateTime()) + " 被取消");
+
+        if (OrderStatus.DELETED == eventType)
+            eventEntity.setMessage("该订单于 " + format.format(order.getCreateTime()) + " 被删除");
+
+        if (OrderStatus.INFO == eventType)
             eventEntity.setMessage(message);
 
-        if (OrderEventType.PAYMENT == eventType)
-            eventEntity.setMessage("完成支付");
+        if (OrderStatus.PAYMENT == eventType)
+            eventEntity.setMessage("该订单于 " + format.format(order.getCreateTime()) + " 完成支付");
 
-        if (OrderEventType.SENDED == eventType)
-            eventEntity.setMessage("已发货");
+        if (OrderStatus.SENDED == eventType)
+            eventEntity.setMessage("该订单于 " + format.format(order.getCreateTime()) + " 发货");
 
-        if (OrderEventType.SIGNED == eventType)
-            eventEntity.setMessage("已签收");
+        if (OrderStatus.SIGNED == eventType)
+            eventEntity.setMessage("该订单于 " + format.format(order.getCreateTime())
+                        + " 由 " + order.getReceiveMan() + " 签收");
 
         if (message != null) eventEntity.setMessage(message);
 
         orderEventDao.addEvent(eventEntity);
+
+        order.setLastEvent(eventEntity.getMessage());
     }
 
     @Override
@@ -210,8 +218,6 @@ public class OrderDaoImpl implements IOrderDAO {
 
         boolean isAdmin = userDao.hasAnyRole(user
                     , new UserRole[]{ UserRole.ROLE_ADMIN, UserRole.ROLE_SUPERADMIN });
-
-
 
         Query query = session.createQuery(
                 "from OrderEntity where id=:orderid"

@@ -10,4 +10,8 @@ public enum OrderStatus {
     RECEIVED,   // 已签收 (已签收的订单一定是已经付款完毕的)   3
     CASHED,      // 已付款 4
     SENDED,      // 已发货 5
+    CREATE,
+    INFO,
+    PAYMENT,
+    SIGNED
 }

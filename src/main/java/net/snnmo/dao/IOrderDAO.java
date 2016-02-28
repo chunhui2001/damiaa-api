@@ -1,5 +1,6 @@
 package net.snnmo.dao;
 
+import net.snnmo.assist.OrderStatus;
 import net.snnmo.assist.PayMethod;
 import net.snnmo.entity.*;
 
@@ -22,4 +23,5 @@ public interface IOrderDAO {
     public OrderEntity get(String orderid, UserEntity user);
 
     public Collection<OrderItemsEntity> items(String orderid);
+    public void addEvent(OrderStatus eventType, OrderEntity order, String message);
 }

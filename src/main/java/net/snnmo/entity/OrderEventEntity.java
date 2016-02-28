@@ -1,7 +1,7 @@
 package net.snnmo.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import net.snnmo.assist.OrderEventType;
+import net.snnmo.assist.OrderStatus;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -29,7 +29,7 @@ public class OrderEventEntity implements Serializable {
 
     @Column(name="EVENT_TYPE", nullable = false, length=25)
     @Enumerated(EnumType.STRING)
-    private OrderEventType type;    // 事件名字
+    private OrderStatus type;    // 事件名字
 
     @Column(name="EVENT_TIME", nullable = false)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy年MM月dd日 HH点mm分", timezone="GMT+8")
@@ -56,11 +56,11 @@ public class OrderEventEntity implements Serializable {
         this.order = order;
     }
 
-    public OrderEventType getType() {
+    public OrderStatus getType() {
         return type;
     }
 
-    public void setType(OrderEventType type) {
+    public void setType(OrderStatus type) {
         this.type = type;
     }
 

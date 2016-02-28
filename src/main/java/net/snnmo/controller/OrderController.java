@@ -1,9 +1,6 @@
 package net.snnmo.controller;
 
-import net.snnmo.assist.ApiResult;
-import net.snnmo.assist.Common;
-import net.snnmo.assist.OrderStatus;
-import net.snnmo.assist.PayMethod;
+import net.snnmo.assist.*;
 import net.snnmo.dao.IAddrDAO;
 import net.snnmo.dao.IGoodsDAO;
 import net.snnmo.dao.IOrderDAO;
@@ -246,6 +243,7 @@ public class OrderController extends BaseController {
                     OrderStatus status = OrderStatus.valueOf ((String)params.get("status"));
                     order.setStatus(status);
 
+                    orderDao.addEvent(status, order, null);
                     orderDao.update(order);
                 }
             } catch (Exception e) {
@@ -257,8 +255,11 @@ public class OrderController extends BaseController {
         if (request.getMethod().toLowerCase().equals("delete")) {
             order.setStatus(OrderStatus.DELETED);
 
+            orderDao.addEvent(OrderStatus.DELETED, order, null);
             orderDao.update(order);
         }
+
+        result.setData(order);
 
         return new ResponseEntity<ApiResult>(result, result.getStatus());
     }

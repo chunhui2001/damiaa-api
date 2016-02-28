@@ -81,6 +81,17 @@ public class OrderEntity implements Serializable {
     @LazyCollection(LazyCollectionOption.TRUE)
     private Collection<OrderEventEntity> listOfEvents = new ArrayList<>();
 
+    @Column(name="LAST_EVENT", nullable = false, length=1024)
+    private String lastEvent;
+
+    public String getLastEvent() {
+        return lastEvent;
+    }
+
+    public void setLastEvent(String lastEvent) {
+        this.lastEvent = lastEvent;
+    }
+
     public String getId() {
         return id;
     }
