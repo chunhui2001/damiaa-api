@@ -5,6 +5,8 @@ import net.snnmo.entity.UserEntity;
 import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -147,7 +149,14 @@ public class UserDaoImpl implements IUserDAO {
             return errorMessage = "用户名不存在!";
         }
 
-        if(!user.getPasswd().equals(oldPwd)) {
+        String hashedPasswd     = passwordEncoder.encode(oldPwd);
+        System.out.println(oldPwd);
+        System.out.println(hashedPasswd);
+        System.out.println(user.getPasswd());
+        System.out.println(passwordEncoder.matches(oldPwd, user.getPasswd()));
+
+        //passwordEncoder.matches(oldPwd, user.getPasswd())
+        if(!passwordEncoder.matches(oldPwd, user.getPasswd())) {
             return errorMessage = "原始密码不正确!";
         }
 
@@ -155,7 +164,7 @@ public class UserDaoImpl implements IUserDAO {
             return errorMessage = "新密码不能为空, 且新密码长度6-16位, 首尾不能有空格！";
         }
 
-        user.setPasswd(newPwd);
+        user.setPasswd(passwordEncoder.encode(newPwd));
 
         this.saveOrUpdate(user);
 

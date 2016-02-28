@@ -37,7 +37,6 @@ public class UserServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        System.out.println(username);
 
         UserEntity currentUser = userDao.findByName(username);
 
@@ -45,17 +44,11 @@ public class UserServiceImpl implements UserDetailsService {
             throw new OAuth2Exception("username not valid, " + username);
 
         String[] roles      = currentUser.getRoles().split(",");
-        String password     = currentUser.getPassword();
-
-        boolean enabled             = true;
-        boolean accountNonExpired   = true;
-        boolean credentialsNonExpired   = true;
-        boolean accountNonLocked        = true;
+        String password     = currentUser.getPasswd();
 
         Collection<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
 
         for (String role : roles) {
-            System.out.println(role);
             authorities.add(new SimpleGrantedAuthority(role));
         }
 
@@ -65,13 +58,9 @@ public class UserServiceImpl implements UserDetailsService {
             user = new User(username, password, true, true, true, true, authorities);
 
             final Authentication auth = new UsernamePasswordAuthenticationToken(username, password, authorities);
-            System.out.println(auth.isAuthenticated());
 
             SecurityContextHolder.getContext().setAuthentication(auth);
 
-//            SecurityContext sc = new SecurityContextImpl();
-//            sc.setAuthentication(auth);
-//            SecurityContextHolder.setContext(sc);
         } catch (Exception e) {
             System.out.println(e.getMessage());
             e.printStackTrace();
