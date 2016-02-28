@@ -1,9 +1,11 @@
 package net.snnmo.dao;
 
+import net.snnmo.assist.UserRole;
 import net.snnmo.entity.UserEntity;
 import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
@@ -12,6 +14,17 @@ import java.util.Collection;
  * Created by TTong on 16-1-8.
  */
 public class UserDaoImpl implements IUserDAO {
+
+    public PasswordEncoder getPasswordEncoder() {
+        return passwordEncoder;
+    }
+
+    public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
+        this.passwordEncoder = passwordEncoder;
+    }
+
+    private PasswordEncoder passwordEncoder;
+
     private SessionFactory sessionFactory;
 
     public UserDaoImpl(SessionFactory sessionFactory) {
@@ -34,6 +47,13 @@ public class UserDaoImpl implements IUserDAO {
     @Transactional
     public void delete(String userid) {
         this.sessionFactory.getCurrentSession().delete(this.get(userid));
+    }
+
+    @Override
+    @Transactional
+    public void create(UserEntity user) {
+        user.setPasswd(passwordEncoder.encode(user.getPasswd()));
+        this.sessionFactory.getCurrentSession().save(user);
     }
 
     @Override
@@ -69,6 +89,9 @@ public class UserDaoImpl implements IUserDAO {
         if (userRoles == null) userRoles = "";
 
         for (String role : listOfRoles) {
+
+            role    = UserRole.valueOf(role).toString();
+
             if (userRoles.indexOf(role) == -1) {
                 userRoles = userRoles + "," + role;
             }
@@ -137,5 +160,16 @@ public class UserDaoImpl implements IUserDAO {
         this.saveOrUpdate(user);
 
         return errorMessage;
+    }
+
+    @Override
+    public boolean hasAnyRole(UserEntity user, UserRole[] roles) {
+
+        for (UserRole r : roles) {
+            if (user.getRoles().indexOf(r.toString()) != -1) return true;
+        }
+
+
+        return false;
     }
 }

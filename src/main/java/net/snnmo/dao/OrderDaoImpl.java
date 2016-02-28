@@ -3,6 +3,7 @@ package net.snnmo.dao;
 import net.snnmo.assist.OrderEventType;
 import net.snnmo.assist.OrderStatus;
 import net.snnmo.assist.PayMethod;
+import net.snnmo.assist.UserRole;
 import net.snnmo.entity.*;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -20,6 +21,15 @@ import java.util.Map;
 public class OrderDaoImpl implements IOrderDAO {
 
     private IOrderEventDAO orderEventDao;
+    private IUserDAO userDao;
+
+    public IUserDAO getUserDao() {
+        return userDao;
+    }
+
+    public void setUserDao(IUserDAO userDao) {
+        this.userDao = userDao;
+    }
 
     public IOrderEventDAO getOrderEventDao() {
         return orderEventDao;
@@ -99,11 +109,11 @@ public class OrderDaoImpl implements IOrderDAO {
             double price    = 0;
             double freight  = 0;
 
-            if (user.getRoles().indexOf("ROLE_VIP") != -1) {
+            if (user.getRoles().indexOf(UserRole.ROLE_VIP.toString()) != -1) {
                 price   = currentGoods.getVipPrice();
             }
 
-            if (user.getRoles().indexOf("ROLE_SUPER_VIP") != -1) {
+            if (user.getRoles().indexOf(UserRole.ROLE_SUPER_VIP.toString()) != -1) {
                 price   = currentGoods.getSuperVIPPrice();
             }
 
@@ -195,13 +205,21 @@ public class OrderDaoImpl implements IOrderDAO {
 
     @Override
     @Transactional
-    public OrderEntity get(String orderid, String userid) {
+    public OrderEntity get(String orderid, UserEntity user) {
         Session session = this.sessionFactory.getCurrentSession();
 
-        Query query = session.createQuery("from OrderEntity where id=:orderid and userId=:userid");
+        boolean isAdmin = userDao.hasAnyRole(user
+                    , new UserRole[]{ UserRole.ROLE_ADMIN, UserRole.ROLE_SUPERADMIN });
+
+
+
+        Query query = session.createQuery(
+                "from OrderEntity where id=:orderid"
+                        + (!isAdmin ? " and userId=:userid" : ""));
 
         query.setParameter("orderid", orderid);
-        query.setParameter("userid", userid);
+
+        if (!isAdmin) query.setParameter("userid", user.getId());
 
         return (OrderEntity)query.uniqueResult();
     }

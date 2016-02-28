@@ -1,11 +1,15 @@
 package net.snnmo.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import net.snnmo.assist.UserRole;
 import net.snnmo.assist.UserStatus;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.hibernate.annotations.*;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import javax.persistence.Entity;
@@ -13,16 +17,22 @@ import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
+import java.util.*;
 
 /**
  * Created by TTong on 16-1-8.
  */
 @Entity
 @Table(name="USERS")
-public class UserEntity implements Serializable {
+public class UserEntity implements Serializable, UserDetails {
+    public UserEntity() {
+        super();
+    }
+
+//    public UserEntity(String id) {
+//        super(id);
+//    }
+
     @Id @Column(name="USER_ID")
 //    @GenericGenerator(name="system-uuid", strategy = "uuid")
 //    @GeneratedValue(generator = "system-uuid")
@@ -66,7 +76,7 @@ public class UserEntity implements Serializable {
     private UserStatus userStatus = UserStatus.ACTIVE;
 
     @Column(name="ROLES", nullable = false, length=955)
-    private String roles = "ROLE_USER";
+    private String roles = UserRole.ROLE_USER.toString();     // ROLE_USER, ROLE_ADMIN, ROLE_SUPERADMIN, ROLE_VIP, ROLE_SUPER_VIP
 
     @Column(name="GENDER", length=5)
     private String gender;
@@ -159,5 +169,46 @@ public class UserEntity implements Serializable {
 
     public void setGender(String gender) {
         this.gender = gender;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        Set<GrantedAuthority> authorities = new HashSet<>();
+        String[] roles  = this.getRoles().split(",");
+        for( String role : roles){
+            GrantedAuthority authority = new SimpleGrantedAuthority(role);
+            authorities.add(authority);
+        }
+        return authorities;
+    }
+
+    @Override
+    public String getPassword() {
+        return this.passwd;
+    }
+
+    @Override
+    public String getUsername() {
+        return this.getUsername();
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 }

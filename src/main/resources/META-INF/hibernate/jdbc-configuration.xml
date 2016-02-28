@@ -54,11 +54,18 @@
 
 
 
+    <bean id="passwordEncoder"
+          class="org.springframework.security.crypto.password.StandardPasswordEncoder">
+        <constructor-arg value="256" />
+    </bean>
+
+
     <bean id="userDaoImpl"
           class="net.snnmo.dao.UserDaoImpl">
         <constructor-arg>
             <ref bean="sessionFactory" />
         </constructor-arg>
+        <property name="passwordEncoder" ref="passwordEncoder" />
     </bean>
 
     <bean id="addrDaoImpl"
@@ -74,6 +81,7 @@
             <ref bean="sessionFactory" />
         </constructor-arg>
         <property name="orderEventDao" ref="orderEventDaoImpl" />
+        <property name="userDao" ref="userDaoImpl" />
     </bean>
 
 

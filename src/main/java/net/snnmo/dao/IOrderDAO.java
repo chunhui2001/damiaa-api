@@ -19,7 +19,7 @@ public interface IOrderDAO {
 
     public long count(String userid);
 
-    public OrderEntity get(String orderid, String userid);
+    public OrderEntity get(String orderid, UserEntity user);
 
     public Collection<OrderItemsEntity> items(String orderid);
 }

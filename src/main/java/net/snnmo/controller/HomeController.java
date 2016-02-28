@@ -2,6 +2,7 @@ package net.snnmo.controller;
 
 import net.snnmo.assist.ApiResult;
 import net.snnmo.assist.Common;
+import net.snnmo.assist.UserRole;
 import net.snnmo.dao.IAddrDAO;
 import net.snnmo.dao.IOrderDAO;
 import net.snnmo.dao.IUserDAO;
@@ -187,7 +188,7 @@ public class HomeController extends BaseController {
 
             // save user to db
             try {
-                userDao.saveOrUpdate(user);
+                userDao.create(user);
             } catch (Exception e) {
                 result.setMessage(e.getMessage());
                 result.setStatus(HttpStatus.BAD_REQUEST);

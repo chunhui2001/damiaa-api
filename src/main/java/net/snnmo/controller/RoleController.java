@@ -1,6 +1,7 @@
 package net.snnmo.controller;
 
 import net.snnmo.assist.ApiResult;
+import net.snnmo.assist.UserRole;
 import net.snnmo.dao.IUserDAO;
 import net.snnmo.entity.UserEntity;
 import org.codehaus.jackson.map.deser.ValueInstantiators;
@@ -34,7 +35,8 @@ public class RoleController extends BaseController {
         String userName = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
         UserEntity user = userDao.findByName(userName);
 
-        if (user.getRoles().indexOf("ROLE_ADMIN") == -1) {
+        if (!userDao.hasAnyRole(user
+                , new UserRole[]{ UserRole.ROLE_ADMIN, UserRole.ROLE_SUPERADMIN })) {
             throw new OAuth2Exception("permission deny for manager roles");
         }
     }
@@ -70,6 +72,11 @@ public class RoleController extends BaseController {
     @RequestMapping(value = "/{userid}/add", method = RequestMethod.PUT)
     public ResponseEntity<ApiResult> add(@PathVariable("userid") String userid,
                                             @RequestBody Map<String, Object> commandBean) {
+        // curl -v -X PUT -H "Accept: application/json"
+        // -H "Content-Type: application/json"
+        // -H "Authorization: Bearer 353364ee-8026-4367-a569-57f881c9c82b"
+        // --data '{"roles": ["ROLE_VIP", "ROLE_SUPER_VIP"]}'
+        // http://192.168.88.142:8080/roles/402880e85240805501524080dbc60000/add
 
         ApiResult result = new ApiResult();
 

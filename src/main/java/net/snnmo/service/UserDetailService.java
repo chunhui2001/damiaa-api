@@ -1,6 +1,5 @@
 package net.snnmo.service;
 
-import net.snnmo.assist.UserDetailsImpl;
 import net.snnmo.dao.IUserDAO;
 import net.snnmo.entity.UserEntity;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -9,6 +8,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.oauth2.common.exceptions.OAuth2Exception;
 
 import java.util.*;
@@ -16,7 +16,8 @@ import java.util.*;
 /**
  * Created by TTong on 16-1-11.
  */
-public class UserDetailsService implements AuthenticationProvider {
+public class UserDetailService implements AuthenticationProvider {
+
     private IUserDAO userDao;
 
     @Override
@@ -26,6 +27,7 @@ public class UserDetailsService implements AuthenticationProvider {
         String password     = authentication.getCredentials() != null ?
                                 authentication.getCredentials().toString() : null;
 
+
         try {
             UserEntity userEntity = userDao.findByName(username);
 
@@ -34,15 +36,19 @@ public class UserDetailsService implements AuthenticationProvider {
 
             userEntity = userDao.findByName(username);
 
-            // TODO: userEntity.getPasswd() should be crypt
-            isValid = userEntity != null && userEntity.getPasswd().equals(password);
+//            isValid = userEntity != null
+//                        && userEntity.getPasswd().equals(passwordEncoder.encode(password));
+            isValid = userEntity != null
+                    && userEntity.getPasswd().equals(password);
 
             if (!isValid) {
                 username = null;
                 password = null;
 
-                System.out.println("!isValid");
-                throw new OAuth2Exception("username not valid");
+                throw new OAuth2Exception("username not valid, " + username);
+//                        + "user Passwd:" + userEntity.getPasswd()
+//                        + "encode Passwd:" + passwordEncoder.encode(password)
+//                        + "Credentials Passwd:" + password);
             } else {
                 String[] rolesArrsy = userEntity.getRoles() != null ? userEntity.getRoles().split(",") : null;
 
@@ -54,7 +60,7 @@ public class UserDetailsService implements AuthenticationProvider {
             final UsernamePasswordAuthenticationToken token =
                     new UsernamePasswordAuthenticationToken(username, password, authorities);
 
-            UserDetailsImpl userDetails = new UserDetailsImpl(username, password, authorities);
+            User userDetails =  new User(username, password, true, true, true, true, authorities);
 
             token.setDetails(userDetails);
             return token;

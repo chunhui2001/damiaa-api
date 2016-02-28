@@ -238,7 +238,7 @@ public class OrderController extends BaseController {
         ApiResult result = new ApiResult();
 
         UserEntity user     = userDao.findByName(this.getCurrentUserName());
-        OrderEntity order   = orderDao.get(orderId, user.getId());
+        OrderEntity order   = orderDao.get(orderId, user);
 
         if (request.getMethod().toLowerCase().equals("put")) {
             try {
@@ -275,7 +275,7 @@ public class OrderController extends BaseController {
 
         Map<String, Object> orderDetail = new HashMap<>();
 
-        orderDetail.put("order", orderDao.get(orderId, user.getId()));
+        orderDetail.put("order", orderDao.get(orderId, user));
         orderDetail.put("orderItems", orderDao.items(orderId));
 
         result.setData(orderDetail);
