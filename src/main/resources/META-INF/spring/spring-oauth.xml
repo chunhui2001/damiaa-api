@@ -93,11 +93,12 @@
                 <!--<user name="beingjavaguys" password="spring@java" authorities="ROLE_USER" />-->
             <!--</user-service>-->
         <!--</authentication-provider>-->
-        <!--<authentication-provider user-service-ref="userDetailsService">-->
-            <!--<password-encoder ref="passwordEncoder" />-->
-        <!--</authentication-provider>-->
 
-        <authentication-provider ref="userDetailService" />
+        <authentication-provider user-service-ref="userDetailsService">
+            <password-encoder ref="passwordEncoder" />
+        </authentication-provider>
+
+        <!--<authentication-provider ref="userDetailService" />-->
     </authentication-manager>
 
     <bean id="clientDetailsUserService"
@@ -114,7 +115,6 @@
     <bean id="userDetailsService"
           class="net.snnmo.service.UserServiceImpl">
         <property name="userDao" ref="userDaoImpl" />
-        <property name="passwordEncoder" ref="passwordEncoder" />
     </bean>
 
 

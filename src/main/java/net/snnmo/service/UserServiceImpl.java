@@ -2,8 +2,13 @@ package net.snnmo.service;
 
 import net.snnmo.dao.IUserDAO;
 import net.snnmo.entity.UserEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.context.SecurityContextImpl;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -20,15 +25,6 @@ import java.util.Collection;
  */
 public class UserServiceImpl implements UserDetailsService {
 
-    public PasswordEncoder getPasswordEncoder() {
-        return passwordEncoder;
-    }
-
-    public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
-        this.passwordEncoder = passwordEncoder;
-    }
-
-    private PasswordEncoder passwordEncoder;
     private IUserDAO userDao;
 
     public IUserDAO getUserDao() {
@@ -59,6 +55,7 @@ public class UserServiceImpl implements UserDetailsService {
         Collection<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
 
         for (String role : roles) {
+            System.out.println(role);
             authorities.add(new SimpleGrantedAuthority(role));
         }
 
@@ -67,6 +64,14 @@ public class UserServiceImpl implements UserDetailsService {
         try {
             user = new User(username, password, true, true, true, true, authorities);
 
+            final Authentication auth = new UsernamePasswordAuthenticationToken(username, password, authorities);
+            System.out.println(auth.isAuthenticated());
+
+            SecurityContextHolder.getContext().setAuthentication(auth);
+
+//            SecurityContext sc = new SecurityContextImpl();
+//            sc.setAuthentication(auth);
+//            SecurityContextHolder.setContext(sc);
         } catch (Exception e) {
             System.out.println(e.getMessage());
             e.printStackTrace();
