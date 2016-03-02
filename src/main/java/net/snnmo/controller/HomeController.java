@@ -14,6 +14,7 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
 import org.hibernate.service.ServiceRegistryBuilder;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.http.HttpStatus;
@@ -42,7 +43,8 @@ public class HomeController extends BaseController {
     private IAddrDAO    addrDao;
     private IOrderDAO   orderDao;
 
-
+    @Value("${example.message}")
+    private String message;
 
     public IOrderDAO getOrderDao() {
         return orderDao;
@@ -83,7 +85,7 @@ public class HomeController extends BaseController {
     @RequestMapping(value={"/", "/index", "/welcome"}, method = RequestMethod.GET)
     public ModelAndView index(HttpServletRequest request) {
         ModelAndView mv = new ModelAndView("home/index");
-        mv.addObject("message", "This is Spring MVC index page~");
+        mv.addObject("message", "This is Spring MVC index page~" + this.message);
 
 //        Common.SendSimpleMessage(
 //                "snnmo.com", "key-a5179b50c49cbbea7aedcf1b12165d70"
