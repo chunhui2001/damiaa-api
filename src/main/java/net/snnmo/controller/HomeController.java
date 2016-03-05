@@ -43,7 +43,7 @@ public class HomeController extends BaseController {
     private IAddrDAO    addrDao;
     private IOrderDAO   orderDao;
 
-    @Value("${site.hostname}: ${example.message} (${domain.name})")
+    @Value("http://${site.hostname}: ${example.message} (${domain.name})")
     private String message;
 
     public IOrderDAO getOrderDao() {
