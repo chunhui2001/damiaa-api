@@ -13,17 +13,30 @@ import org.springframework.core.io.Resource;
  */
 @Configuration
 public class PropertySourcesConfig {
-    private static final Resource[] LOCAL_PROPERTIES = new ClassPathResource[]{
-            new ClassPathResource("example-local.properties"),
-    };
     private static final Resource[] DEV_PROPERTIES = new ClassPathResource[]{
             new ClassPathResource("example-dev.properties"),
+            new ClassPathResource("META-INF/properties/global.properties"),
+            new ClassPathResource("META-INF/properties/global-dev.properties"),
+    };
+    private static final Resource[] LOCAL_PROPERTIES = new ClassPathResource[]{
+            new ClassPathResource("example-local.properties"),
+            new ClassPathResource("META-INF/properties/global.properties"),
+            new ClassPathResource("META-INF/properties/global-local.properties"),
     };
     private static final Resource[] TEST_PROPERTIES = new ClassPathResource[]{
             new ClassPathResource("example-test.properties"),
+            new ClassPathResource("META-INF/properties/global.properties"),
+            new ClassPathResource("META-INF/properties/global-test.properties"),
+    };
+    private static final Resource[] STAGING_PROPERTIES = new ClassPathResource[]{
+            new ClassPathResource("example-staging.properties"),
+            new ClassPathResource("META-INF/properties/global.properties"),
+            new ClassPathResource("META-INF/properties/global-staging.properties"),
     };
     private static final Resource[] PROD_PROPERTIES = new ClassPathResource[]{
             new ClassPathResource("example-prod.properties"),
+            new ClassPathResource("META-INF/properties/global.properties"),
+            new ClassPathResource("META-INF/properties/global-prod.properties"),
     };
 
     @Profile("local")
@@ -62,6 +75,16 @@ public class PropertySourcesConfig {
         public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
             PropertySourcesPlaceholderConfigurer pspc = new PropertySourcesPlaceholderConfigurer();
             pspc.setLocations(PROD_PROPERTIES);
+            return pspc;
+        }
+    }
+
+    @Profile("staging")
+    public static class StagingConfig {
+        @Bean
+        public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
+            PropertySourcesPlaceholderConfigurer pspc = new PropertySourcesPlaceholderConfigurer();
+            pspc.setLocations(STAGING_PROPERTIES);
             return pspc;
         }
     }

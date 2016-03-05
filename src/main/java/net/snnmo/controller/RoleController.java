@@ -32,7 +32,7 @@ public class RoleController extends BaseController {
 
     @PostConstruct
     public void init() {
-        String userName = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
+        String userName = this.getCurrentUserName();
         UserEntity user = userDao.findByName(userName);
 
         if (!userDao.hasAnyRole(user
@@ -78,9 +78,8 @@ public class RoleController extends BaseController {
         // --data '{"roles": ["ROLE_VIP", "ROLE_SUPER_VIP"]}'
         // http://192.168.88.142:8080/roles/402880e85240805501524080dbc60000/add
 
-        ApiResult result = new ApiResult();
-
-        ArrayList<String> listOfRoles = (ArrayList<String>)commandBean.get("roles");
+        ApiResult result                = new ApiResult();
+        ArrayList<String> listOfRoles   = (ArrayList<String>)commandBean.get("roles");
 
         if (listOfRoles == null || listOfRoles.size() == 0) {
             result.setMessage("roles empty");
@@ -89,6 +88,7 @@ public class RoleController extends BaseController {
             try {
                 userDao.addRoles(userid, listOfRoles.toArray(new String[listOfRoles.size()]));
             } catch (Exception e) {
+                System.out.println("5555:" + e.getMessage());
                 result.setMessage(e.getMessage());
                 result.setStatus(HttpStatus.BAD_REQUEST);
             }

@@ -28,6 +28,7 @@ public class AddrDaoImpl implements IAddrDAO {
     @Transactional
     public AddressEntity add(UserEntity user, AddressEntity addr) {
         addr.setUser(user);
+        addr.setDefaults(this.userAddrList(user.getId()).size() == 0);
         this.sessionFactory.getCurrentSession().save(addr);
         return addr;
     }

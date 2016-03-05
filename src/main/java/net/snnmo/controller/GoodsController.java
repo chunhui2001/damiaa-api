@@ -49,15 +49,6 @@ public class GoodsController extends BaseController {
         this.goodsDao = goodsDao;
     }
 
-//    @PostConstruct
-//    public void init() {
-//        String userName = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
-//        UserEntity user = userDao.findByName(userName);
-//
-////        if (user.getRoles().indexOf("ROLE_ADMIN") == -1) {
-////            throw new OAuth2Exception("permission deny for manager roles");
-////        }
-//    }
 
     @RequestMapping(value={"/", "index"},
             method = {RequestMethod.GET})
@@ -104,12 +95,7 @@ public class GoodsController extends BaseController {
             curl -v -X POST -H "Accept: application/json"
             -H "Content-Type: application/json"
             -H "Authorization: Bearer 812d866f-de27-478b-90c8-b1e2a5ebef16"
-            --data '{"name":"AA精米 2015新米上市 精米现磨",
-                     "htmlName": "AA精米 2015新米上市<br />精米现磨",
-                     "unit": "袋", "marketPrice": 136.00, "tradePrice": 136.00,
-                     "vipPrice": 136.00, "superVIPPrice": 92.00,
-                     "place": "黑龙江省绥化市双河镇",
-                     "weight":"20kg" }'
+            --data '{"name":"AA精米 2015新米上市 精米现磨", "htmlName": "AA精米 2015新米上市<br />精米现磨", "unit": "袋", "marketPrice": 136.00, "tradePrice": 136.00, "vipPrice": 136.00, "superVIPPrice": 92.00, "place": "黑龙江省绥化市双河镇", "weight":"20kg" }'
             http://127.0.0.1:8088/goods/add
         */
 
