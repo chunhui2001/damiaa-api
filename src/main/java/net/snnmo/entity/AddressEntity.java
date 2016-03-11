@@ -4,13 +4,14 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 /**
  * Created by TTong on 16-1-11.
  */
 @Entity
 @Table(name="USER_ADDR")
-public class AddressEntity {
+public class AddressEntity implements Serializable {
 
     public  AddressEntity() {
 
