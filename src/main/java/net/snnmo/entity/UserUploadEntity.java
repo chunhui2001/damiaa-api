@@ -104,8 +104,8 @@ public class UserUploadEntity implements Serializable {
     public Date getCreatedDate() {
         return createdDate;
     }
-
-    public void setCreatedDate(Date createdDate) {
-        this.createdDate = createdDate;
-    }
+//
+//    public void setCreatedDate(Date createdDate) {
+//        this.createdDate = createdDate;
+//    }
 }
