@@ -85,7 +85,7 @@ public class HomeController extends BaseController {
     @RequestMapping(value={"/", "/index", "/welcome"}, method = RequestMethod.GET)
     public ModelAndView index(HttpServletRequest request) {
         ModelAndView mv = new ModelAndView("home/index");
-        mv.addObject("message", "This is Spring MVC index page~ " + this.message);
+        mv.addObject("message", "Welcome to Spring MVC index page ~ " + this.message);
 
 //        Common.SendSimpleMessage(
 //                "snnmo.com", "key-a5179b50c49cbbea7aedcf1b12165d70"

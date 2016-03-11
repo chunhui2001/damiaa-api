@@ -81,6 +81,15 @@ public class UserEntity implements Serializable {
     @Column(name="GENDER", length=5)
     private String gender;
 
+    @Column(name="OPENID", nullable = true, length=128)
+    private String openId;
+
+    @Column(name="UNIONID", nullable = true, length=128)
+    private String unionId;
+
+    @Column(name="PHOTO", nullable = true, length=625)
+    private String photo;
+
     public String getId() {
         return id;
     }
@@ -171,4 +180,27 @@ public class UserEntity implements Serializable {
         this.gender = gender;
     }
 
+    public String getOpenId() {
+        return openId;
+    }
+
+    public void setOpenId(String openId) {
+        this.openId = openId;
+    }
+
+    public String getUnionId() {
+        return unionId;
+    }
+
+    public void setUnionId(String unionId) {
+        this.unionId = unionId;
+    }
+
+    public String getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(String photo) {
+        this.photo = photo;
+    }
 }
