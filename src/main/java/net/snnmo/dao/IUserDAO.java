@@ -19,4 +19,6 @@ public interface IUserDAO {
     public void removeRoles(String userid, String[] listOfRoles) throws Exception;
     public String resetPassword(String username, String oldPwd, String newPwd) throws Exception;
     public boolean hasAnyRole(UserEntity user, UserRole[] roles);
+
+    public boolean updatePhoto(String openid, String unionid, String photoUri);
 }

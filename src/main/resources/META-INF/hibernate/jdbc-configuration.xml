@@ -99,6 +99,12 @@
     </bean>
 
 
+    <bean id="uploadDaoImpl"
+          class="net.snnmo.dao.UploadDaoImpl">
+        <constructor-arg>
+            <ref bean="sessionFactory" />
+        </constructor-arg>
+    </bean>
 
 
     <bean id="homeController" class="net.snnmo.controller.HomeController" scope="prototype">
@@ -130,6 +136,11 @@
     <bean id="goodsController" class="net.snnmo.controller.GoodsController" scope="prototype">
         <property name="userDao" ref="userDaoImpl" />
         <property name="goodsDao" ref="goodsDaoImpl" />
+    </bean>
+
+
+    <bean id="uploadController" class="net.snnmo.controller.UploadController" scope="prototype">
+        <property name="uploadDao" ref="uploadDaoImpl" />
     </bean>
 
 </beans>

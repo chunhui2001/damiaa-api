@@ -3,6 +3,8 @@ package net.snnmo.dao;
 import net.snnmo.assist.UserRole;
 import net.snnmo.entity.UserEntity;
 import org.hibernate.Criteria;
+import org.hibernate.Query;
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -180,5 +182,21 @@ public class UserDaoImpl implements IUserDAO {
 
 
         return false;
+    }
+
+    @Override
+    @Transactional
+    public boolean updatePhoto(String openid, String unionid, String photoUri) {
+
+        Session session = this.sessionFactory.getCurrentSession();
+
+        Query query = session.createQuery("update UserEntity set photo=:photo where openId=:openid and unionId=:unionid");
+
+        query.setParameter("photo", photoUri);
+        query.setParameter("openid", openid);
+        query.setParameter("unionid", unionid);
+
+
+        return query.executeUpdate() > 0;
     }
 }
