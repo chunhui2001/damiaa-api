@@ -4,8 +4,10 @@ import net.snnmo.assist.ApiResult;
 import net.snnmo.dao.IUploadDAO;
 import net.snnmo.dao.IUserDAO;
 import net.snnmo.entity.UserUploadEntity;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.oauth2.common.exceptions.OAuth2Exception;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,6 +27,9 @@ import java.util.Map;
 @Controller
 @RequestMapping(value = {"/upload"})
 public class UploadController extends BaseController {
+
+    @Value("${customer.token}")
+    private String _CUSTOMER_TOKEN;
 
     private IUploadDAO uploadDao;
     private IUserDAO userDao;
@@ -58,6 +63,12 @@ public class UploadController extends BaseController {
         String uploadType   = (String)params.get("uploadType");
         String unionid      = (String)params.get("unionid");
         String openid       = (String)params.get("openid");
+        String customerToken       = (String)params.get("customerToken");
+
+        if (!customerToken.equals(_CUSTOMER_TOKEN)) {
+            throw new OAuth2Exception("permission deny for upload operation!");
+        }
+
 
         ApiResult result = new ApiResult();
 

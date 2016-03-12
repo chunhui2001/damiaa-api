@@ -141,6 +141,7 @@
 
     <bean id="uploadController" class="net.snnmo.controller.UploadController" scope="prototype">
         <property name="uploadDao" ref="uploadDaoImpl" />
+        <property name="userDao" ref="userDaoImpl" />
     </bean>
 
 </beans>
