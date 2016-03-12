@@ -88,7 +88,13 @@ public class HomeController extends BaseController {
         // sudo timedatectl set-timezone Asia/Shanghai
 
         ModelAndView mv = new ModelAndView("home/index");
-        mv.addObject("message", "Welcome to Spring MVC index page ~ " + this.message);
+
+
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:sss");
+
+        mv.addObject("message", "Welcome to Spring MVC index page ~ "
+                + this.message
+                + "<br />" + "<span style='color:red;'>Publish at: <b>" + format.format(new Date()) + "</b></span>");
 
 //        Common.SendSimpleMessage(
 //                "snnmo.com", "key-a5179b50c49cbbea7aedcf1b12165d70"

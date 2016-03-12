@@ -14,6 +14,7 @@ import org.apache.commons.beanutils.PropertyUtils;
 import org.springframework.cglib.core.CollectionUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.oauth2.common.exceptions.OAuth2Exception;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -239,13 +240,24 @@ public class OrderController extends BaseController {
 
         if (request.getMethod().toLowerCase().equals("put")) {
             try {
+
                 if (((String)params.get("action")).equals("updateStatus")) {
                     OrderStatus status = OrderStatus.valueOf ((String)params.get("status"));
                     order.setStatus(status);
 
                     orderDao.addEvent(status, order, null);
                     orderDao.update(order);
+                } else if (((String)params.get("action")).equals("updatePrePayId")) {
+                    String prePayId     = (String)params.get("prepay_id");
+                    order.setPrePayId(prePayId);
+
+                    orderDao.update(order);
+                } else {
+                    throw new OAuth2Exception(
+                            "please provide a param in request body name is: 'action'" +
+                                    ", and value in ['updateStatus', 'updatePrePayId']" );
                 }
+
             } catch (Exception e) {
                 result.setStatus(HttpStatus.BAD_REQUEST);
                 result.setMessage(e.getMessage());

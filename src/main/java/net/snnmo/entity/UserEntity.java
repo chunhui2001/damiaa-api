@@ -81,10 +81,10 @@ public class UserEntity implements Serializable {
     @Column(name="GENDER", length=5)
     private String gender;
 
-    @Column(name="OPENID", nullable = true, length=128)
+    @Column(name="OPENID", nullable = true, length=50)
     private String openId;
 
-    @Column(name="UNIONID", nullable = true, length=128)
+    @Column(name="UNIONID", nullable = true, length=50)
     private String unionId;
 
     @Column(name="PHOTO", nullable = true, length=625)

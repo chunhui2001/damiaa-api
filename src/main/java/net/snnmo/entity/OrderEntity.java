@@ -43,6 +43,12 @@ public class OrderEntity implements Serializable {
     @Column(name="USER_ID", nullable = false, length=100)
     private String userId;
 
+    @Column(name="PREPAY_ID", nullable = true, length=50)
+    private String prePayId;
+
+    @Column(name="OPENID", nullable = true, length=50)
+    private String openId;
+
     @Column(name="ITEM_MONEY", nullable = false)
     private double itemMoney;       // 商品总金额
 
@@ -116,6 +122,22 @@ public class OrderEntity implements Serializable {
 
     public String getUserId() {
         return userId;
+    }
+
+    public String getOpenId() {
+        return openId;
+    }
+
+    public void setOpenId(String openId) {
+        this.openId = openId;
+    }
+
+    public String getPrePayId() {
+        return prePayId;
+    }
+
+    public void setPrePayId(String prePayId) {
+        this.prePayId = prePayId;
     }
 
     public void setUserId(String userId) {

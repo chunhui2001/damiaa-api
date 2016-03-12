@@ -152,6 +152,7 @@ public class OrderDaoImpl implements IOrderDAO {
         order.setFreightMoney(freightMoney);             // 运费
         order.setItemMoney(itemMoney);                   // 商品总金额
         order.setOrderMoney(orderMoney);                 // 订单总金额
+        order.setOpenId(user.getOpenId());
 
         order.setListOfItems(listOfOrderItems);
 
