@@ -5,7 +5,9 @@ import net.snnmo.assist.OrderStatus;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 
 /**
  * Created by cc on 16/2/27.
@@ -33,7 +35,7 @@ public class OrderEventEntity implements Serializable {
 
     @Column(name="EVENT_TIME", nullable = false)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy年MM月dd日 HH点mm分", timezone="GMT+8")
-    private Date eventTime = new Date();
+    private Date eventTime = Calendar.getInstance(TimeZone.getDefault()).getTime();
 
     @Column(name="EVENT_MESSAGE", nullable = false, length=1024)
     private String message;

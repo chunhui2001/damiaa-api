@@ -84,6 +84,9 @@ public class HomeController extends BaseController {
 
     @RequestMapping(value={"/", "/index", "/welcome"}, method = RequestMethod.GET)
     public ModelAndView index(HttpServletRequest request) {
+
+        // sudo timedatectl set-timezone Asia/Shanghai
+
         ModelAndView mv = new ModelAndView("home/index");
         mv.addObject("message", "This is Spring MVC index page~ " + this.message);
 

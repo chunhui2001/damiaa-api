@@ -69,7 +69,7 @@ public class UserEntity implements Serializable {
     @Column(name="CREATED_TIME", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
-    private Date createdTime = new Date();
+    private Date createdTime = Calendar.getInstance(TimeZone.getDefault()).getTime();
 
     @Column(name="USER_STATUS", nullable = false, length=15)
     @Enumerated(EnumType.STRING)

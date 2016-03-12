@@ -9,9 +9,7 @@ import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
+import java.util.*;
 
 /**
  * Created by cc on 16/2/14.
@@ -36,7 +34,7 @@ public class OrderEntity implements Serializable {
 
     @Column(name="CREATED_TIME", nullable = false)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy年MM月dd日 HH点mm分", timezone="GMT+8")
-    private Date createTime = new Date();
+    private Date createTime = Calendar.getInstance(TimeZone.getDefault()).getTime();
 
     @Column(name="ORDER_STATUS", nullable = false, length=15)
     @Enumerated(EnumType.STRING)
