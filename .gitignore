@@ -1,3 +1,5 @@
 damiaa-api.iml
 target/
 .idea/
+
+publish*.sh
