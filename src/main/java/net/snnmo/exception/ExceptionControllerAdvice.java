@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class ExceptionControllerAdvice {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResult> exception(Exception e) {
-
+System.out.println(e);
         ApiResult result = new ApiResult();
 
         String message = e.getCause() == null ? e.getMessage() : e.getCause().getMessage();

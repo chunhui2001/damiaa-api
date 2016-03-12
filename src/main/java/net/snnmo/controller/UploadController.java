@@ -58,14 +58,14 @@ public class UploadController extends BaseController {
     public ResponseEntity<ApiResult> index(
             @RequestBody Map<String, Object> params, HttpServletRequest request) throws IOException {
 
-        String uri          = (String)params.get("uri");
-        //byte[] content      = (byte[])params.get("content");
-        String uploadType   = (String)params.get("uploadType");
-        String unionid      = (String)params.get("unionid");
-        String openid       = (String)params.get("openid");
-        String customerToken       = (String)params.get("customerToken");
+        String uri                  = (String)params.get("uri");
+        //byte[] content            = (byte[])params.get("content");
+        String uploadType           = (String)params.get("uploadType");
+        String unionid              = (String)params.get("unionid");
+        String openid               = (String)params.get("openid");
+        String customerToken        = (String)params.get("customerToken");
 
-        if (!customerToken.equals(_CUSTOMER_TOKEN)) {
+        if (customerToken == null || !customerToken.equals(_CUSTOMER_TOKEN)) {
             throw new OAuth2Exception("permission deny for upload operation!");
         }
 

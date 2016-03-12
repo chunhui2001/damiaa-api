@@ -190,11 +190,16 @@ public class UserDaoImpl implements IUserDAO {
 
         Session session = this.sessionFactory.getCurrentSession();
 
-        Query query = session.createQuery("update UserEntity set photo=:photo where openId=:openid and unionId=:unionid");
+        Query query = session.createQuery(
+                "update UserEntity set photo=:photo " +
+                        "where openId=:openid" +
+                        ((unionid != null && !unionid.isEmpty()) ? " and unionId=:unionid" : ""));
 
         query.setParameter("photo", photoUri);
         query.setParameter("openid", openid);
-        query.setParameter("unionid", unionid);
+
+        if (unionid != null && !unionid.isEmpty())
+            query.setParameter("unionid", unionid);
 
 
         return query.executeUpdate() > 0;
