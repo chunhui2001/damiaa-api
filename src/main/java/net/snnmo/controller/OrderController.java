@@ -225,7 +225,7 @@ public class OrderController extends BaseController {
     }
 
 
-    @RequestMapping(value={"/{orderid}", "index"},
+    @RequestMapping(value={"/{orderid}"},
             method = {RequestMethod.PUT, RequestMethod.DELETE},
             headers="Accept=application/json",
             produces = { "application/json" })
@@ -277,7 +277,7 @@ public class OrderController extends BaseController {
     }
 
 
-    @RequestMapping(value={"/{orderid}", "index"},
+    @RequestMapping(value={"/{orderid}"},
             method = {RequestMethod.GET},
             headers="Accept=application/json",
             produces = { "application/json" })
@@ -294,5 +294,26 @@ public class OrderController extends BaseController {
         result.setData(orderDetail);
 
         return new ResponseEntity<ApiResult>(result, HttpStatus.OK);
+    }
+
+
+    // 验证订单是否存在
+    @RequestMapping(value={"/{openid}/{prepayid}/"},
+            method = {RequestMethod.GET},
+            headers="Accept=application/json",
+            produces = { "application/json" })
+    public ResponseEntity<ApiResult> index(
+                      @PathVariable("prepayid") String preparid
+                    , @PathVariable("openid") String openid) {
+        ApiResult result = new ApiResult();
+
+        UserEntity user = userDao.findByName(this.getCurrentUserName());
+
+        boolean isExists    = orderDao.exists(user.getId(), openid, preparid);
+
+        result.setData(isExists);
+        result.serError(!isExists);
+
+        return new ResponseEntity<ApiResult>(result, isExists ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
     }
 }

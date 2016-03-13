@@ -129,6 +129,18 @@ public class HomeController extends BaseController {
         return new ResponseEntity<ApiResult>(result, HttpStatus.OK);
     }
 
+
+    @RequestMapping(value="/openid/", method = RequestMethod.GET)
+    public ResponseEntity<ApiResult> openid() {
+        ApiResult result = new ApiResult();
+
+        UserEntity user = userDao.findByName(this.getCurrentUserName());
+
+        result.setData(user.getOpenId());
+
+        return new ResponseEntity<ApiResult>(result, HttpStatus.OK);
+    }
+
     @RequestMapping(value="/statistic", method = RequestMethod.GET)
     public ResponseEntity<ApiResult> statistic() {
         ApiResult result = new ApiResult();

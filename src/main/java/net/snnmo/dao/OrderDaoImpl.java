@@ -243,4 +243,21 @@ public class OrderDaoImpl implements IOrderDAO {
 
         return query.list();
     }
+
+    @Override
+    @Transactional
+    public boolean exists(String userid, String openid, String prepayid) {
+
+        Session session = this.sessionFactory.getCurrentSession();
+
+        Query query = session.createQuery(
+                "from OrderEntity where openId=:openid"
+                        + " and userId=:userid and prePayId=:prepayid");
+
+        query.setParameter("openid", openid);
+        query.setParameter("userid", userid);
+        query.setParameter("prepayid", prepayid);
+
+        return query.uniqueResult() != null;
+    }
 }
