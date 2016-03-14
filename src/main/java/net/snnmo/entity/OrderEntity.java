@@ -88,6 +88,20 @@ public class OrderEntity implements Serializable {
     @Column(name="LAST_EVENT", nullable = false, length=1024)
     private String lastEvent;
 
+    @Column(name="PAYMENT_INFO", nullable = true, length=2048)
+    private String paymentInfo;
+
+
+
+
+    public String getPaymentInfo() {
+        return paymentInfo;
+    }
+
+    public void setPaymentInfo(String paymentInfo) {
+        this.paymentInfo = paymentInfo;
+    }
+
     public String getLastEvent() {
         return lastEvent;
     }

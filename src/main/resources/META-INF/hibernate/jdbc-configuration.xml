@@ -144,4 +144,9 @@
         <property name="userDao" ref="userDaoImpl" />
     </bean>
 
+
+
+    <bean id="commonController" class="net.snnmo.controller.CommonController" scope="prototype">
+        <property name="orderDao" ref="orderDaoImpl" />
+    </bean>
 </beans>

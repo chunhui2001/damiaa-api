@@ -16,6 +16,11 @@ public interface IOrderDAO {
 
     public void update(OrderEntity order);
 
+
+    public OrderEntity updateStatus(String orderid, UserEntity user, OrderStatus status) ;
+
+    public int paymentCompleted(String orderid, String userid, String openid, String paymentInfo);
+
     public Collection<OrderEntity> list(String userid);
 
     public long count(String userid);

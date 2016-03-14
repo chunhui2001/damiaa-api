@@ -157,13 +157,14 @@ public class OrderDaoImpl implements IOrderDAO {
         order.setListOfItems(listOfOrderItems);
 
 
-        this.addEvent(OrderStatus.CREATE, order, null);
+        this.addEvent(OrderStatus.PENDING, order, null);
         this.sessionFactory.getCurrentSession().save(order);
 
         return order;
     }
 
 
+    @Deprecated
     @Override
     @Transactional
     public void update(OrderEntity order) {
@@ -171,6 +172,47 @@ public class OrderDaoImpl implements IOrderDAO {
     }
 
     @Override
+    @Transactional
+    public OrderEntity updateStatus(String orderid, UserEntity user, OrderStatus status) {
+        OrderEntity order = this.get(orderid, user);
+        order.setStatus(status);
+        this.addEvent(status, order, null);
+        this.sessionFactory.getCurrentSession().update(order);
+        return order;
+    }
+
+    @Override
+    @Transactional
+    // 如果更新返回的结果等于1: 则更新成功,
+    // 如果等于0: 说明已经更新过, 本次通知属于重复通知,
+    // 如果返回3: 说明该订单不存在
+    public int paymentCompleted(String orderid, String userid, String openid, String paymentInfo) {
+
+        Session session = this.sessionFactory.getCurrentSession();
+
+        Query query = session.createQuery(
+                    "from OrderEntity where id=:orderid and userId=:userid and openId=:openid");
+
+        query.setParameter("orderid", orderid);
+        query.setParameter("userid", userid);
+        query.setParameter("openid", openid);
+
+        if (query.uniqueResult() == null) return 3;
+
+        Query query2 = session.createQuery(
+                    "update OrderEntity set status=:cashedStatus, paymentInfo=:paymentInfo" +
+                            " where id=:orderid and status=:pendingStatus");
+
+        query2.setParameter("cashedStatus", OrderStatus.CASHED);
+        query2.setParameter("orderid", orderid);
+        query2.setParameter("pendingStatus", OrderStatus.PENDING);
+        query2.setParameter("paymentInfo", paymentInfo);
+
+        return query2.executeUpdate();
+    }
+
+    @Override
+    @Transactional
     public void addEvent(OrderStatus eventType, OrderEntity order, String message) {
 
         OrderEventEntity eventEntity = new OrderEventEntity();
@@ -183,7 +225,7 @@ public class OrderDaoImpl implements IOrderDAO {
         SimpleDateFormat format = new SimpleDateFormat("yyyy年MM月dd日 HH点mm分");
 
         //OrderStatus
-        if (OrderStatus.CREATE == eventType)
+        if (OrderStatus.PENDING == eventType)
             eventEntity.setMessage("该订单创建于 " + format.format(order.getCreateTime()));
 
         if (OrderStatus.CANCEL == eventType)
@@ -195,7 +237,7 @@ public class OrderDaoImpl implements IOrderDAO {
         if (OrderStatus.INFO == eventType)
             eventEntity.setMessage(message);
 
-        if (OrderStatus.PAYMENT == eventType)
+        if (OrderStatus.CASHED == eventType)
             eventEntity.setMessage("该订单于 " + format.format(order.getCreateTime()) + " 完成支付");
 
         if (OrderStatus.SENDED == eventType)

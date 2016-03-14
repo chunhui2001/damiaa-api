@@ -242,11 +242,11 @@ public class OrderController extends BaseController {
             try {
 
                 if (((String)params.get("action")).equals("updateStatus")) {
-                    OrderStatus status = OrderStatus.valueOf ((String)params.get("status"));
-                    order.setStatus(status);
-
-                    orderDao.addEvent(status, order, null);
-                    orderDao.update(order);
+                    order = orderDao.updateStatus(orderId, user
+                            , OrderStatus.valueOf ((String)params.get("status")));
+//                    order.setStatus(status);//
+//                    orderDao.addEvent(status, order, null);
+//                    orderDao.update(order);
                 } else if (((String)params.get("action")).equals("updatePrePayId")) {
                     String prePayId     = (String)params.get("prepay_id");
                     order.setPrePayId(prePayId);
