@@ -7,6 +7,7 @@ import net.snnmo.entity.*;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Order;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.text.SimpleDateFormat;
@@ -207,6 +208,9 @@ public class OrderDaoImpl implements IOrderDAO {
         query2.setParameter("orderid", orderid);
         query2.setParameter("pendingStatus", OrderStatus.PENDING);
         query2.setParameter("paymentInfo", paymentInfo);
+
+
+        this.updateStatus(orderid, this.userDao.get(userid), OrderStatus.CASHED);
 
         return query2.executeUpdate();
     }
