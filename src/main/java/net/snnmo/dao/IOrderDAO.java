@@ -27,9 +27,12 @@ public interface IOrderDAO {
 
     public OrderEntity get(String orderid, UserEntity user);
 
+    public OrderEntity get(String orderid, String userid);
+
     public Collection<OrderItemsEntity> items(String orderid);
 
-    public void addEvent(OrderStatus eventType, OrderEntity order, String message);
+    public OrderEventEntity addEvent(OrderStatus eventType, OrderEntity order, String message);
+
 
     public boolean exists(String userid, String openid, String prepayid);
 }

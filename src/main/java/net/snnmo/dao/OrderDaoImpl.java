@@ -191,6 +191,7 @@ public class OrderDaoImpl implements IOrderDAO {
 
         Session session = this.sessionFactory.getCurrentSession();
 
+
         Query query = session.createQuery(
                     "from OrderEntity where id=:orderid and userId=:userid and openId=:openid");
 
@@ -200,24 +201,36 @@ public class OrderDaoImpl implements IOrderDAO {
 
         if (query.uniqueResult() == null) return 3;
 
+        OrderEventEntity event = this.addEvent(OrderStatus.CASHED, this.get(orderid, userid), null);
+
         Query query2 = session.createQuery(
-                    "update OrderEntity set status=:cashedStatus, paymentInfo=:paymentInfo" +
+                    "update OrderEntity " +
+                            "set status=:cashedStatus, lastEvent=:lastEvent" +
+                            ", paymentInfo=:paymentInfo" +
                             " where id=:orderid and status=:pendingStatus");
 
         query2.setParameter("cashedStatus", OrderStatus.CASHED);
         query2.setParameter("orderid", orderid);
         query2.setParameter("pendingStatus", OrderStatus.PENDING);
         query2.setParameter("paymentInfo", paymentInfo);
+        query2.setParameter("lastEvent", event.getMessage());
+
+System.out.println(paymentInfo);
 
 
-        this.updateStatus(orderid, this.userDao.get(userid), OrderStatus.CASHED);
+        System.out.println(event.getMessage());
+        //
+        int affectRowsCount     = query2.executeUpdate();
 
-        return query2.executeUpdate();
+
+
+        System.out.println(affectRowsCount);
+        return affectRowsCount;
     }
 
     @Override
     @Transactional
-    public void addEvent(OrderStatus eventType, OrderEntity order, String message) {
+    public OrderEventEntity addEvent(OrderStatus eventType, OrderEntity order, String message) {
 
         OrderEventEntity eventEntity = new OrderEventEntity();
 
@@ -256,6 +269,8 @@ public class OrderDaoImpl implements IOrderDAO {
         orderEventDao.addEvent(eventEntity);
 
         order.setLastEvent(eventEntity.getMessage());
+
+        return eventEntity;
     }
 
     @Override
@@ -273,6 +288,24 @@ public class OrderDaoImpl implements IOrderDAO {
         query.setParameter("orderid", orderid);
 
         if (!isAdmin) query.setParameter("userid", user.getId());
+
+        return (OrderEntity)query.uniqueResult();
+    }
+
+
+    @Override
+    @Transactional
+    public OrderEntity get(String orderid, String userid) {
+
+        Session session = this.sessionFactory.getCurrentSession();
+
+        Query query = session.createQuery(
+                "from OrderEntity where id=:orderid"
+                        + " and userId=:userid");
+
+        query.setParameter("orderid", orderid);
+
+        query.setParameter("userid", userid);
 
         return (OrderEntity)query.uniqueResult();
     }
