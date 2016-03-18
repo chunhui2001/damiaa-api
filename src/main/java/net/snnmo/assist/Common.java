@@ -8,6 +8,7 @@ import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
 import com.sun.jersey.core.util.MultivaluedMapImpl;
 
 import javax.ws.rs.core.MediaType;
+import java.util.Date;
 import java.util.UUID;
 
 /**
@@ -95,5 +96,13 @@ public class Common {
 //
 //        Thread thread = new Thread(task);
 //        thread.start();
+    }
+
+
+    public static Date addMinutesToDate(int minutes, Date date){
+        final long ONE_MINUTE_IN_MILLIS = 60000;//millisecs
+
+        long curTimeInMs = date.getTime();
+        return new Date(curTimeInMs + (minutes * ONE_MINUTE_IN_MILLIS));
     }
 }

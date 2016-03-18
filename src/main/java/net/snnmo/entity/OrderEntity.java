@@ -89,6 +89,9 @@ public class OrderEntity implements Serializable {
     @Column(name="LAST_EVENT", nullable = false, length=1024)
     private String lastEvent;
 
+    @Column(name="LAST_EVENT_TIME", nullable = true)
+    private Date lastEventTime;
+
     @Column(name="PAYMENT_INFO", nullable = true, length=2048)
     private String paymentInfo;
 
@@ -261,4 +264,14 @@ public class OrderEntity implements Serializable {
     public void setDeliveryCompany(DeliveryCompany deliveryCompany) {
         this.deliveryCompany = deliveryCompany;
     }
+
+
+    public Date getLastEventTime() {
+        return lastEventTime;
+    }
+
+    public void setLastEventTime(Date lastEventTime) {
+        this.lastEventTime = lastEventTime;
+    }
+
 }

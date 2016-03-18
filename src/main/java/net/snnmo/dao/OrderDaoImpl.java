@@ -1,14 +1,12 @@
 package net.snnmo.dao;
 
-import net.snnmo.assist.DeliverySupport;
-import net.snnmo.assist.OrderStatus;
-import net.snnmo.assist.PayMethod;
-import net.snnmo.assist.UserRole;
+import net.snnmo.assist.*;
 import net.snnmo.entity.*;
 import net.snnmo.exception.DbException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.hibernate.criterion.Order;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -160,7 +158,7 @@ public class OrderDaoImpl implements IOrderDAO {
         order.setListOfItems(listOfOrderItems);
 
 
-        this.addEvent(OrderStatus.PENDING, order, null);
+        this.addEvent(OrderStatus.PENDING, order, null, null);
         this.sessionFactory.getCurrentSession().save(order);
 
         return order;
@@ -179,7 +177,7 @@ public class OrderDaoImpl implements IOrderDAO {
     public OrderEntity updateStatus(String orderid, UserEntity user, OrderStatus status) throws DbException {
         OrderEntity order = this.get(orderid, user);
         order.setStatus(status);
-        this.addEvent(status, order, null);
+        this.addEvent(status, order, null, null);
         this.sessionFactory.getCurrentSession().update(order);
         return order;
     }
@@ -204,11 +202,12 @@ public class OrderDaoImpl implements IOrderDAO {
 
         if (query.uniqueResult() == null) return 3;
 
-        OrderEventEntity event = this.addEvent(OrderStatus.CASHED, this.get(orderid, userid), null);
+        OrderEventEntity event = this.addEvent(OrderStatus.CASHED, this.get(orderid, userid), null, null);
 
         Query query2 = session.createQuery(
                     "update OrderEntity " +
-                            "set status=:cashedStatus, lastEvent=:lastEvent" +
+                            "set status=:cashedStatus" +
+                            ", lastEventTime=:lastEventTime, lastEvent=:lastEvent" +
                             ", paymentInfo=:paymentInfo" +
                             " where id=:orderid and status=:pendingStatus");
 
@@ -217,6 +216,7 @@ public class OrderDaoImpl implements IOrderDAO {
         query2.setParameter("pendingStatus", OrderStatus.PENDING);
         query2.setParameter("paymentInfo", paymentInfo);
         query2.setParameter("lastEvent", event.getMessage());
+        query2.setParameter("lastEventTime", new Date());
 
         int affectRowsCount     = query2.executeUpdate();
 
@@ -225,7 +225,7 @@ public class OrderDaoImpl implements IOrderDAO {
 
     @Override
     @Transactional
-    public OrderEventEntity addEvent(OrderStatus eventType, OrderEntity order, String message) throws DbException {
+    public OrderEventEntity addEvent(OrderStatus eventType, OrderEntity order, String message, Date eventTime) throws DbException {
 
         Date now                        = new Date();
         OrderEventEntity eventEntity    = new OrderEventEntity();
@@ -253,9 +253,18 @@ public class OrderDaoImpl implements IOrderDAO {
         if (OrderStatus.CASHED == eventType)
             eventEntity.setMessage("该订单于 " + format.format(now) + " 完成支付");
 
-        if (OrderStatus.SENDED == eventType)
+        if (OrderStatus.SENDED == eventType) {
+            Date date = orderEventDao.getPaymentTime(order.getId());
+
+            if (date != null) {
+                // 付款后　60　分钟发货
+                now = Common.addMinutesToDate(60, date);
+            }
+
             eventEntity.setMessage("您的订单已于 " + format.format(now) + " 交付 "
                     + DeliverySupport.getDeliveryName(order.getDeliveryCompany()).toString());
+        }
+
 
         if (OrderStatus.SIGNED == eventType)
             eventEntity.setMessage("该订单于 " + format.format(now)
@@ -266,6 +275,7 @@ public class OrderDaoImpl implements IOrderDAO {
         orderEventDao.addEvent(eventEntity);
 
         order.setLastEvent(eventEntity.getMessage());
+        order.setLastEventTime(now);
 
         return eventEntity;
     }
@@ -335,5 +345,55 @@ public class OrderDaoImpl implements IOrderDAO {
         query.setParameter("prepayid", prepayid);
 
         return query.uniqueResult() != null;
+    }
+
+    @Override
+    @Transactional
+    public Collection<OrderEntity> get(OrderStatus status) {
+
+        Session session = this.sessionFactory.getCurrentSession();
+        Query query = session.createQuery(
+                "from OrderEntity where status=:status");
+
+        query.setParameter("status", status);
+
+        return query.list();
+    }
+
+    @Override
+    public OrderEntity addEvents(OrderEntity order, Collection<OrderEventEntity> eventList) {
+        if (eventList == null || eventList.size() == 0) return null;
+
+        Collection<OrderEventEntity> newEventList = new ArrayList<>();
+
+        for (OrderEventEntity event : eventList) {
+            if (event.getEventTime().after(order.getLastEventTime()))
+                newEventList.add(event);
+        }
+
+        if (newEventList.size() == 0) return null;
+
+
+        Session session         = this.sessionFactory.openSession();
+        Transaction tx          = session.beginTransaction();
+        OrderEventEntity last   = null;
+
+        for (OrderEventEntity event : newEventList) {
+            orderEventDao.addEvent(event);
+            last = event;
+
+            session.flush();
+            session.clear();
+        }
+
+        tx.commit();
+        session.close();
+
+        if (last != null) {
+            order.setLastEvent(last.getMessage());
+            order.setLastEventTime(last.getEventTime());
+        }
+
+        return order;
     }
 }

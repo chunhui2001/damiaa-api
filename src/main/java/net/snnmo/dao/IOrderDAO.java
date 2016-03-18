@@ -6,6 +6,7 @@ import net.snnmo.entity.*;
 import net.snnmo.exception.DbException;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -32,8 +33,11 @@ public interface IOrderDAO {
 
     public Collection<OrderItemsEntity> items(String orderid);
 
-    public OrderEventEntity addEvent(OrderStatus eventType, OrderEntity order, String message) throws DbException;
-
+    public OrderEventEntity addEvent(OrderStatus eventType, OrderEntity order, String message, Date eventTime) throws DbException;
 
     public boolean exists(String userid, String openid, String prepayid);
+
+    public Collection<OrderEntity> get(OrderStatus status);
+
+    public OrderEntity addEvents(OrderEntity order, Collection<OrderEventEntity> eventList) ;
 }

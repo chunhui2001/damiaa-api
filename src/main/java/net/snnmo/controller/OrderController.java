@@ -267,7 +267,7 @@ public class OrderController extends BaseController {
         if (request.getMethod().toLowerCase().equals("delete")) {
             order.setStatus(OrderStatus.DELETED);
 
-            orderDao.addEvent(OrderStatus.DELETED, order, null);
+            orderDao.addEvent(OrderStatus.DELETED, order, null, null);
             orderDao.update(order);
         }
 

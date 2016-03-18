@@ -29,6 +29,8 @@
     <sec:http pattern="/payment-completed" security="none"/>
     <sec:http pattern="/flush-order/" security="none"/>
     <sec:http pattern="/flush-order" security="none"/>
+    <sec:http pattern="/orderlist/**" security="none"/>
+    <sec:http pattern="/push-events/**" security="none"/>
     <sec:http pattern="/" security="none"/>
 
 
