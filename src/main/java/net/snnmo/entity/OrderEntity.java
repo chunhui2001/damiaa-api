@@ -1,6 +1,7 @@
 package net.snnmo.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import net.snnmo.assist.DeliveryCompany;
 import net.snnmo.assist.OrderStatus;
 import net.snnmo.assist.PayMethod;
 import org.hibernate.annotations.GenericGenerator;
@@ -91,8 +92,12 @@ public class OrderEntity implements Serializable {
     @Column(name="PAYMENT_INFO", nullable = true, length=2048)
     private String paymentInfo;
 
+    @Column(name="DELIVERY_COMPANY", nullable = true, length=25)
+    @Enumerated(EnumType.STRING)
+    private DeliveryCompany deliveryCompany;
 
-
+    @Column(name="DELIVERY_NO", nullable = true, length=25)
+    private String deliveryNo;
 
     public String getPaymentInfo() {
         return paymentInfo;
@@ -237,5 +242,23 @@ public class OrderEntity implements Serializable {
 
     public void setListOfEvents(Collection<OrderEventEntity> listOfEvents) {
         this.listOfEvents = listOfEvents;
+    }
+
+
+
+    public String getDeliveryNo() {
+        return deliveryNo;
+    }
+
+    public void setDeliveryNo(String deliveryNo) {
+        this.deliveryNo = deliveryNo;
+    }
+
+    public DeliveryCompany getDeliveryCompany() {
+        return deliveryCompany;
+    }
+
+    public void setDeliveryCompany(DeliveryCompany deliveryCompany) {
+        this.deliveryCompany = deliveryCompany;
     }
 }

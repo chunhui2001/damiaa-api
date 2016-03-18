@@ -1,9 +1,11 @@
 package net.snnmo.dao;
 
+import net.snnmo.assist.DeliverySupport;
 import net.snnmo.assist.OrderStatus;
 import net.snnmo.assist.PayMethod;
 import net.snnmo.assist.UserRole;
 import net.snnmo.entity.*;
+import net.snnmo.exception.DbException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -79,7 +81,7 @@ public class OrderDaoImpl implements IOrderDAO {
     @Override
     @Transactional
     public OrderEntity create(UserEntity user, PayMethod payMethod, AddressEntity addr
-            , Map<GoodsEntity, Integer> goodsList) {
+            , Map<GoodsEntity, Integer> goodsList) throws DbException {
 
         OrderEntity order = new OrderEntity();
 
@@ -174,7 +176,7 @@ public class OrderDaoImpl implements IOrderDAO {
 
     @Override
     @Transactional
-    public OrderEntity updateStatus(String orderid, UserEntity user, OrderStatus status) {
+    public OrderEntity updateStatus(String orderid, UserEntity user, OrderStatus status) throws DbException {
         OrderEntity order = this.get(orderid, user);
         order.setStatus(status);
         this.addEvent(status, order, null);
@@ -187,7 +189,8 @@ public class OrderDaoImpl implements IOrderDAO {
     // 如果更新返回的结果等于1: 则更新成功,
     // 如果等于0: 说明已经更新过, 本次通知属于重复通知,
     // 如果返回3: 说明该订单不存在
-    public int paymentCompleted(String orderid, String userid, String openid, String paymentInfo) {
+    public int paymentCompleted(String orderid, String userid, String openid, String paymentInfo)
+            throws DbException {
 
         Session session = this.sessionFactory.getCurrentSession();
 
@@ -215,53 +218,47 @@ public class OrderDaoImpl implements IOrderDAO {
         query2.setParameter("paymentInfo", paymentInfo);
         query2.setParameter("lastEvent", event.getMessage());
 
-System.out.println(paymentInfo);
-
-
-        System.out.println(event.getMessage());
-        //
         int affectRowsCount     = query2.executeUpdate();
 
-
-
-        System.out.println(affectRowsCount);
         return affectRowsCount;
     }
 
     @Override
     @Transactional
-    public OrderEventEntity addEvent(OrderStatus eventType, OrderEntity order, String message) {
+    public OrderEventEntity addEvent(OrderStatus eventType, OrderEntity order, String message) throws DbException {
 
-        OrderEventEntity eventEntity = new OrderEventEntity();
+        Date now                        = new Date();
+        OrderEventEntity eventEntity    = new OrderEventEntity();
+        SimpleDateFormat format         = new SimpleDateFormat("yyyy年MM月dd日 HH点mm分");
 
         eventEntity.setEventTime(new Date());
         eventEntity.setOrder(order);
         eventEntity.setType(eventType);
 
 
-        SimpleDateFormat format = new SimpleDateFormat("yyyy年MM月dd日 HH点mm分");
 
         //OrderStatus
         if (OrderStatus.PENDING == eventType)
             eventEntity.setMessage("该订单创建于 " + format.format(order.getCreateTime()));
 
         if (OrderStatus.CANCEL == eventType)
-            eventEntity.setMessage("该订单于 " + format.format(order.getCreateTime()) + " 被取消");
+            eventEntity.setMessage("该订单于 " + format.format(now) + " 被取消");
 
         if (OrderStatus.DELETED == eventType)
-            eventEntity.setMessage("该订单于 " + format.format(order.getCreateTime()) + " 被删除");
+            eventEntity.setMessage("该订单于 " + format.format(now) + " 被删除");
 
         if (OrderStatus.INFO == eventType)
             eventEntity.setMessage(message);
 
         if (OrderStatus.CASHED == eventType)
-            eventEntity.setMessage("该订单于 " + format.format(order.getCreateTime()) + " 完成支付");
+            eventEntity.setMessage("该订单于 " + format.format(now) + " 完成支付");
 
         if (OrderStatus.SENDED == eventType)
-            eventEntity.setMessage("该订单于 " + format.format(order.getCreateTime()) + " 发货");
+            eventEntity.setMessage("您的订单已于 " + format.format(now) + " 交付 "
+                    + DeliverySupport.getDeliveryName(order.getDeliveryCompany()).toString());
 
         if (OrderStatus.SIGNED == eventType)
-            eventEntity.setMessage("该订单于 " + format.format(order.getCreateTime())
+            eventEntity.setMessage("该订单于 " + format.format(now)
                         + " 由 " + order.getReceiveMan() + " 签收");
 
         if (message != null) eventEntity.setMessage(message);

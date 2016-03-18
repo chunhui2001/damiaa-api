@@ -232,7 +232,7 @@ public class OrderController extends BaseController {
     public ResponseEntity<ApiResult> index(
             @PathVariable("orderid") String orderId
             , @RequestBody Map<String, Object> params
-            , HttpServletRequest request) {
+            , HttpServletRequest request) throws DbException {
         ApiResult result = new ApiResult();
 
         UserEntity user     = userDao.findByName(this.getCurrentUserName());
