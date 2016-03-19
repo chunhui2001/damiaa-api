@@ -174,7 +174,7 @@ public class CommonController extends BaseController {
                 event.setEventTime(df.parse(key));
                 event.setOrder(order);
                 event.setType(OrderStatus.DELIVERY);
-                event.setMessage(value + " ["+key+"]");
+                event.setMessage("[" + key + "] " + value);
 
                 eventList.add(event);
             }
@@ -191,7 +191,7 @@ public class CommonController extends BaseController {
                     if (deliveryStatus == 6)
                         order.setStatus(OrderStatus.SIGNED);
 
-                    orderDao.update(order);
+                    orderDao.update(newOrder);
                     sendResult.setData(newOrder);
 
                 }

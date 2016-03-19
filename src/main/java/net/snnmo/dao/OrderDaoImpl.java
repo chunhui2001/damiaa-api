@@ -367,7 +367,7 @@ public class OrderDaoImpl implements IOrderDAO {
         Collection<OrderEventEntity> newEventList = new ArrayList<>();
 
         for (OrderEventEntity event : eventList) {
-            if (event.getEventTime().after(order.getLastEventTime()))
+            if (order.getLastEventTime() == null || event.getEventTime().after(order.getLastEventTime()))
                 newEventList.add(event);
         }
 

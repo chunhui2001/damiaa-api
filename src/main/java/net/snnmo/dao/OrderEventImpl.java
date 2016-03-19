@@ -45,8 +45,10 @@ public class OrderEventImpl implements IOrderEventDAO {
         Session session = this.sessionFactory.getCurrentSession();
 
         Query query = session.createQuery(
-                "from OrderEventEntity where order.id=:orderid and type=:cashed");
+                "from OrderEventEntity " +
+                        "where order.id=:orderid and type=:cashed order by eventTime desc");
 
+        query.setMaxResults(1);
         query.setParameter("orderid", orderid);
         query.setParameter("cashed", OrderStatus.CASHED);
 
