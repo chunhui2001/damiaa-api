@@ -146,7 +146,7 @@ public class OrderDaoImpl implements IOrderDAO {
 
             //this.sessionFactory.getCurrentSession().save(orderItem);
         }
-
+        freightMoney = 0;
         orderMoney = itemMoney + freightMoney - exemptionMoney;
 
         order.setExemptionMoney(exemptionMoney);         // 减免金额
