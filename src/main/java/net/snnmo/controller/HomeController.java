@@ -2,6 +2,7 @@ package net.snnmo.controller;
 
 import net.snnmo.assist.ApiResult;
 import net.snnmo.assist.Common;
+import net.snnmo.assist.OrderStatus;
 import net.snnmo.assist.UserRole;
 import net.snnmo.dao.IAddrDAO;
 import net.snnmo.dao.IOrderDAO;
@@ -113,16 +114,15 @@ public class HomeController extends BaseController {
 
         UserEntity user = userDao.findByName(this.getCurrentUserName());
 
-        //user.setPasswd(null);
+        Map<String, Object> userInfo = new HashMap<>();
 
-        Map<String, String> userInfo = new HashMap<>();
-
-        long orderCount  = orderDao.count(user.getId());
+        long orderCount     = orderDao.count(user.getId());
+        boolean isAdmin     = userDao.hasAnyRole(user, new UserRole[]{ UserRole.ROLE_ADMIN, UserRole.ROLE_SUPERADMIN });
 
         userInfo.put("name", user.getName());
-        userInfo.put("addressCount", addrDao.userAddrList(user.getId()).size() + "");
-        userInfo.put("orderCount", orderCount > 99 ? "99+" : orderCount+"");
-
+        userInfo.put("isAdmin", isAdmin);
+        //userInfo.put("addressCount", addrDao.userAddrList(user.getId()).size() + "");
+        //userInfo.put("orderCount", orderCount > 99 ? "99+" : orderCount+"");
 
         result.setData(userInfo);
 
@@ -145,14 +145,20 @@ public class HomeController extends BaseController {
     public ResponseEntity<ApiResult> statistic() {
         ApiResult result = new ApiResult();
 
-        UserEntity user = userDao.findByName(this.getCurrentUserName());
+        UserEntity user     = userDao.findByName(this.getCurrentUserName());
+        boolean isAdmin     = userDao.hasAnyRole(user, new UserRole[]{ UserRole.ROLE_ADMIN, UserRole.ROLE_SUPERADMIN });
 
-        Map<String, String> statistic = new HashMap<>();
+
+        Map<String, Object> statistic = new HashMap<>();
 
         long orderCount  = orderDao.count(user.getId());
 
         statistic.put("addressCount", addrDao.userAddrList(user.getId()).size() + "");
         statistic.put("orderCount", orderCount > 99 ? "99+" : orderCount+"");
+
+        if (isAdmin) {
+            statistic.put("orderCount_WaitingSend", orderDao.list(new OrderStatus[]{ OrderStatus.CASHED }).size());
+        }
 
         result.setData(statistic);
 

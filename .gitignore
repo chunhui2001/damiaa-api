@@ -1,5 +1,6 @@
 damiaa-api.iml
 target/
 .idea/
+*.swp
 
 publish*.sh

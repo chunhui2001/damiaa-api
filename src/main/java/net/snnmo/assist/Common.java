@@ -6,10 +6,15 @@ import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
 import com.sun.jersey.core.util.MultivaluedMapImpl;
+import net.snnmo.dao.IOrderDAO;
+import net.snnmo.entity.OrderEntity;
+import org.apache.commons.beanutils.PropertyUtils;
 
 import javax.ws.rs.core.MediaType;
-import java.util.Date;
-import java.util.UUID;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * Created by cc on 16/2/14.
@@ -104,5 +109,65 @@ public class Common {
 
         long curTimeInMs = date.getTime();
         return new Date(curTimeInMs + (minutes * ONE_MINUTE_IN_MILLIS));
+    }
+
+
+
+
+    public static Collection<Map<String, Object>> processOrderList(Collection<OrderEntity> orderList, IOrderDAO orderDao)
+            throws IllegalAccessException{
+
+        Collection<Map<String, Object>> orderListMap = new ArrayList<>();
+
+        for (OrderEntity o : orderList) {
+            Map<String, Object> currentMap  = new HashMap<>();
+            Field[] attributes = o.getClass().getDeclaredFields();
+
+            for (Field f : attributes) {
+
+                try {
+
+                    if (f.getName().toLowerCase().equals("createtime")) {
+                        SimpleDateFormat format = new SimpleDateFormat("yyyy年MM月dd日 HH点mm分");
+                        currentMap.put(f.getName(), format.format(PropertyUtils.getProperty(o, f.getName())));
+                    } else
+                        currentMap.put(f.getName(), PropertyUtils.getProperty(o, f.getName()));
+
+                    if (f.getName().toLowerCase().equals("status")) {
+                        switch (PropertyUtils.getProperty(o, f.getName()).toString().toUpperCase()) {
+                            case "PENDING":
+                                currentMap.put("statusText", "待付款");
+                                break;
+                            case "CANCEL":
+                                currentMap.put("statusText", "已取消");
+                                break;
+                            case "RECEIVED":
+                                currentMap.put("statusText", "已签收");
+                                break;
+                            case "CASHED":
+                                currentMap.put("statusText", "已付款");
+                                break;
+                            case "SENDED":
+                                currentMap.put("statusText", "已发货");
+                                break;
+                            default:
+                                currentMap.put("statusText", PropertyUtils.getProperty(o, f.getName()));
+                        }
+                    }
+
+                } catch (NoSuchMethodException e) {
+
+                } catch (InvocationTargetException e) {
+                    // e.printStackTrace();
+                }
+
+            }
+
+            currentMap.put("listOfItems", orderDao.items(o.getId()));
+
+            orderListMap.add(currentMap);
+        }
+
+        return  orderListMap;
     }
 }

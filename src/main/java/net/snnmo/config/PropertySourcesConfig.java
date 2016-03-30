@@ -14,27 +14,27 @@ import org.springframework.core.io.Resource;
 @Configuration
 public class PropertySourcesConfig {
     private static final Resource[] DEV_PROPERTIES = new ClassPathResource[]{
-            new ClassPathResource("example-dev.properties"),
+//            new ClassPathResource("example-dev.properties"),
             new ClassPathResource("META-INF/properties/global.properties"),
             new ClassPathResource("META-INF/properties/global-dev.properties"),
     };
     private static final Resource[] LOCAL_PROPERTIES = new ClassPathResource[]{
-            new ClassPathResource("example-local.properties"),
+//            new ClassPathResource("example-local.properties"),
             new ClassPathResource("META-INF/properties/global.properties"),
             new ClassPathResource("META-INF/properties/global-local.properties"),
     };
     private static final Resource[] TEST_PROPERTIES = new ClassPathResource[]{
-            new ClassPathResource("example-test.properties"),
+//            new ClassPathResource("example-test.properties"),
             new ClassPathResource("META-INF/properties/global.properties"),
             new ClassPathResource("META-INF/properties/global-test.properties"),
     };
     private static final Resource[] STAGING_PROPERTIES = new ClassPathResource[]{
-            new ClassPathResource("example-staging.properties"),
+//            new ClassPathResource("example-staging.properties"),
             new ClassPathResource("META-INF/properties/global.properties"),
             new ClassPathResource("META-INF/properties/global-staging.properties"),
     };
     private static final Resource[] PROD_PROPERTIES = new ClassPathResource[]{
-            new ClassPathResource("example-prod.properties"),
+//            new ClassPathResource("example-prod.properties"),
             new ClassPathResource("META-INF/properties/global.properties"),
             new ClassPathResource("META-INF/properties/global-prod.properties"),
     };
