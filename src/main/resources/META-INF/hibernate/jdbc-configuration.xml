@@ -149,4 +149,11 @@
     <bean id="commonController" class="net.snnmo.controller.CommonController" scope="prototype">
         <property name="orderDao" ref="orderDaoImpl" />
     </bean>
+
+
+
+    <bean id="consoleController" class="net.snnmo.controller.ConsoleController" scope="prototype">
+        <property name="orderDao" ref="orderDaoImpl" />
+        <property name="userDao" ref="userDaoImpl" />
+    </bean>
 </beans>

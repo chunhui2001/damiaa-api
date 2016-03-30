@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import net.snnmo.assist.DeliveryCompany;
 import net.snnmo.assist.OrderStatus;
 import net.snnmo.assist.PayMethod;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
@@ -102,6 +103,7 @@ public class OrderEntity implements Serializable {
     @Column(name="DELIVERY_NO", nullable = true, length=25)
     private String deliveryNo;
 
+    @JsonIgnore
     public String getPaymentInfo() {
         return paymentInfo;
     }

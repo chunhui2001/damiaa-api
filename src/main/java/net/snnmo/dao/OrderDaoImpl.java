@@ -59,6 +59,19 @@ public class OrderDaoImpl implements IOrderDAO {
         return query.list();
     }
 
+
+    @Override
+    @Transactional
+    public Collection<OrderEntity> list(OrderStatus[] statusArr) {
+        Session s = this.sessionFactory.getCurrentSession();
+
+        Query query = s.createQuery("from OrderEntity where status in (:status) order by id desc");
+
+        query.setParameterList("status", statusArr);
+
+        return query.list();
+    }
+
     @Override
     @Transactional
     public long count(String userid) {

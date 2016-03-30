@@ -25,6 +25,8 @@ public interface IOrderDAO {
 
     public Collection<OrderEntity> list(String userid);
 
+    public Collection<OrderEntity> list(OrderStatus[] statusArr);
+
     public long count(String userid);
 
     public OrderEntity get(String orderid, UserEntity user);
