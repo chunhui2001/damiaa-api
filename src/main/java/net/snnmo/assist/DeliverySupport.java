@@ -15,10 +15,10 @@ public class DeliverySupport {
                 put(DeliveryCompany.EMS, "EMS");
                 put(DeliveryCompany.YOUZHENG, "邮政快递包裹");
                 put(DeliveryCompany.SHENTONG, "申通快递");
-                put(DeliveryCompany.YUNDA,"b");
-                put(DeliveryCompany.YUANTONG,"韵达快递");
-                put(DeliveryCompany.SHUNFENG,"圆通快递");
-                put(DeliveryCompany.ZHONGTONG,"顺丰快递");
+                put(DeliveryCompany.YUNDA,"韵达快递");
+                put(DeliveryCompany.YUANTONG,"圆通快递");
+                put(DeliveryCompany.SHUNFENG,"顺丰快递");
+                put(DeliveryCompany.ZHONGTONG,"中通快递");
             }};
 
     public static String getDeliveryName(DeliveryCompany company) throws DbException {

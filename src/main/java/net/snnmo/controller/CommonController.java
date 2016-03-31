@@ -1,6 +1,7 @@
 package net.snnmo.controller;
 
 import net.snnmo.assist.ApiResult;
+import net.snnmo.assist.Common;
 import net.snnmo.assist.DeliveryCompany;
 import net.snnmo.assist.OrderStatus;
 import net.snnmo.dao.IOrderDAO;
@@ -64,7 +65,7 @@ public class CommonController extends BaseController {
     @RequestMapping(value = {"/flush-order", "/flush-order/"})
     public ResponseEntity<ApiResult> flushOrder(
             @RequestBody Map<String, Object> params
-            , HttpServletRequest request) throws DbException {
+            , HttpServletRequest request) throws DbException, IllegalAccessException {
 
         String userId       = (String)params.get("userid");
         String openId       = (String)params.get("openid");
@@ -84,6 +85,8 @@ public class CommonController extends BaseController {
 
             orderDao.addEvent(OrderStatus.SENDED, order, null, null);
             orderDao.update(order);
+
+            sendResult.setData(Common.processOrder(order, orderDao));
         } else {
             sendResult.setStatus(HttpStatus.BAD_REQUEST);
             sendResult.setMessage("非法请求!");

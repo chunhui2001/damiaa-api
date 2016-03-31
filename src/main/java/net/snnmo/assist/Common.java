@@ -113,6 +113,24 @@ public class Common {
 
 
 
+    public static Map<String, Object> processOrder(OrderEntity order, IOrderDAO orderDao)
+            throws IllegalAccessException{
+
+        if (order == null) return null;
+
+        Map<String, Object> orderMap = null;
+
+        Collection<OrderEntity> orderList = new ArrayList<>();
+
+        orderList.add(order);
+
+        Collection<Map<String, Object>> result = processOrderList(orderList, orderDao);
+
+        orderMap = (Map<String, Object>)result.toArray()[0];
+
+        return  orderMap;
+    }
+
 
     public static Collection<Map<String, Object>> processOrderList(Collection<OrderEntity> orderList, IOrderDAO orderDao)
             throws IllegalAccessException{
