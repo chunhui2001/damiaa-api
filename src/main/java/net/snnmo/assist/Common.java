@@ -168,6 +168,9 @@ public class Common {
                             case "SENDED":
                                 currentMap.put("statusText", "已发货");
                                 break;
+                            case "SIGNED":
+                                currentMap.put("statusText", "已签收");
+                                break;
                             default:
                                 currentMap.put("statusText", PropertyUtils.getProperty(o, f.getName()));
                         }

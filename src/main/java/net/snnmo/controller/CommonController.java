@@ -171,13 +171,14 @@ public class CommonController extends BaseController {
                 }
 
                 DateFormat df           = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA);
+                DateFormat df2          = new SimpleDateFormat("MM-dd HH:mm", Locale.CHINA);
                 String value            = deliveryContext.get(key);
                 OrderEventEntity event  = new OrderEventEntity();
 
                 event.setEventTime(df.parse(key));
                 event.setOrder(order);
                 event.setType(OrderStatus.DELIVERY);
-                event.setMessage("[" + key + "] " + value);
+                event.setMessage("[" + df2.format(event.getEventTime()) + "] " + value);
 
                 eventList.add(event);
             }
