@@ -41,5 +41,7 @@ public interface IOrderDAO {
 
     public Collection<OrderEntity> get(OrderStatus status);
 
-    public OrderEntity addEvents(OrderEntity order, Collection<OrderEventEntity> eventList) ;
+    public OrderEntity addEvents(OrderEntity order, Collection<OrderEventEntity> eventList);
+
+    public Object cancelSended(String orderid);
 }

@@ -69,6 +69,28 @@ public class ConsoleController extends BaseController {
 
 
 
+    @RequestMapping(value={"/order/cancel-sended/{orderid}", "/order/cancel-sended/{orderid}/"},
+            method = {RequestMethod.GET},
+            headers="Accept=application/json")
+    public ResponseEntity<ApiResult> cancelSended(
+            @PathVariable("orderid") String orderid
+    ) {
+
+        UserEntity user = userDao.findByName(this.getCurrentUserName());
+
+        if (!userDao.hasAnyRole(user, new UserRole[]{ UserRole.ROLE_ADMIN, UserRole.ROLE_SUPERADMIN })) {
+            throw new OAuth2Exception("permission deny for cancel sended operation!");
+        }
+
+
+        ApiResult sendResult = new ApiResult();
+
+        sendResult.setData(orderDao.cancelSended(orderid));
+
+        return new ResponseEntity<ApiResult>(sendResult, HttpStatus.OK);
+    }
+
+
     public IUserDAO getUserDao() {
         return userDao;
     }

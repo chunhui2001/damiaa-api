@@ -3,13 +3,11 @@ package net.snnmo.dao;
 import net.snnmo.assist.*;
 import net.snnmo.entity.*;
 import net.snnmo.exception.DbException;
-import org.hibernate.Query;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
-import org.hibernate.criterion.Order;
+import org.hibernate.*;
+import org.hibernate.criterion.*;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.beans.Expression;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -408,5 +406,77 @@ public class OrderDaoImpl implements IOrderDAO {
         }
 
         return order;
+    }
+
+    @Override
+    public Object cancelSended(String orderid) {
+
+
+        Session session         = this.sessionFactory.openSession();
+
+        // select EVENT_ID from ORDER_EVENTS
+        // where ORDER_ID='8903611222876419605' and EVENT_TYPE='SENDED' limit 1
+        Criteria criteria   = session.createCriteria(OrderEventEntity.class);
+
+        criteria.setProjection(
+                Projections.projectionList()
+                        .add(Projections.property("id"), "id")
+        );
+
+        criteria.add(Restrictions.eq("order.id", orderid));
+        criteria.add(Restrictions.eq("type", OrderStatus.SENDED));
+        criteria.setMaxResults(1);
+
+
+        Object lastEventId    = criteria.uniqueResult();
+
+        if (lastEventId == null) {
+            return null;
+        }
+
+        Criteria criteria2  = session.createCriteria(OrderEventEntity.class);
+
+        criteria2.add(Restrictions.eq("order.id", orderid));
+        criteria2.add(Restrictions.lt("id", lastEventId));
+        criteria2.addOrder(Order.desc("id"));
+
+        criteria2.setMaxResults(1);
+
+        OrderEventEntity lastEvent  = (OrderEventEntity) criteria2.uniqueResult();
+
+        // 更新订单状态到上一个
+//        update ORDERS set ORDER_STATUS='CASHED', LAST_EVENT='该订单于 2016年03月28日 07点57分 完成支付',
+//                LAST_EVENT_TIME='2016-03-28 07:57:41', DELIVERY_COMPANY=null, DELIVERY_NO=null
+//        where ORDER_ID='9123046991918944063'
+
+        int affectRowCount  = 0;
+
+        Transaction tx = session.beginTransaction();
+
+        Query query = session.createQuery(
+                        "update OrderEntity set status=:status" +
+                                ", lastEvent=:lastEvent" +
+                                ", lastEventTime=:lastEventTime" +
+                                ", deliveryCompany=:deliveryCompany" +
+                                ", deliveryNo=:deliveryNo where id=:orderid");
+
+        query.setParameter("status", lastEvent.getType());
+        query.setParameter("lastEvent", lastEvent.getMessage());
+        query.setParameter("lastEventTime", lastEvent.getEventTime());
+        query.setParameter("deliveryCompany", null);
+        query.setParameter("deliveryNo", null);
+        query.setParameter("orderid", orderid);
+
+
+        Query query2    = session.createQuery("delete OrderEventEntity where order.id=:orderid and id>:lastId");
+
+        query2.setParameter("lastId", lastEvent.getId());
+        query2.setParameter("orderid", orderid);
+
+        affectRowCount = query.executeUpdate() + query2.executeUpdate();
+
+        tx.commit();
+
+        return affectRowCount;
     }
 }
