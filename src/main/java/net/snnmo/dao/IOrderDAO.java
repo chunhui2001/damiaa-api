@@ -43,5 +43,5 @@ public interface IOrderDAO {
 
     public OrderEntity addEvents(OrderEntity order, Collection<OrderEventEntity> eventList);
 
-    public Object cancelSended(String orderid);
+    public int cancelSended(String orderid, String userid);
 }

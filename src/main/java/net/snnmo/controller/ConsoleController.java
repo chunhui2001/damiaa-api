@@ -69,12 +69,13 @@ public class ConsoleController extends BaseController {
 
 
 
-    @RequestMapping(value={"/order/cancel-sended/{orderid}", "/order/cancel-sended/{orderid}/"},
+    @RequestMapping(value={"/order/cancel-sended/{userid}/{orderid}", "/order/cancel-sended/{userid}/{orderid}/"},
             method = {RequestMethod.GET},
             headers="Accept=application/json")
     public ResponseEntity<ApiResult> cancelSended(
+            @PathVariable("userid") String userid,
             @PathVariable("orderid") String orderid
-    ) {
+    ) throws IllegalAccessException {
 
         UserEntity user = userDao.findByName(this.getCurrentUserName());
 
@@ -82,10 +83,15 @@ public class ConsoleController extends BaseController {
             throw new OAuth2Exception("permission deny for cancel sended operation!");
         }
 
+        ApiResult sendResult        = new ApiResult();
+        int affectRowCount          = orderDao.cancelSended(orderid, userid);
 
-        ApiResult sendResult = new ApiResult();
-
-        sendResult.setData(orderDao.cancelSended(orderid));
+        if (affectRowCount > 0) {
+            sendResult.setData(Common.processOrder(orderDao.get(orderid, userid), orderDao));
+            //sendResult.setData(orderEntity);
+        } else {
+            sendResult.setMessage("nothing to do!");
+        }
 
         return new ResponseEntity<ApiResult>(sendResult, HttpStatus.OK);
     }

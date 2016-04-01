@@ -409,9 +409,9 @@ public class OrderDaoImpl implements IOrderDAO {
     }
 
     @Override
-    public Object cancelSended(String orderid) {
+    public int cancelSended(String orderid, String userid) {
 
-
+        OrderEntity orderEntity = null;
         Session session         = this.sessionFactory.openSession();
 
         // select EVENT_ID from ORDER_EVENTS
@@ -431,7 +431,7 @@ public class OrderDaoImpl implements IOrderDAO {
         Object lastEventId    = criteria.uniqueResult();
 
         if (lastEventId == null) {
-            return null;
+            return 0;
         }
 
         Criteria criteria2  = session.createCriteria(OrderEventEntity.class);
@@ -475,8 +475,14 @@ public class OrderDaoImpl implements IOrderDAO {
 
         affectRowCount = query.executeUpdate() + query2.executeUpdate();
 
+        //orderEntity = this.get(orderid, userid);
+
         tx.commit();
 
-        return affectRowCount;
+        if (affectRowCount > 0) {
+            return affectRowCount;
+        }
+
+        return 0;
     }
 }
