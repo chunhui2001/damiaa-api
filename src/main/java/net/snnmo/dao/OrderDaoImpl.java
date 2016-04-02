@@ -319,11 +319,12 @@ public class OrderDaoImpl implements IOrderDAO {
 
         Query query = session.createQuery(
                 "from OrderEntity where id=:orderid"
-                        + " and userId=:userid");
+                        + (userid.isEmpty() ? "" : " and userId=:userid"));
 
         query.setParameter("orderid", orderid);
 
-        query.setParameter("userid", userid);
+        if (!userid.isEmpty())
+            query.setParameter("userid", userid);
 
         return (OrderEntity)query.uniqueResult();
     }
@@ -484,5 +485,19 @@ public class OrderDaoImpl implements IOrderDAO {
         }
 
         return 0;
+    }
+
+
+    @Override
+    @Transactional
+    public Collection<OrderEventEntity> events(String orderid) {
+
+        Session session     = this.sessionFactory.getCurrentSession();
+        Criteria criteria   = session.createCriteria(OrderEventEntity.class);
+
+        criteria.add(Restrictions.eq("order.id", orderid));
+        criteria.addOrder(Order.desc("id"));
+
+        return criteria.list();
     }
 }

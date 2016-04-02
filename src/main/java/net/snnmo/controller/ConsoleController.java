@@ -97,6 +97,32 @@ public class ConsoleController extends BaseController {
     }
 
 
+
+    @RequestMapping(value={"/order/{orderid}/events", "/order/{orderid}/events/"},
+            method = {RequestMethod.GET},
+            headers="Accept=application/json")
+    public ResponseEntity<ApiResult> orderEvents(
+            @PathVariable("orderid") String orderid
+    ) {
+
+        UserEntity user             = userDao.findByName(this.getCurrentUserName());
+        OrderEntity orderEntity     = orderDao.get(orderid, "");
+
+        if (!user.getId().equals(orderEntity.getUserId())
+                && !userDao.hasAnyRole(user
+                    , new UserRole[]{ UserRole.ROLE_ADMIN, UserRole.ROLE_SUPERADMIN })) {
+            throw new OAuth2Exception("permission deny for get order events!");
+        }
+
+        ApiResult sendResult = new ApiResult();
+
+        sendResult.setMessage("deliveryNo:" + orderEntity.getDeliveryNo());
+        sendResult.setData(orderDao.events(orderid));
+
+        return new ResponseEntity<ApiResult>(sendResult, HttpStatus.OK);
+    }
+
+
     public IUserDAO getUserDao() {
         return userDao;
     }

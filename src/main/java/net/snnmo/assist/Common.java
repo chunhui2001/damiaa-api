@@ -176,6 +176,39 @@ public class Common {
                         }
                     }
 
+                    if (f.getName().toLowerCase().equals("deliverycompany")) {
+
+                        if (PropertyUtils.getProperty(o, f.getName()) == null) {
+                            currentMap.put("deliveryCompanyName", null);
+                        } else {
+                            switch (PropertyUtils.getProperty(o, f.getName()).toString().toUpperCase()) {
+                                case "EMS":
+                                    currentMap.put("deliveryCompanyName", "邮政EMS");
+                                    break;
+                                case "YOUZHENG":
+                                    currentMap.put("deliveryCompanyName", "邮政快递");
+                                    break;
+                                case "SHENTONG":
+                                    currentMap.put("deliveryCompanyName", "申通快递");
+                                    break;
+                                case "YUNDA":
+                                    currentMap.put("deliveryCompanyName", "韵达快递");
+                                    break;
+                                case "YUANTONG":
+                                    currentMap.put("deliveryCompanyName", "圆通快递");
+                                    break;
+                                case "SHUNFENG":
+                                    currentMap.put("deliveryCompanyName", "顺丰快递");
+                                    break;
+                                case "ZHONGTONG":
+                                    currentMap.put("deliveryCompanyName", "中通快递");
+                                    break;
+                                default:
+                                    currentMap.put("deliveryCompanyName", PropertyUtils.getProperty(o, f.getName()));
+                            }
+                        }
+                    }
+
                 } catch (NoSuchMethodException e) {
 
                 } catch (InvocationTargetException e) {
