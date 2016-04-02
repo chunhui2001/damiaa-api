@@ -120,6 +120,7 @@ public class HomeController extends BaseController {
         boolean isAdmin     = userDao.hasAnyRole(user, new UserRole[]{ UserRole.ROLE_ADMIN, UserRole.ROLE_SUPERADMIN });
 
         userInfo.put("name", user.getName());
+        userInfo.put("photo", user.getPhoto());
         userInfo.put("isAdmin", isAdmin);
         //userInfo.put("addressCount", addrDao.userAddrList(user.getId()).size() + "");
         //userInfo.put("orderCount", orderCount > 99 ? "99+" : orderCount+"");
