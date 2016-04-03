@@ -28,7 +28,7 @@ public class OrderEntity implements Serializable {
     @Column(name="ORDER_ID")
     @GenericGenerator(name="OrderIdGenerator",
             strategy = "net.snnmo.assist.OrderIdGenerator",
-            parameters = {@org.hibernate.annotations.Parameter(name="prefix", value="R")}
+            parameters = {@org.hibernate.annotations.Parameter(name="prefix", value="")}
     )
     @GeneratedValue(generator = "OrderIdGenerator")
     private String id;

@@ -19,7 +19,6 @@ import java.util.Map;
 /**
  * Created by TTong on 16-1-11.
  */
-//@RequestMapping(value = "/roles"
 @Controller
 @RequestMapping("/roles")
 public class RoleController extends BaseController {

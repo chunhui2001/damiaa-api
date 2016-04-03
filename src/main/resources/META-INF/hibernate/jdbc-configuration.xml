@@ -106,6 +106,13 @@
         </constructor-arg>
     </bean>
 
+    <bean id="partnerDaoImpl"
+          class="net.snnmo.dao.PartnerDaoImpl">
+        <constructor-arg>
+            <ref bean="sessionFactory" />
+        </constructor-arg>
+    </bean>
+
 
     <bean id="homeController" class="net.snnmo.controller.HomeController" scope="prototype">
         <property name="userDao" ref="userDaoImpl" />
@@ -155,5 +162,12 @@
     <bean id="consoleController" class="net.snnmo.controller.ConsoleController" scope="prototype">
         <property name="orderDao" ref="orderDaoImpl" />
         <property name="userDao" ref="userDaoImpl" />
+    </bean>
+
+
+
+    <bean id="partnerController" class="net.snnmo.controller.PartnerController" scope="prototype">
+        <property name="userDao" ref="userDaoImpl" />
+        <property name="partnerDao" ref="partnerDaoImpl" />
     </bean>
 </beans>
