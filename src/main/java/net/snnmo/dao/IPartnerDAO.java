@@ -10,5 +10,5 @@ import java.util.Collection;
 public interface IPartnerDAO {
     public PartnerEntity saveOrUpdate(PartnerEntity partner);
     public Collection<PartnerEntity> list();
-    public PartnerEntity get(String unionid);
+    public PartnerEntity get(String partnerIdOrUnionId);
 }

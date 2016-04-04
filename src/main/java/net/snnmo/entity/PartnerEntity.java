@@ -114,6 +114,26 @@ public class PartnerEntity implements Serializable {
         this.type = type;
     }
 
+    public String getPartnerTypeName() {
+        String str = "";
+
+        switch (this.getType().toString().toUpperCase()) {
+            case "CANGMAI":
+                str = "仓买";
+                break;
+            case "CHAOSHI":
+                str = "超市";
+                break;
+            case "SHANGCHANG":
+                str = "商场";
+                break;
+            default:
+                str = this.getType().toString().toUpperCase();
+        }
+
+        return str;
+    }
+
     public Date getJoinTime() {
         return joinTime;
     }

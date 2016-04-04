@@ -41,12 +41,15 @@ public class PartnerDaoImpl implements IPartnerDAO {
 
     @Override
     @Transactional
-    public PartnerEntity get(String unionid) {
+    public PartnerEntity get(String partnerIdOrUnionId) {
         Session session = this.sessionFactory.getCurrentSession();
 
         Criteria criteria = session.createCriteria(PartnerEntity.class);
 
-        criteria.add(Restrictions.eq("unionid", unionid));
+        criteria.add(
+                Restrictions.or(
+                        Restrictions.eq("id", partnerIdOrUnionId)
+                        , Restrictions.eq("unionid", partnerIdOrUnionId)));
 
         return (PartnerEntity)criteria.uniqueResult();
     }

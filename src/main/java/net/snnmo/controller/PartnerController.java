@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.common.exceptions.OAuth2Exception;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -50,6 +51,18 @@ public class PartnerController extends BaseController {
     }
 
 
+    @RequestMapping(value = {"/{partnerId}", "/{partnerId}/"}, method = RequestMethod.GET, headers="Accept=application/json")
+    public ResponseEntity<ApiResult> get(
+            @PathVariable("partnerId") String partnerId
+    ) {
+        ApiResult sendResult = new ApiResult();
+
+        sendResult.setData(partnerDao.get(partnerId));
+
+        return new ResponseEntity<ApiResult>(sendResult, HttpStatus.OK);
+    }
+
+
     @RequestMapping(value = {"", "/"}, method = RequestMethod.POST, headers="Accept=application/json")
     public ResponseEntity<ApiResult> save(
             @RequestBody JsonNode params) {
@@ -61,7 +74,6 @@ public class PartnerController extends BaseController {
         String nickname             = params.get("nickname").asText().replaceAll("[^0-9a-zA-Z\u4e00-\u9fa5]+", "");
         PartnerType partnerType     = PartnerType.valueOf(params.get("partnerType").asText());
 
-System.out.println(nickname);
         PartnerEntity partner = partnerDao.get(unionid);
 
         if (partner == null) {
