@@ -113,6 +113,15 @@
         </constructor-arg>
     </bean>
 
+    <bean id="qrcodeDaoImpl"
+          class="net.snnmo.dao.QrcodeDaoImpl">
+        <constructor-arg>
+            <ref bean="sessionFactory" />
+        </constructor-arg>
+
+        <property name="partnerDao" ref="partnerDaoImpl" />
+    </bean>
+
 
     <bean id="homeController" class="net.snnmo.controller.HomeController" scope="prototype">
         <property name="userDao" ref="userDaoImpl" />
@@ -170,4 +179,13 @@
         <property name="userDao" ref="userDaoImpl" />
         <property name="partnerDao" ref="partnerDaoImpl" />
     </bean>
+
+
+
+    <bean id="qrcodeController" class="net.snnmo.controller.QrcodeController" scope="prototype">
+        <property name="userDao" ref="userDaoImpl" />
+        <property name="qrcodeDao" ref="qrcodeDaoImpl" />
+    </bean>
+
+
 </beans>

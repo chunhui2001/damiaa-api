@@ -136,23 +136,5 @@ public class AddrDaoImpl implements IAddrDAO {
             throw new DbException("设置默认地址失败!");
         }
 
-       // Transaction tx = session.beginTransaction();
-
-//        AddressEntity addr = null;
-//
-//        for (Iterator it = list.iterator(); it.hasNext(); ) {
-//            addr = (AddressEntity)it.next();
-//
-//            if (addr.getId() != addrid) {
-//                addr.setDefaults(false);
-//System.out.println(addrid);
-//                session.save(addr);
-//                //session.flush();
-//               // session.clear();
-//            }
-//        }
-
-        //tx.commit();
-       // session.close();
     }
 }

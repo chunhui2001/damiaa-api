@@ -60,6 +60,7 @@
         <mapping class="net.snnmo.entity.OrderEventEntity"/>
         <mapping class="net.snnmo.entity.UserUploadEntity"/>
         <mapping class="net.snnmo.entity.PartnerEntity"/>
+        <mapping class="net.snnmo.entity.QrcodeEntity"/>
 
     </session-factory>
 
