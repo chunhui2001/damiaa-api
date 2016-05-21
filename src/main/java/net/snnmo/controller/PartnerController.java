@@ -1,6 +1,7 @@
 package net.snnmo.controller;
 
 import com.fasterxml.jackson.databind.JsonNode;
+//import com.sun.org.apache.xpath.internal.operations.String;
 import net.snnmo.assist.ApiResult;
 import net.snnmo.assist.PartnerType;
 import net.snnmo.assist.UserRole;
@@ -97,6 +98,38 @@ public class PartnerController extends BaseController {
         sendResult.setData(partner);
 
         return new ResponseEntity<ApiResult>(sendResult, HttpStatus.OK);
+    }
+
+
+    @RequestMapping(value = {"/{partnerid}", "/{partnerid}/"}, method = RequestMethod.PUT, headers="Accept=application/json")
+    public ResponseEntity<ApiResult> update(
+            @PathVariable("partnerid") String partnerid,
+            @RequestBody JsonNode params) {
+
+        ApiResult sendResult = new ApiResult();
+
+        String id                 = params.get("id").asText();
+        String partnerName        = params.get("partnerName").asText();
+        String phone              = params.get("phone").asText();
+        String address            = params.get("address").asText();
+
+        PartnerEntity partner = partnerDao.get(id);
+
+        if (partner == null) {
+            sendResult.setMessage("partner not exists!");
+            sendResult.setStatus(HttpStatus.BAD_REQUEST);
+        } else {
+            partner.setPartnerName(partnerName);
+            partner.setPhone(phone);
+            partner.setAddress(address);
+
+            partnerDao.saveOrUpdate(partner);
+
+            sendResult.setData(partner);
+        }
+
+
+        return new ResponseEntity<ApiResult>(sendResult, sendResult.getStatus());
     }
 
 
