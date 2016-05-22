@@ -133,6 +133,31 @@ public class PartnerController extends BaseController {
     }
 
 
+    @RequestMapping(value = {"/{partnerid}/qrcode", "/{partnerid}/qrcode/"}, method = RequestMethod.PUT, headers="Accept=application/json")
+    public ResponseEntity<ApiResult> qrcode(
+            @PathVariable("partnerid") String partnerid,
+            @RequestBody JsonNode params) {
+
+        ApiResult sendResult = new ApiResult();
+
+        Integer qrcodeid     = params.get("qrcodeid").asInt();
+        String action        = params.get("action").asText();
+
+        if (!(action.toLowerCase().equals("set") || action.toLowerCase().equals("remove"))) {
+            sendResult.setStatus(HttpStatus.BAD_REQUEST);
+            sendResult.setMessage("invalide action");
+            return new ResponseEntity<ApiResult>(sendResult, sendResult.getStatus());
+        }
+
+        // TODO
+
+
+        return new ResponseEntity<ApiResult>(sendResult, sendResult.getStatus());
+    }
+
+
+
+
 
     public IUserDAO getUserDao() {
         return userDao;
