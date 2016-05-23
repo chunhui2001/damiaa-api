@@ -64,13 +64,13 @@ public class PartnerEntity implements Serializable {
     private String photo;
 
     @Column(name="QRCODE", nullable = true, length=2048)
-    private String qrcode;
+    private long qrcode;
 
-    public String getQrcode() {
+    public long getQrcode() {
         return qrcode;
     }
 
-    public void setQrcode(String qrcode) {
+    public void setQrcode(long qrcode) {
         this.qrcode = qrcode;
     }
 

@@ -11,4 +11,5 @@ public interface IPartnerDAO {
     public PartnerEntity saveOrUpdate(PartnerEntity partner);
     public Collection<PartnerEntity> list();
     public PartnerEntity get(String partnerIdOrUnionId);
+    public void removeQrcode(String partnerid, int qrcodeid);
 }

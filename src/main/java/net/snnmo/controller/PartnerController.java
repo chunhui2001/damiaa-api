@@ -6,8 +6,10 @@ import net.snnmo.assist.ApiResult;
 import net.snnmo.assist.PartnerType;
 import net.snnmo.assist.UserRole;
 import net.snnmo.dao.IPartnerDAO;
+import net.snnmo.dao.IQrcodeDAO;
 import net.snnmo.dao.IUserDAO;
 import net.snnmo.entity.PartnerEntity;
+import net.snnmo.entity.QrcodeEntity;
 import net.snnmo.entity.UserEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +31,15 @@ public class PartnerController extends BaseController {
 
     private IUserDAO userDao;
     private IPartnerDAO partnerDao;
+    private IQrcodeDAO qrcodeDao;
+
+    public IQrcodeDAO getQrcodeDao() {
+        return qrcodeDao;
+    }
+
+    public void setQrcodeDao(IQrcodeDAO qrcodeDao) {
+        this.qrcodeDao = qrcodeDao;
+    }
 
     @PostConstruct
     public void init() {
@@ -145,11 +156,51 @@ public class PartnerController extends BaseController {
 
         if (!(action.toLowerCase().equals("set") || action.toLowerCase().equals("remove"))) {
             sendResult.setStatus(HttpStatus.BAD_REQUEST);
-            sendResult.setMessage("invalide action");
+            sendResult.setMessage("invalid action");
             return new ResponseEntity<ApiResult>(sendResult, sendResult.getStatus());
         }
 
-        // TODO
+        PartnerEntity partner   = partnerDao.get(partnerid);
+        QrcodeEntity qrcode     = qrcodeDao.get(qrcodeid);
+
+        if (partner == null) {
+            sendResult.setStatus(HttpStatus.BAD_REQUEST);
+            sendResult.setMessage("invalid partner id");
+            return new ResponseEntity<ApiResult>(sendResult, sendResult.getStatus());
+        }
+
+        if (qrcode == null) {
+            sendResult.setStatus(HttpStatus.BAD_REQUEST);
+            sendResult.setMessage("qrcode not exists");
+            return new ResponseEntity<ApiResult>(sendResult, sendResult.getStatus());
+        }
+
+        if (action.toLowerCase().equals("set")) {
+
+            if (partner.getQrcode() > 0) {
+                sendResult.setStatus(HttpStatus.BAD_REQUEST);
+                sendResult.setMessage("partner already have qrcode");
+                return new ResponseEntity<ApiResult>(sendResult, sendResult.getStatus());
+            }
+
+            if (qrcode.getBelongTo() != null) {
+                sendResult.setStatus(HttpStatus.BAD_REQUEST);
+                sendResult.setMessage("qrcode inuse");
+                return new ResponseEntity<ApiResult>(sendResult, sendResult.getStatus());
+            }
+
+            partner.setQrcode(qrcode.getId());
+            partnerDao.saveOrUpdate(partner);
+            qrcodeDao.set(qrcodeid, "unionid:" + partner.getUnionid());
+        }
+
+        if (action.toLowerCase().equals("remove")) {
+            partner.setQrcode(0);
+            qrcode.setBelongTo(null);
+
+            partnerDao.saveOrUpdate(partner);
+            qrcodeDao.set(qrcodeid, null);
+        }
 
 
         return new ResponseEntity<ApiResult>(sendResult, sendResult.getStatus());

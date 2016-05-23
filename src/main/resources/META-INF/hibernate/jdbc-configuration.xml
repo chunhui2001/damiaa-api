@@ -178,6 +178,7 @@
     <bean id="partnerController" class="net.snnmo.controller.PartnerController" scope="prototype">
         <property name="userDao" ref="userDaoImpl" />
         <property name="partnerDao" ref="partnerDaoImpl" />
+        <property name="qrcodeDao" ref="qrcodeDaoImpl" />
     </bean>
 
 

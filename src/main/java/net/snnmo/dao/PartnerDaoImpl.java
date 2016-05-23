@@ -2,6 +2,7 @@ package net.snnmo.dao;
 
 import net.snnmo.entity.PartnerEntity;
 import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
@@ -52,5 +53,20 @@ public class PartnerDaoImpl implements IPartnerDAO {
                         , Restrictions.eq("unionid", partnerIdOrUnionId)));
 
         return (PartnerEntity)criteria.uniqueResult();
+    }
+
+    @Override
+    @Transactional
+    public void removeQrcode(String partnerid, int qrcodeid) {
+
+        Session session         = this.sessionFactory.openSession();
+
+        Query query = session.createQuery(
+                "update PartnerEntity set qrcode=null" + " where id=:partnerid and qrcode=:qrcodeid");
+
+        query.setParameter("partnerid", partnerid);
+        query.setParameter("qrcodeid", qrcodeid);
+
+        query.executeUpdate();
     }
 }
