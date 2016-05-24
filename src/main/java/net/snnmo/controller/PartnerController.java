@@ -11,6 +11,7 @@ import net.snnmo.dao.IUserDAO;
 import net.snnmo.entity.PartnerEntity;
 import net.snnmo.entity.QrcodeEntity;
 import net.snnmo.entity.UserEntity;
+import org.apache.commons.beanutils.PropertyUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.common.exceptions.OAuth2Exception;
@@ -21,6 +22,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.annotation.PostConstruct;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by cc on 16/4/3.
@@ -66,10 +71,33 @@ public class PartnerController extends BaseController {
     @RequestMapping(value = {"/{partnerId}", "/{partnerId}/"}, method = RequestMethod.GET, headers="Accept=application/json")
     public ResponseEntity<ApiResult> get(
             @PathVariable("partnerId") String partnerId
-    ) {
+    ) throws IllegalAccessException {
         ApiResult sendResult = new ApiResult();
 
-        sendResult.setData(partnerDao.get(partnerId));
+        PartnerEntity partner   = partnerDao.get(partnerId);
+
+
+        Map<String, Object> currentMap  = new HashMap<>();
+        Field[] attributes = partner.getClass().getDeclaredFields();
+
+        for (Field f : attributes) {
+
+            try{
+                currentMap.put(f.getName(), PropertyUtils.getProperty(partner, f.getName()));
+            } catch (NoSuchMethodException e) {
+
+            } catch (InvocationTargetException e) {
+                // e.printStackTrace();
+            }
+
+        }
+
+        if (partner.getQrcode() > 0) {
+            QrcodeEntity qrcode     = qrcodeDao.get(partner.getQrcode());
+            currentMap.put("gen", qrcode.getGen());
+        }
+
+        sendResult.setData(currentMap);
 
         return new ResponseEntity<ApiResult>(sendResult, HttpStatus.OK);
     }
@@ -180,6 +208,7 @@ public class PartnerController extends BaseController {
             if (partner.getQrcode() > 0) {
                 sendResult.setStatus(HttpStatus.BAD_REQUEST);
                 sendResult.setMessage("partner already have qrcode");
+                sendResult.setData(qrcode);
                 return new ResponseEntity<ApiResult>(sendResult, sendResult.getStatus());
             }
 
@@ -192,6 +221,7 @@ public class PartnerController extends BaseController {
             partner.setQrcode(qrcode.getId());
             partnerDao.saveOrUpdate(partner);
             qrcodeDao.set(qrcodeid, "unionid:" + partner.getUnionid());
+            sendResult.setData(qrcode);
         }
 
         if (action.toLowerCase().equals("remove")) {
