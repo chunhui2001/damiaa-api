@@ -4,8 +4,8 @@ import net.snnmo.entity.GoodsEntity;
 import net.snnmo.entity.UserEntity;
 import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.Collection;
 
 /**

@@ -5,8 +5,8 @@ import net.snnmo.entity.QrcodeEntity;
 import org.hibernate.*;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.security.oauth2.common.exceptions.OAuth2Exception;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.Collection;
 
 /**

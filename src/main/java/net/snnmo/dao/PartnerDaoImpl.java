@@ -9,6 +9,7 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
+import java.util.List;
 
 /**
  * Created by cc on 16/4/3.
@@ -32,10 +33,9 @@ public class PartnerDaoImpl implements IPartnerDAO {
     @Transactional
     public Collection<PartnerEntity> list() {
         Session session = this.sessionFactory.getCurrentSession();
-
         Criteria criteria = session.createCriteria(PartnerEntity.class);
 
-        //criteria.add(Restrictions.)
+        
 
         return criteria.list();
     }

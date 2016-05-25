@@ -7,6 +7,7 @@ import org.hibernate.dialect.Dialect;
 import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.id.Configurable;
 import org.hibernate.id.IdentifierGenerator;
+import org.hibernate.service.ServiceRegistry;
 
 import java.io.Serializable;
 import java.util.Properties;
@@ -42,4 +43,6 @@ public class ObjectIdGenerator implements IdentifierGenerator, Configurable{
         if(properties.getProperty("prefix") != null)
             setPrefix(properties.getProperty("prefix"));
     }
+
+
 }
