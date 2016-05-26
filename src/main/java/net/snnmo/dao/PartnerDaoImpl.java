@@ -34,10 +34,8 @@ public class PartnerDaoImpl implements IPartnerDAO {
     public Collection<PartnerEntity> list() {
         Session session = this.sessionFactory.getCurrentSession();
         Criteria criteria = session.createCriteria(PartnerEntity.class);
-
-        
-
-        return criteria.list();
+        Collection<PartnerEntity> result    = criteria.list();
+        return result;
     }
 
     @Override

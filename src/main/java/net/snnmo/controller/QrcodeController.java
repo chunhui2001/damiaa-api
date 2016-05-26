@@ -64,7 +64,7 @@ public class QrcodeController extends BaseController {
 
         ApiResult sendResult = new ApiResult();
 
-        sendResult.setData(qrcodeDao.random(3));
+        sendResult.setData(qrcodeDao.random(1));
 
         return new ResponseEntity<ApiResult>(sendResult, HttpStatus.OK);
     }

@@ -61,9 +61,7 @@ public class PartnerController extends BaseController {
     @RequestMapping(value = {"", "/"}, method = RequestMethod.GET, headers="Accept=application/json")
     public ResponseEntity<ApiResult> list() {
         ApiResult sendResult = new ApiResult();
-
         sendResult.setData(partnerDao.list());
-
         return new ResponseEntity<ApiResult>(sendResult, HttpStatus.OK);
     }
 
@@ -219,6 +217,8 @@ public class PartnerController extends BaseController {
             }
 
             partner.setQrcode(qrcode.getId());
+            partner.setGen(qrcode.getGen());
+
             partnerDao.saveOrUpdate(partner);
             qrcodeDao.set(qrcodeid, "unionid:" + partner.getUnionid());
             sendResult.setData(qrcode);
