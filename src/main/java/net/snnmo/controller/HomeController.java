@@ -92,9 +92,8 @@ public class HomeController extends BaseController {
 
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:sss");
 
-        mv.addObject("message", ".Welcome to Spring MVC index page: ~ "
-                + this.message
-                + "<br />" + "<span style='color:red;'>Publish at: <b>" + format.format(new Date()) + "</b></span>");
+        mv.addObject("message", "Welcome to Spring MVC index page 3: ~ "
+                + this.message);
 
 //        Common.SendSimpleMessage(
 //                "snnmo.com", "key-a5179b50c49cbbea7aedcf1b12165d70"

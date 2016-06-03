@@ -81,7 +81,26 @@ public class PartnerController extends BaseController {
         for (Field f : attributes) {
 
             try{
-                currentMap.put(f.getName(), PropertyUtils.getProperty(partner, f.getName()));
+                Object o = PropertyUtils.getProperty(partner, f.getName());
+
+                currentMap.put(f.getName(), o);
+
+                if (f.getName().equals("type")) {
+                    switch (o.toString().toUpperCase()) {
+                        case "CANGMAI":
+                            currentMap.put("partnerTypeName", "仓买");
+                            break;
+                        case "CHAOSHI":
+                            currentMap.put("partnerTypeName", "超市");
+                            break;
+                        case "SHANGCHANG":
+                            currentMap.put("partnerTypeName", "商场");
+                            break;
+                        default:
+                            currentMap.put("partnerTypeName", o.toString().toUpperCase());
+                    }
+                }
+
             } catch (NoSuchMethodException e) {
 
             } catch (InvocationTargetException e) {
@@ -220,7 +239,7 @@ public class PartnerController extends BaseController {
             partner.setGen(qrcode.getGen());
 
             partnerDao.saveOrUpdate(partner);
-            qrcodeDao.set(qrcodeid, "unionid:" + partner.getUnionid());
+            qrcodeDao.set(qrcodeid, "openid:" + partner.getOpenid());
             sendResult.setData(qrcode);
         }
 
