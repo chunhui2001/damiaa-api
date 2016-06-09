@@ -11,10 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.common.exceptions.OAuth2Exception;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.PostConstruct;
 import java.lang.reflect.Array;
@@ -50,6 +47,7 @@ public class QrcodeController extends BaseController {
     @PostConstruct
     public void init() {
         String userName = this.getCurrentUserName();
+
         UserEntity user = userDao.findByName(userName);
 
         if (!userDao.hasAnyRole(user

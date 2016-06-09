@@ -5,8 +5,10 @@ import net.snnmo.assist.Common;
 import net.snnmo.assist.DeliveryCompany;
 import net.snnmo.assist.OrderStatus;
 import net.snnmo.dao.IOrderDAO;
+import net.snnmo.dao.IQrcodeDAO;
 import net.snnmo.entity.OrderEntity;
 import net.snnmo.entity.OrderEventEntity;
+import net.snnmo.entity.QrcodeEntity;
 import net.snnmo.exception.DbException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -43,6 +45,16 @@ public class CommonController extends BaseController {
     }
 
     private IOrderDAO orderDao;
+
+    public IQrcodeDAO getQrcodeDao() {
+        return qrcodeDao;
+    }
+
+    public void setQrcodeDao(IQrcodeDAO qrcodeDao) {
+        this.qrcodeDao = qrcodeDao;
+    }
+
+    private IQrcodeDAO qrcodeDao;
 
     @RequestMapping(value = {"/payment-completed", "/payment-completed/"})
     public ResponseEntity<ApiResult> index(
@@ -212,4 +224,26 @@ public class CommonController extends BaseController {
     }
 
 
+
+
+
+    @RequestMapping(value = {"/get-qrcode/{openid}/", "/get-qrcode/{openid}"}, method = RequestMethod.GET)
+    public ResponseEntity<ApiResult> get(
+            @PathVariable("openid") String openid
+    ) {
+
+        ApiResult sendResult = new ApiResult();
+
+        QrcodeEntity qrcode     = qrcodeDao.get(openid);
+
+        if (qrcode != null)
+            sendResult.setData(qrcode);
+        else {
+            sendResult.setStatus(HttpStatus.BAD_REQUEST);
+            sendResult.setMessage("invalid openid");
+        }
+
+
+        return new ResponseEntity<ApiResult>(sendResult, sendResult.getStatus());
+    }
 }

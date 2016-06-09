@@ -164,6 +164,7 @@
 
     <bean id="commonController" class="net.snnmo.controller.CommonController" scope="prototype">
         <property name="orderDao" ref="orderDaoImpl" />
+        <property name="qrcodeDao" ref="qrcodeDaoImpl" />
     </bean>
 
 

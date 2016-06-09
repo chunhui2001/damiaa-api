@@ -66,6 +66,18 @@ public class QrcodeDaoImpl implements IQrcodeDAO {
 
     @Override
     @Transactional
+    public QrcodeEntity get(String openid) {
+        Session session     = this.sessionFactory.getCurrentSession();
+
+        Query query = session.createQuery("from QrcodeEntity where belongTo=:belongTo");
+
+        query.setParameter("belongTo", "openid:" + openid);
+
+        return (QrcodeEntity)query.uniqueResult();
+    }
+
+    @Override
+    @Transactional
     public int set(long qrcodeId, String belongTo) {
 
 //        QrcodeEntity qrcodeEntity   = this.get(qrcodeId);

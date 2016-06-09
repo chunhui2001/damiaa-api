@@ -14,4 +14,5 @@ public interface IQrcodeDAO {
     public int set(long qrcodeId, String belongTo);
     public Collection<QrcodeEntity> random(int count);
     public QrcodeEntity get(long qrcodeid);
+    public QrcodeEntity get(String openid);
 }
