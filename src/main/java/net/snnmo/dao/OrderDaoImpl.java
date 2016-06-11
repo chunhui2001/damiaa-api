@@ -9,10 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.beans.Expression;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by cc on 16/2/15.
@@ -21,6 +18,24 @@ public class OrderDaoImpl implements IOrderDAO {
 
     private IOrderEventDAO orderEventDao;
     private IUserDAO userDao;
+    private IAddrDAO addrDao;
+    private IGoodsDAO goodsDao;
+
+    public IAddrDAO getAddrDao() {
+        return addrDao;
+    }
+
+    public void setAddrDao(IAddrDAO addrDao) {
+        this.addrDao = addrDao;
+    }
+
+    public IGoodsDAO getGoodsDao() {
+        return goodsDao;
+    }
+
+    public void setGoodsDao(IGoodsDAO goodsDao) {
+        this.goodsDao = goodsDao;
+    }
 
     public IUserDAO getUserDao() {
         return userDao;
@@ -87,22 +102,184 @@ public class OrderDaoImpl implements IOrderDAO {
         return orderCount;
     }
 
+//    @Override
+//    @Transactional
+//    public OrderEntity create(UserEntity user, PayMethod payMethod, AddressEntity addr
+//            , Map<GoodsEntity, Integer> goodsList) throws DbException {
+//
+//
+//        OrderEntity order = new OrderEntity();
+//
+//        order.setUserId(user.getId());
+//        order.setPayMethod(payMethod);
+//        order.setStatus(OrderStatus.PENDING);
+//        order.setAddress(addr.getProvince().split("\\(")[0] +
+//                " " + addr.getCity().split("\\(")[0] +
+//                " " + addr.getArea().split("\\(")[0] +
+//                " " + addr.getStreet() + " " + addr.getDetail());
+//        order.setPhone(addr.getLinkPone());
+//        order.setReceiveMan(addr.getLinkMan());
+//
+//        double DELIVERY_SINGLE_COSTS = 5.00;//deliverySingleCosts
+//
+//        double itemMoney        = 0.00;
+//        double freightMoney     = 0.00;
+//        double orderMoney       = 0.00;
+//        double exemptionMoney   = 0.00;
+//
+//        Collection<OrderItemsEntity> listOfOrderItems = new ArrayList<>();
+//
+//        for (Map.Entry<GoodsEntity, Integer> goodsEntityIntegerEntry : goodsList.entrySet()) {
+//
+//            GoodsEntity currentGoods    = goodsEntityIntegerEntry.getKey();         // 购买的商品
+//            Integer currentCount        = goodsEntityIntegerEntry.getValue();       // 购买数量
+//
+//            double price    = 0;
+//            double freight  = 0;
+//
+//            if (user.getRoles().indexOf(UserRole.ROLE_VIP.toString()) != -1) {
+//                price   = currentGoods.getVipPrice();
+//            }
+//
+//            if (user.getRoles().indexOf(UserRole.ROLE_SUPER_VIP.toString()) != -1) {
+//                price   = currentGoods.getSuperVIPPrice();
+//            }
+//
+//            if (price == 0)
+//                price = currentGoods.getMarketPrice();
+//
+//            itemMoney += price * currentCount;
+//
+//            //count >=3 ? (0).toFixed(2) : (count + singlePrice - 1).toFixed(2);
+//
+//            if (currentCount >= 3) freight = 0;
+//            else freight = currentCount + DELIVERY_SINGLE_COSTS - 1;
+//
+//            freightMoney += freight;
+//
+//            OrderItemsEntity orderItem = new OrderItemsEntity();
+//
+//            orderItem.setOrder(order);
+//            orderItem.setGoods(currentGoods);
+//            orderItem.setCount(currentCount);
+//            orderItem.setFreight(freight);
+//            orderItem.setGoodsName(currentGoods.getName());
+//            orderItem.setSinglePrice(price);
+//            orderItem.setTotalPrice(price * currentCount);
+//            orderItem.setSpecialAttribute(null);
+//
+//            listOfOrderItems.add(orderItem);
+//
+//
+//            //this.sessionFactory.getCurrentSession().save(orderItem);
+//        }
+//        freightMoney = 0;
+//        orderMoney = itemMoney + freightMoney - exemptionMoney;
+//
+//        order.setExemptionMoney(exemptionMoney);         // 减免金额
+//        order.setFreightMoney(freightMoney);             // 运费
+//        order.setItemMoney(itemMoney);                   // 商品总金额
+//        order.setOrderMoney(orderMoney);                 // 订单总金额
+//        order.setOpenId(user.getOpenId());
+//
+//        order.setListOfItems(listOfOrderItems);
+//
+//
+//        this.addEvent(OrderStatus.PENDING, order, null, null);
+//        this.sessionFactory.getCurrentSession().save(order);
+//
+//        return order;
+//    }
+
+
+
     @Override
     @Transactional
-    public OrderEntity create(UserEntity user, PayMethod payMethod, AddressEntity addr
-            , Map<GoodsEntity, Integer> goodsList) throws DbException {
+    public OrderEntity create(UserEntity user, Map<String, String> params) throws DbException {
+
+        PayMethod payMethod                 = null;
+        AddressEntity addrEntity            = null;
+        Map<GoodsEntity, Integer> goodsList = new HashMap<GoodsEntity, Integer>();
+        Boolean auto_create                 = false;
+        String[] paramsBody                 = {"paymethod", "addrid", "auto_create", "openid", "ticket"};
+        String userId                       = user == null ? null : user.getId();
+        String userOpenid                   = user == null ? null : user.getOpenId();
+        String ticket                       = null;
+
+        if (params.containsKey("auto_create") && params.get("auto_create") == "true") {
+            auto_create     = true;
+        }
+
+        for (Map.Entry<String, String> param : params.entrySet()) {
+
+            if (Arrays.asList(paramsBody).indexOf(param.getKey().toLowerCase()) != -1) {
+                if (param.getKey().toLowerCase().equals("paymethod")) {
+                    if (param.getValue().equals("1")) {
+                        payMethod = PayMethod.WCHAT;
+                    } else if (param.getValue().equals("2")) {
+                        payMethod = PayMethod.ARRIVED;
+                    } else if (param.getValue().equals("3")) {
+                        payMethod = PayMethod.ZHIFUBAO;
+                    } else {
+                        throw new DbException("支付方式有误!");
+                    }
+                } else if (param.getKey().toLowerCase().equals("addrid") && user != null) {
+                    // 根据收获地址id去的收货地址
+                    addrEntity   = addrDao.get(Integer.valueOf(param.getValue()), user.getId());
+
+                    if (addrEntity == null)
+                        throw new DbException("收货地址有误!");
+                }
+
+                if (param.getKey().toLowerCase().equals("openid")) {
+                    userOpenid  = param.getValue();
+                    // 根据 openid 找用户, 根据用户下单
+                }
+
+                if (param.getKey().toLowerCase().equals("ticket")) {
+                    ticket  = param.getValue();
+
+                    // 根据 ticket 到 QRCODES 表中找 openid
+                    // 根据 openid 找 partner id
+                    // TODO
+                }
+
+            } else {
+                // 根据商品id取得商品
+                GoodsEntity goods   = goodsDao.get(param.getKey());
+
+                if (goods == null) {
+                    throw new DbException("提供的商品id有误("+param.getKey()+")!");
+                }
+
+                goodsList.put(goods, Integer.valueOf(param.getValue()));
+            }
+        }
+
+        if (payMethod == null)
+            throw new DbException("请提供支付方式(paymethod)!");
+
+        if (addrEntity == null && !auto_create)
+            throw new DbException("请提供收获地址(addrid)!");
+
+        if (goodsList.size() == 0)
+            throw new DbException("请提供商品列表");
 
         OrderEntity order = new OrderEntity();
 
-        order.setUserId(user.getId());
+        order.setUserId(userId);
         order.setPayMethod(payMethod);
         order.setStatus(OrderStatus.PENDING);
-        order.setAddress(addr.getProvince().split("\\(")[0] +
-                " " + addr.getCity().split("\\(")[0] +
-                " " + addr.getArea().split("\\(")[0] +
-                " " + addr.getStreet() + " " + addr.getDetail());
-        order.setPhone(addr.getLinkPone());
-        order.setReceiveMan(addr.getLinkMan());
+
+        if (addrEntity != null) {
+            order.setAddress(addrEntity.getProvince().split("\\(")[0] +
+                    " " + addrEntity.getCity().split("\\(")[0] +
+                    " " + addrEntity.getArea().split("\\(")[0] +
+                    " " + addrEntity.getStreet() + " " + addrEntity.getDetail());
+            order.setPhone(addrEntity.getLinkPone());
+            order.setReceiveMan(addrEntity.getLinkMan());
+        }
+
 
         double DELIVERY_SINGLE_COSTS = 5.00;//deliverySingleCosts
 
@@ -121,12 +298,11 @@ public class OrderDaoImpl implements IOrderDAO {
             double price    = 0;
             double freight  = 0;
 
-            if (user.getRoles().indexOf(UserRole.ROLE_VIP.toString()) != -1) {
-                price   = currentGoods.getVipPrice();
-            }
-
-            if (user.getRoles().indexOf(UserRole.ROLE_SUPER_VIP.toString()) != -1) {
-                price   = currentGoods.getSuperVIPPrice();
+            if (user != null) {
+                if (user.getRoles().indexOf(UserRole.ROLE_VIP.toString()) != -1)
+                    price   = currentGoods.getVipPrice();
+                if (user.getRoles().indexOf(UserRole.ROLE_SUPER_VIP.toString()) != -1)
+                    price   = currentGoods.getSuperVIPPrice();
             }
 
             if (price == 0)
@@ -154,9 +330,8 @@ public class OrderDaoImpl implements IOrderDAO {
 
             listOfOrderItems.add(orderItem);
 
-
-            //this.sessionFactory.getCurrentSession().save(orderItem);
         }
+
         freightMoney = 0;
         orderMoney = itemMoney + freightMoney - exemptionMoney;
 
@@ -164,10 +339,9 @@ public class OrderDaoImpl implements IOrderDAO {
         order.setFreightMoney(freightMoney);             // 运费
         order.setItemMoney(itemMoney);                   // 商品总金额
         order.setOrderMoney(orderMoney);                 // 订单总金额
-        order.setOpenId(user.getOpenId());
+        order.setOpenId(userOpenid);
 
         order.setListOfItems(listOfOrderItems);
-
 
         this.addEvent(OrderStatus.PENDING, order, null, null);
         this.sessionFactory.getCurrentSession().save(order);

@@ -80,6 +80,8 @@
         </constructor-arg>
         <property name="orderEventDao" ref="orderEventDaoImpl" />
         <property name="userDao" ref="userDaoImpl" />
+        <property name="addrDao" ref="addrDaoImpl" />
+        <property name="goodsDao" ref="goodsDaoImpl" />
     </bean>
 
 

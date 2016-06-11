@@ -92,7 +92,7 @@ public class HomeController extends BaseController {
 
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:sss");
 
-        mv.addObject("message", "Welcome to Spring MVC index page 4: ~ "
+        mv.addObject("message", "Welcome to Spring MVC index page 5: ~ "
                 + this.message);
 
 //        Common.SendSimpleMessage(

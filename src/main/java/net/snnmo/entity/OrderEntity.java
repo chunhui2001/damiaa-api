@@ -70,7 +70,7 @@ public class OrderEntity implements Serializable {
     @Enumerated(EnumType.STRING)
     private PayMethod payMethod;
 
-    @Column(name="ADDRESS", nullable = false, length=255)
+    @Column(name="ADDRESS", nullable = true, length=255)
     private String address;     // 订单地址
 
     @Column(name="PHONE", nullable = false, length=25)

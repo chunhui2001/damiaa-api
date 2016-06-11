@@ -13,8 +13,10 @@ import java.util.Map;
  * Created by cc on 16/2/15.
  */
 public interface IOrderDAO {
-    public OrderEntity create(UserEntity user, PayMethod payMethod, AddressEntity addr
-            , Map<GoodsEntity, Integer> goodsList) throws DbException;
+//    public OrderEntity create(UserEntity user, PayMethod payMethod, AddressEntity addr
+//            , Map<GoodsEntity, Integer> goodsList) throws DbException;
+
+    public OrderEntity create(UserEntity user, Map<String, String> params) throws DbException;
 
     public void update(OrderEntity order);
 
