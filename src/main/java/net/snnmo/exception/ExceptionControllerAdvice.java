@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class ExceptionControllerAdvice {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResult> exception(Exception e) {
-System.out.println(e);
+
         ApiResult result = new ApiResult();
 
         String message = e.getCause() == null ? e.getMessage() : e.getCause().getMessage();
@@ -21,6 +21,10 @@ System.out.println(e);
         result.serError(true);
         result.setMessage(message);
         result.setStatus(HttpStatus.BAD_REQUEST);
+
+        if (e.getClass().getName().equals("net.snnmo.exception.UserNotExistsException")) {
+            result.setStatus(HttpStatus.NOT_ACCEPTABLE);
+        }
 
         return new ResponseEntity<ApiResult>(result, result.getStatus());
     }

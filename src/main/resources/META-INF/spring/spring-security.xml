@@ -27,6 +27,8 @@
     <sec:http pattern="/upload" security="none"/>
     <sec:http pattern="/payment-completed/" security="none"/>
     <sec:http pattern="/payment-completed" security="none"/>
+    <sec:http pattern="/create-order-auto/" security="none"/>
+    <sec:http pattern="/create-order-auto" security="none"/>
     <sec:http pattern="/flush-order/" security="none"/>
     <sec:http pattern="/flush-order" security="none"/>
     <sec:http pattern="/orderlist/**" security="none"/>

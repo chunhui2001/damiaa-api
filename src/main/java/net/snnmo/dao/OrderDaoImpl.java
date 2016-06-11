@@ -3,6 +3,7 @@ package net.snnmo.dao;
 import net.snnmo.assist.*;
 import net.snnmo.entity.*;
 import net.snnmo.exception.DbException;
+import net.snnmo.exception.UserNotExistsException;
 import org.hibernate.*;
 import org.hibernate.criterion.*;
 import org.springframework.transaction.annotation.Transactional;
@@ -195,20 +196,28 @@ public class OrderDaoImpl implements IOrderDAO {
 
     @Override
     @Transactional
-    public OrderEntity create(UserEntity user, Map<String, String> params) throws DbException {
+    public OrderEntity create(UserEntity user, Map<String, String> params) throws Exception {
 
         PayMethod payMethod                 = null;
         AddressEntity addrEntity            = null;
         Map<GoodsEntity, Integer> goodsList = new HashMap<GoodsEntity, Integer>();
         Boolean auto_create                 = false;
         String[] paramsBody                 = {"paymethod", "addrid", "auto_create", "openid", "ticket"};
-        String userId                       = user == null ? null : user.getId();
-        String userOpenid                   = user == null ? null : user.getOpenId();
         String ticket                       = null;
 
         if (params.containsKey("auto_create") && params.get("auto_create") == "true") {
             auto_create     = true;
         }
+
+        if (auto_create) {
+            user = userDao.getUser(params.get("openid"));
+            if (user == null)
+                throw new UserNotExistsException("用户未注册!");
+        }
+
+
+        String userId                       = user == null ? null : user.getId();
+        String userOpenid                   = user == null ? null : user.getOpenId();
 
         for (Map.Entry<String, String> param : params.entrySet()) {
 
@@ -229,11 +238,6 @@ public class OrderDaoImpl implements IOrderDAO {
 
                     if (addrEntity == null)
                         throw new DbException("收货地址有误!");
-                }
-
-                if (param.getKey().toLowerCase().equals("openid")) {
-                    userOpenid  = param.getValue();
-                    // 根据 openid 找用户, 根据用户下单
                 }
 
                 if (param.getKey().toLowerCase().equals("ticket")) {

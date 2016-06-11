@@ -11,6 +11,7 @@ import java.util.Collection;
 public interface IUserDAO {
     public Collection<UserEntity> list();
     public UserEntity get(String userid);
+    public UserEntity getUser(String openid);
     public void delete(String userid);
     public void create(UserEntity user);
     public void saveOrUpdate(UserEntity user);

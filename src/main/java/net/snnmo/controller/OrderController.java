@@ -78,7 +78,7 @@ public class OrderController extends BaseController {
                 headers="Accept=application/json",
                 produces = { "application/json" })
     public ResponseEntity<ApiResult> index(
-            @RequestBody Map<String, String> params, HttpServletRequest request) throws DbException {
+            @RequestBody Map<String, String> params, HttpServletRequest request) throws Exception {
 
 //        curl -v -X POST -H "Accept: application/json"
 //                -H "Content-Type: application/json"

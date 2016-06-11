@@ -9,6 +9,7 @@ import net.snnmo.dao.IQrcodeDAO;
 import net.snnmo.entity.OrderEntity;
 import net.snnmo.entity.OrderEventEntity;
 import net.snnmo.entity.QrcodeEntity;
+import net.snnmo.entity.UserEntity;
 import net.snnmo.exception.DbException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -73,6 +74,41 @@ public class CommonController extends BaseController {
 
         return new ResponseEntity<ApiResult>(sendResult, HttpStatus.OK);
     }
+
+
+
+
+
+
+
+    @RequestMapping(value = {"/create-order-auto/", "/create-order-auto"}, method = RequestMethod.POST)
+    public ResponseEntity<ApiResult> createOrder(
+            @RequestBody Map<String, String> params
+    ) throws Exception {
+
+
+//        curl -v -X POST -H "Accept: application/json"
+//                -H "Content-Type: application/json"
+//                -H "Authorization: Bearer 812d866f-de27-478b-90c8-b1e2a5ebef16"
+//                --data '{"payMethod": "2"}' http://127.0.0.1:8088/order/
+
+
+        ApiResult result = new ApiResult();
+
+        // key : 产品id
+        // val : 购买数量
+        // payMethod : 支付方式
+        // openid : openid
+        // ticket : 二维码票据
+
+        OrderEntity order = orderDao.create(null, params);
+
+        result.setData(order);
+
+        return new ResponseEntity<ApiResult>(result, HttpStatus.OK);
+    }
+
+
 
     @RequestMapping(value = {"/flush-order", "/flush-order/"})
     public ResponseEntity<ApiResult> flushOrder(

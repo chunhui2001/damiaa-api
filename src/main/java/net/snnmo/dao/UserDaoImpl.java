@@ -48,6 +48,14 @@ public class UserDaoImpl implements IUserDAO {
     }
 
     @Override
+    public UserEntity getUser(String openid) {
+        Session session = this.sessionFactory.getCurrentSession();
+        Query query = session.createQuery("from UserEntity where openId=:openid");
+        query.setParameter("openid", openid);
+        return (UserEntity)query.uniqueResult();
+    }
+
+    @Override
     @Transactional
     public void delete(String userid) {
         this.sessionFactory.getCurrentSession().delete(this.get(userid));
