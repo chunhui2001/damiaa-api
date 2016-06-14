@@ -34,6 +34,12 @@ public class QrcodeEntity implements Serializable {
     @Column(name = "DESCRIPTION", nullable = true, length=1024)
     private String description;     // 该二维码的描述信息
 
+    @Column(name = "MEDIA_ID", nullable = true, length=1024)
+    private String mediaId;         // 资源id
+
+    @Column(name = "MEDIA_URL", nullable = true, length=1024)
+    private String mediaUrl;         // 资源url
+
     @Column(name = "BELONG_TO", nullable = true, length=65)
     private String belongTo;        // 该二维码属于谁, 可能是一个 openid, 也可能是用户id, 默认是用户id, 如果是 openid 以 openid: 开头
 
@@ -85,6 +91,22 @@ public class QrcodeEntity implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getMediaUrl() {
+        return mediaUrl;
+    }
+
+    public void setMediaUrl(String mediaUrl) {
+        this.mediaUrl = mediaUrl;
+    }
+
+    public String getMediaId() {
+        return mediaId;
+    }
+
+    public void setMediaId(String mediaId) {
+        this.mediaId = mediaId;
     }
 
     public String getBelongTo() {
