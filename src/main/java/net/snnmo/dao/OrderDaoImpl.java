@@ -65,7 +65,7 @@ public class OrderDaoImpl implements IOrderDAO {
     public Collection<OrderEntity> list(String userid) {
         Session s = this.sessionFactory.getCurrentSession();
 
-        Query query = s.createQuery("from OrderEntity where userId=:userId and status != :status order by id desc");
+        Query query = s.createQuery("from OrderEntity where userId=:userId and status != :status order by createTime desc");
 
         query.setParameter("userId", userid);
         query.setParameter("status", OrderStatus.DELETED);
@@ -79,7 +79,7 @@ public class OrderDaoImpl implements IOrderDAO {
     public Collection<OrderEntity> list(OrderStatus[] statusArr) {
         Session s = this.sessionFactory.getCurrentSession();
 
-        Query query = s.createQuery("from OrderEntity where status in (:status) order by id desc");
+        Query query = s.createQuery("from OrderEntity where status in (:status) order by createTime desc");
 
         query.setParameterList("status", statusArr);
 
