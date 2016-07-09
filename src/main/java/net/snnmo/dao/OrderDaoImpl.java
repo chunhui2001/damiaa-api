@@ -336,6 +336,8 @@ public class OrderDaoImpl implements IOrderDAO {
 
         }
 
+        freightMoney = 9.5;
+
         freightMoney = 0;
         orderMoney = itemMoney + freightMoney - exemptionMoney;
 
