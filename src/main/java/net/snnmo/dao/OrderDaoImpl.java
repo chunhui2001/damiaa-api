@@ -276,10 +276,7 @@ public class OrderDaoImpl implements IOrderDAO {
         order.setStatus(OrderStatus.PENDING);
 
         if (addrEntity != null) {
-            order.setAddress(addrEntity.getProvince().split("\\(")[0] +
-                    " " + addrEntity.getCity().split("\\(")[0] +
-                    " " + addrEntity.getArea().split("\\(")[0] +
-                    " " + addrEntity.getStreet() + " " + addrEntity.getDetail());
+            order.setAddress(addrEntity.getAddressString());
             order.setPhone(addrEntity.getLinkPone());
             order.setReceiveMan(addrEntity.getLinkMan());
         }
@@ -336,9 +333,6 @@ public class OrderDaoImpl implements IOrderDAO {
 
         }
 
-        freightMoney = 9.5;
-
-        freightMoney = 0;
         orderMoney = itemMoney + freightMoney - exemptionMoney;
 
         order.setExemptionMoney(exemptionMoney);         // 减免金额

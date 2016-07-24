@@ -141,4 +141,11 @@ public class AddressEntity implements Serializable {
     public void setDefaults(Boolean defaults) {
         this.defaults = defaults;
     }
+
+    public String getAddressString() {
+        return this.getProvince().split("\\(")[0] +
+                " " + this.getCity().split("\\(")[0] +
+                " " + this.getArea().split("\\(")[0] +
+                " " + this.getStreet() + " " + this.getDetail();
+    }
 }

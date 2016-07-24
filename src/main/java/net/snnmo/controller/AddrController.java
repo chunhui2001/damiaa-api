@@ -4,8 +4,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.Deserializers;
 import net.snnmo.assist.ApiResult;
 import net.snnmo.dao.IAddrDAO;
+import net.snnmo.dao.IOrderDAO;
 import net.snnmo.dao.IUserDAO;
 import net.snnmo.entity.AddressEntity;
+import net.snnmo.entity.OrderEntity;
 import net.snnmo.exception.DbException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +29,16 @@ public class AddrController extends BaseController {
 
     private IUserDAO userDao;
     private IAddrDAO addrDao;
+
+    public IOrderDAO getOrderDao() {
+        return orderDao;
+    }
+
+    public void setOrderDao(IOrderDAO orderDao) {
+        this.orderDao = orderDao;
+    }
+
+    private IOrderDAO orderDao;
 
     @RequestMapping(value={"", "/"}, method = RequestMethod.POST)
     public ResponseEntity<ApiResult> index(
@@ -102,6 +114,35 @@ public class AddrController extends BaseController {
 
         return new ResponseEntity<ApiResult>(result, HttpStatus.OK);
     }
+
+
+
+    @RequestMapping(value={"/update_addr"},
+            method = RequestMethod.POST,
+            headers="Accept=application/json",
+            produces = {"application/json"})
+    public ResponseEntity<ApiResult> updateAddr(
+            @RequestBody JsonNode params) throws Exception {
+
+        int addrid = params.get("addrid").asInt();
+        String orderId = params.get("orderId").asText();
+
+        ApiResult result = new ApiResult();
+
+        OrderEntity order = orderDao.get(orderId, userDao.findByName(this.getCurrentUserName()));
+        AddressEntity addr  = addrDao.get(addrid);
+
+        order.setReceiveMan(addr.getLinkMan());
+        order.setPhone(addr.getLinkPone());
+        order.setAddress(addr.getAddressString());
+
+        orderDao.update(order);
+
+        result.setData(order);
+
+        return new ResponseEntity<ApiResult>(result, HttpStatus.OK);
+    }
+
 
 
     public IUserDAO getUserDao() {

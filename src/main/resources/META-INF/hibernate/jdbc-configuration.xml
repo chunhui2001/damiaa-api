@@ -139,6 +139,7 @@
     <bean id="addrController" class="net.snnmo.controller.AddrController" scope="prototype">
         <property name="userDao" ref="userDaoImpl" />
         <property name="addrDao" ref="addrDaoImpl" />
+        <property name="orderDao" ref="orderDaoImpl" />
     </bean>
 
 
