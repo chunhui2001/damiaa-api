@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.beans.Expression;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import net.snnmo.assist.Common;
 
 /**
  * Created by cc on 16/2/15.
@@ -345,6 +346,11 @@ public class OrderDaoImpl implements IOrderDAO {
 
         this.addEvent(OrderStatus.PENDING, order, null, null);
         this.sessionFactory.getCurrentSession().save(order);
+
+        // TODO
+        String prePayId     = Common.UnifiedOrder(order);
+        order.setPrePayId(prePayId);
+        this.sessionFactory.getCurrentSession().update(order);
 
         return order;
     }

@@ -224,4 +224,45 @@ public class Common {
 
         return  orderListMap;
     }
+
+
+    public static String UnifiedOrder(OrderEntity orderParams) {
+
+        // TODO
+//        var currentOrder 	= result.data;
+//        var isTest 			= ['ofnVVw9aVxkxSfvvW373yuMYT7fs'].indexOf(currentOrder.openId) != -1;
+//
+//
+//        var theParams 		= {
+//                body 			: 'AA精米 特级米 现磨现卖', 			// 'AA精米 特级米 现磨现卖'
+//                out_trade_no 	: currentOrder.id,			//
+//                total_fee 		: isTest ? 1 : currentOrder.orderMoney * 100,	//
+//                userid 			: currentOrder.userId,		//
+//                openid 			: currentOrder.openId		//
+//        };
+//
+//        httpClient(endpoints_unified_order, {orderParams: theParams}
+//        , 'post', {type: tokenType, token: userToken}, function(newError, newResult) {
+//
+//            if (newError) {
+//                sendResult2.error 	= true;
+//                sendResult2.data 	= newError;
+//                sendResult2.message = newError;
+//                return res.json(sendResult2);
+//            }
+//
+//            if (newResult.error) {
+//                sendResult2.data 	= newResult.data;
+//                sendResult2.message = newResult.message;
+//                sendResult2.error 	= newResult.error;
+//                return res.json(sendResult2);
+//            }
+//
+//            // 预订单创建成功, 订单号更新订单， 把 prepay_id 存储到订单表中
+//            var userid 		= currentOrder.userId;
+//            var order_id 	= currentOrder.id;
+//            var prepay_id 	= newResult.data.prepay_id;
+//
+        return "prepay_id";
+    }
 }
