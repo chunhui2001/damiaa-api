@@ -34,6 +34,7 @@
     <sec:http pattern="/orderlist/**" security="none"/>
     <sec:http pattern="/push-events/**" security="none"/>
     <sec:http pattern="/get-qrcode/*" security="none"/>
+    <sec:http pattern="/unified-order" security="none"/>
     <sec:http pattern="/" security="none"/>
 
 

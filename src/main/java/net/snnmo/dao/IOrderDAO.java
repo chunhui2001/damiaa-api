@@ -33,7 +33,7 @@ public interface IOrderDAO {
 
     public OrderEntity get(String orderid, UserEntity user);
 
-    public OrderEntity get(String orderid, String userid);
+    public OrderEntity get(String orderid, String useridOrOpenid);
 
     public Collection<OrderItemsEntity> items(String orderid);
 

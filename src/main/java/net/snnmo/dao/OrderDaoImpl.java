@@ -6,6 +6,7 @@ import net.snnmo.exception.DbException;
 import net.snnmo.exception.UserNotExistsException;
 import org.hibernate.*;
 import org.hibernate.criterion.*;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.beans.Expression;
@@ -17,6 +18,10 @@ import net.snnmo.assist.Common;
  * Created by cc on 16/2/15.
  */
 public class OrderDaoImpl implements IOrderDAO {
+
+
+    @Value("http://${WCHAT_SERVER_HOSTNAME}/unifiedorder")
+    private String wchatServerHost;
 
     private IOrderEventDAO orderEventDao;
     private IUserDAO userDao;
@@ -348,7 +353,7 @@ public class OrderDaoImpl implements IOrderDAO {
         this.sessionFactory.getCurrentSession().save(order);
 
         // TODO
-        String prePayId     = Common.UnifiedOrder(order);
+        String prePayId     = Common.UnifiedOrder(wchatServerHost, order);
         order.setPrePayId(prePayId);
         this.sessionFactory.getCurrentSession().update(order);
 
@@ -493,18 +498,18 @@ public class OrderDaoImpl implements IOrderDAO {
 
     @Override
     @Transactional
-    public OrderEntity get(String orderid, String userid) {
+    public OrderEntity get(String orderid, String useridOrOpenid) {
 
         Session session = this.sessionFactory.getCurrentSession();
 
         Query query = session.createQuery(
                 "from OrderEntity where id=:orderid"
-                        + (userid.isEmpty() ? "" : " and userId=:userid"));
+                        + (useridOrOpenid.isEmpty() ? "" : " and (userId=:userid or openId=:userid)"));
 
         query.setParameter("orderid", orderid);
 
-        if (!userid.isEmpty())
-            query.setParameter("userid", userid);
+        if (!useridOrOpenid.isEmpty())
+            query.setParameter("userid", useridOrOpenid);
 
         return (OrderEntity)query.uniqueResult();
     }

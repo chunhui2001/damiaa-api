@@ -1,6 +1,7 @@
 package net.snnmo.assist;
 
 import com.google.common.base.CharMatcher;
+import com.google.gson.Gson;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
@@ -9,6 +10,8 @@ import com.sun.jersey.core.util.MultivaluedMapImpl;
 import net.snnmo.dao.IOrderDAO;
 import net.snnmo.entity.OrderEntity;
 import org.apache.commons.beanutils.PropertyUtils;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 
 import javax.ws.rs.core.MediaType;
 import java.lang.reflect.Field;
@@ -20,6 +23,8 @@ import java.util.*;
  * Created by cc on 16/2/14.
  */
 public class Common {
+
+
     public static String randomNumbers(int numberCount) {
 
         if (numberCount > 10 ) numberCount = 10;
@@ -226,43 +231,42 @@ public class Common {
     }
 
 
-    public static String UnifiedOrder(OrderEntity orderParams) {
+    public static String UnifiedOrder(String url, OrderEntity orderEntity) throws Exception {
 
-        // TODO
-//        var currentOrder 	= result.data;
-//        var isTest 			= ['ofnVVw9aVxkxSfvvW373yuMYT7fs'].indexOf(currentOrder.openId) != -1;
-//
-//
-//        var theParams 		= {
-//                body 			: 'AA精米 特级米 现磨现卖', 			// 'AA精米 特级米 现磨现卖'
-//                out_trade_no 	: currentOrder.id,			//
-//                total_fee 		: isTest ? 1 : currentOrder.orderMoney * 100,	//
-//                userid 			: currentOrder.userId,		//
-//                openid 			: currentOrder.openId		//
-//        };
-//
-//        httpClient(endpoints_unified_order, {orderParams: theParams}
-//        , 'post', {type: tokenType, token: userToken}, function(newError, newResult) {
-//
-//            if (newError) {
-//                sendResult2.error 	= true;
-//                sendResult2.data 	= newError;
-//                sendResult2.message = newError;
-//                return res.json(sendResult2);
-//            }
-//
-//            if (newResult.error) {
-//                sendResult2.data 	= newResult.data;
-//                sendResult2.message = newResult.message;
-//                sendResult2.error 	= newResult.error;
-//                return res.json(sendResult2);
-//            }
-//
-//            // 预订单创建成功, 订单号更新订单， 把 prepay_id 存储到订单表中
-//            var userid 		= currentOrder.userId;
-//            var order_id 	= currentOrder.id;
-//            var prepay_id 	= newResult.data.prepay_id;
-//
-        return "prepay_id";
+        Boolean isTest = "ofnVVw9aVxkxSfvvW373yuMYT7fs" == orderEntity.getOpenId();
+        String endpoints_unified_order = url;//"http://localhost:8009/unifiedorder";
+        Map<String, Object> params = new HashMap<>() ;
+
+        params.put("body", "AA精米 特级米 现磨现卖");
+        params.put("out_trade_no", orderEntity.getId());
+        params.put("total_fee", isTest ? (1 + "") : (((int)orderEntity.getOrderMoney() * 100) + ""));
+        params.put("userid", orderEntity.getUserId());
+        params.put("openid", orderEntity.getOpenId());
+
+        Map<String, Object> newParams = new HashMap<>();
+        newParams.put("orderParams", params);
+
+        String result = HttpClient.post(endpoints_unified_order, newParams, null);
+
+        //{"error":false,"message":"创建预支付订单成功。",
+        //"data":{"return_code":"SUCCESS","return_msg":"OK",
+        // "appid":"wxbfbeee15bbe621e6","mch_id":"1315577401","nonce_str":"DrBvIFx8MXwajH93",
+        // "sign":"C6D2007370207A4A242138B143543D72","result_code":"SUCCESS",
+        // "prepay_id":"wx20160725234543b216f91f380164454830","trade_type":"JSAPI"}}
+
+        Gson gson = new Gson();
+        Map<String, Object> jsonResult = gson.fromJson(result, Map.class);
+
+        ApiResult sendResult = new ApiResult();
+
+        if ((Boolean)jsonResult.get("error")) {
+            return null;
+        }
+
+        Map<String, Object> data = (Map<String, Object>)jsonResult.get("data");
+
+//        sendResult.setData(data.get("prepay_id").toString());
+
+        return data.get("prepay_id").toString();
     }
 }

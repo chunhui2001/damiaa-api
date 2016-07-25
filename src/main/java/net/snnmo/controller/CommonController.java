@@ -11,6 +11,9 @@ import net.snnmo.entity.OrderEventEntity;
 import net.snnmo.entity.QrcodeEntity;
 import net.snnmo.entity.UserEntity;
 import net.snnmo.exception.DbException;
+
+import net.snnmo.assist.Common;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
@@ -36,6 +39,10 @@ public class CommonController extends BaseController {
 
     @Value("${customer.token}")
     private String myToken;
+
+    @Value("http://${WCHAT_SERVER_HOSTNAME}/unifiedorder")
+    private String wchatServerHost;
+
 
     public IOrderDAO getOrderDao() {
         return orderDao;
@@ -281,5 +288,32 @@ public class CommonController extends BaseController {
 
 
         return new ResponseEntity<ApiResult>(sendResult, sendResult.getStatus());
+    }
+
+
+
+    @RequestMapping(value = {"/unified-order/", "/unified-order"}, method = RequestMethod.POST)
+    public ResponseEntity<ApiResult> unifiedOrder(
+            @RequestBody Map<String, String> params
+    ) throws Exception {
+
+        String orderid  = params.get("orderid");
+        String openid   = params.get("openid");
+
+        OrderEntity order = orderDao.get(orderid, openid);
+
+        ApiResult sendResult = new ApiResult();
+
+        if (order == null) {
+            sendResult.setStatus(HttpStatus.BAD_REQUEST);
+            sendResult.setMessage("Invalid Params");
+            return new ResponseEntity<ApiResult>(sendResult, sendResult.getStatus());
+        }
+
+
+        sendResult.setData(Common.UnifiedOrder(wchatServerHost, order));
+
+        return new ResponseEntity<ApiResult>(sendResult, sendResult.getStatus());
+
     }
 }
