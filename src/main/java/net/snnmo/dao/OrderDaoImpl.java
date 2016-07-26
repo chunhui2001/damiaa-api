@@ -109,94 +109,6 @@ public class OrderDaoImpl implements IOrderDAO {
         return orderCount;
     }
 
-//    @Override
-//    @Transactional
-//    public OrderEntity create(UserEntity user, PayMethod payMethod, AddressEntity addr
-//            , Map<GoodsEntity, Integer> goodsList) throws DbException {
-//
-//
-//        OrderEntity order = new OrderEntity();
-//
-//        order.setUserId(user.getId());
-//        order.setPayMethod(payMethod);
-//        order.setStatus(OrderStatus.PENDING);
-//        order.setAddress(addr.getProvince().split("\\(")[0] +
-//                " " + addr.getCity().split("\\(")[0] +
-//                " " + addr.getArea().split("\\(")[0] +
-//                " " + addr.getStreet() + " " + addr.getDetail());
-//        order.setPhone(addr.getLinkPone());
-//        order.setReceiveMan(addr.getLinkMan());
-//
-//        double DELIVERY_SINGLE_COSTS = 5.00;//deliverySingleCosts
-//
-//        double itemMoney        = 0.00;
-//        double freightMoney     = 0.00;
-//        double orderMoney       = 0.00;
-//        double exemptionMoney   = 0.00;
-//
-//        Collection<OrderItemsEntity> listOfOrderItems = new ArrayList<>();
-//
-//        for (Map.Entry<GoodsEntity, Integer> goodsEntityIntegerEntry : goodsList.entrySet()) {
-//
-//            GoodsEntity currentGoods    = goodsEntityIntegerEntry.getKey();         // 购买的商品
-//            Integer currentCount        = goodsEntityIntegerEntry.getValue();       // 购买数量
-//
-//            double price    = 0;
-//            double freight  = 0;
-//
-//            if (user.getRoles().indexOf(UserRole.ROLE_VIP.toString()) != -1) {
-//                price   = currentGoods.getVipPrice();
-//            }
-//
-//            if (user.getRoles().indexOf(UserRole.ROLE_SUPER_VIP.toString()) != -1) {
-//                price   = currentGoods.getSuperVIPPrice();
-//            }
-//
-//            if (price == 0)
-//                price = currentGoods.getMarketPrice();
-//
-//            itemMoney += price * currentCount;
-//
-//            //count >=3 ? (0).toFixed(2) : (count + singlePrice - 1).toFixed(2);
-//
-//            if (currentCount >= 3) freight = 0;
-//            else freight = currentCount + DELIVERY_SINGLE_COSTS - 1;
-//
-//            freightMoney += freight;
-//
-//            OrderItemsEntity orderItem = new OrderItemsEntity();
-//
-//            orderItem.setOrder(order);
-//            orderItem.setGoods(currentGoods);
-//            orderItem.setCount(currentCount);
-//            orderItem.setFreight(freight);
-//            orderItem.setGoodsName(currentGoods.getName());
-//            orderItem.setSinglePrice(price);
-//            orderItem.setTotalPrice(price * currentCount);
-//            orderItem.setSpecialAttribute(null);
-//
-//            listOfOrderItems.add(orderItem);
-//
-//
-//            //this.sessionFactory.getCurrentSession().save(orderItem);
-//        }
-//        freightMoney = 0;
-//        orderMoney = itemMoney + freightMoney - exemptionMoney;
-//
-//        order.setExemptionMoney(exemptionMoney);         // 减免金额
-//        order.setFreightMoney(freightMoney);             // 运费
-//        order.setItemMoney(itemMoney);                   // 商品总金额
-//        order.setOrderMoney(orderMoney);                 // 订单总金额
-//        order.setOpenId(user.getOpenId());
-//
-//        order.setListOfItems(listOfOrderItems);
-//
-//
-//        this.addEvent(OrderStatus.PENDING, order, null, null);
-//        this.sessionFactory.getCurrentSession().save(order);
-//
-//        return order;
-//    }
 
 
 
@@ -269,8 +181,13 @@ public class OrderDaoImpl implements IOrderDAO {
         if (payMethod == null)
             throw new DbException("请提供支付方式(paymethod)!");
 
-        if (addrEntity == null && !auto_create)
-            throw new DbException("请提供收获地址(addrid)!");
+        if (addrEntity == null) {
+            if (auto_create) {
+                addrEntity = addrDao.get(-1, user.getId());
+            } else {
+                throw new DbException("请提供收获地址(addrid)!");
+            }
+        }
 
         if (goodsList.size() == 0)
             throw new DbException("请提供商品列表");

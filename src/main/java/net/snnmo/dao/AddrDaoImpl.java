@@ -66,11 +66,21 @@ public class AddrDaoImpl implements IAddrDAO {
 
         Session session = this.sessionFactory.getCurrentSession();
 
-        Query query = session.createQuery("from AddressEntity "  +
-                "WHERE id = :addrid and user.id = :userid");
 
+        Query query = null;
 
-        query.setParameter("addrid", addrid);
+        if (addrid == -1) {
+            // 取得唯一的收获地址或默认收货地址
+            query = session.createQuery("from AddressEntity "  +
+                    "WHERE user.id = :userid order by defaults desc, id desc");
+            query.setMaxResults(1);
+        } else {
+            query = session.createQuery("from AddressEntity "  +
+                    "WHERE id = :addrid and user.id = :userid");
+
+            query.setParameter("addrid", addrid);
+        }
+
         query.setParameter("userid", userid);
 
         return (AddressEntity) query.uniqueResult();
