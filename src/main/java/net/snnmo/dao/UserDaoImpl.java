@@ -87,6 +87,16 @@ public class UserDaoImpl implements IUserDAO {
 
     @Override
     @Transactional
+    public UserEntity findByOpenId(String openid) {
+        Criteria criteria = this.sessionFactory.getCurrentSession().createCriteria(UserEntity.class);
+        criteria.add(Restrictions.eq("openId", openid));
+
+        return (UserEntity)criteria.uniqueResult();
+    }
+
+
+    @Override
+    @Transactional
     public void addRoles(String userid, String[] listOfRoles) throws Exception {
         if (listOfRoles == null || listOfRoles.length == 0) return;
 

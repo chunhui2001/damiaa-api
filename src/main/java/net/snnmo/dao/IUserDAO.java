@@ -16,6 +16,7 @@ public interface IUserDAO {
     public void create(UserEntity user);
     public void saveOrUpdate(UserEntity user);
     public UserEntity findByName(String username);
+    public UserEntity findByOpenId(String openid);
     public void addRoles(String userid, String[] listOfRoles) throws Exception;
     public void removeRoles(String userid, String[] listOfRoles) throws Exception;
     public String resetPassword(String username, String oldPwd, String newPwd) throws Exception;

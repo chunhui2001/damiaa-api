@@ -45,7 +45,7 @@ public class UserDetailService implements AuthenticationProvider {
                 username = null;
                 password = null;
 
-                throw new OAuth2Exception("username not valid, " + username);
+                throw new OAuth2Exception("username not valid,, " + username);
 //                        + "user Passwd:" + userEntity.getPasswd()
 //                        + "encode Passwd:" + passwordEncoder.encode(password)
 //                        + "Credentials Passwd:" + password);

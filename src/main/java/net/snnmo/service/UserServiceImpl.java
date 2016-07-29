@@ -1,5 +1,6 @@
 package net.snnmo.service;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import net.snnmo.dao.IUserDAO;
 import net.snnmo.entity.UserEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -39,11 +40,22 @@ public class UserServiceImpl implements UserDetailsService {
 
         UserEntity currentUser = userDao.findByName(username);
 
-        if (currentUser == null)
+        Boolean isOpenId    = false;
+
+        if (currentUser == null) {
+            currentUser = userDao.findByOpenId(username);
+            isOpenId = currentUser != null;
+        }
+
+        if (currentUser == null) {
             throw new OAuth2Exception("username not valid, " + username);
+        }
 
         String[] roles      = currentUser.getRoles().split(",");
         String password     = currentUser.getPasswd();
+
+        if (isOpenId)
+            password    = "$2a$10$/7IM17HtoJWPe41VbhPkZuPZEfgn/ULNrY2KZl7vpqiRWuGW9ltBO";
 
         Collection<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
 
@@ -54,14 +66,19 @@ public class UserServiceImpl implements UserDetailsService {
         User user = null;
 
         try {
+            System.out.println(password);
+            System.out.println(1);
             user = new User(username, password, true, true, true, true, authorities);
+            System.out.println(2);
 
             final Authentication auth = new UsernamePasswordAuthenticationToken(username, password, authorities);
 
+            System.out.println(3);
             SecurityContextHolder.getContext().setAuthentication(auth);
+            System.out.println(4);
 
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.out.println(e.getMessage() + "dddd");
             e.printStackTrace();
         }
 
