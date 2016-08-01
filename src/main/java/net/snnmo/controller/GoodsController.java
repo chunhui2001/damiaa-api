@@ -61,8 +61,10 @@ public class GoodsController extends BaseController {
     @RequestMapping(value={"/{goodsid}", "index"},
             method = {RequestMethod.GET})
     public ResponseEntity<ApiResult> index(@PathVariable("goodsid") String goodsid) {
+
         ApiResult result    = new ApiResult();
         UserEntity user     = userDao.findByName(this.getCurrentUserName());
+
         GoodsEntity currentGoods    = goodsDao.get(goodsid);
 
         Map<String, Object> goodsDetail     = new HashMap<>();
@@ -76,7 +78,6 @@ public class GoodsController extends BaseController {
         if (user.getRoles().indexOf("ROLE_SUPER_VIP") != -1) {
             goodsDetail.put("specialPrice", currentGoods.getSuperVIPPrice());
         }
-
 
         result.setData(goodsDetail);
 

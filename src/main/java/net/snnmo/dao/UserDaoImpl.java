@@ -81,7 +81,13 @@ public class UserDaoImpl implements IUserDAO {
         Criteria criteria = this.sessionFactory.getCurrentSession().createCriteria(UserEntity.class);
         criteria.add(Restrictions.eq("name", username));
 
-        return (UserEntity)criteria.uniqueResult();
+        UserEntity user     = (UserEntity)criteria.uniqueResult();
+
+        if (user == null) {
+            user = this.findByOpenId(username);
+        }
+
+        return user;
     }
 
 
