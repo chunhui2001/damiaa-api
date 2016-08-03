@@ -208,10 +208,21 @@ public class HomeController extends BaseController {
             Boolean isExists = userDao.findByName(user.getName()) != null;
 
             if (isExists) {
-                result.setMessage("用户名已经存在!");
+                result.setMessage("exists:用户名已经存在!");
                 result.setStatus(HttpStatus.BAD_REQUEST);
 
                 return new ResponseEntity<ApiResult>(result, HttpStatus.OK);
+            } else {
+                if (user.getOpenId() != null) {
+                    isExists = userDao.findByOpenId(user.getOpenId()) != null;
+
+                    if (isExists) {
+                        result.setMessage("exists:用户名已经存在!");
+                        result.setStatus(HttpStatus.BAD_REQUEST);
+
+                        return new ResponseEntity<ApiResult>(result, HttpStatus.OK);
+                    }
+                }
             }
 
             // save user to db
