@@ -20,6 +20,7 @@ import net.snnmo.assist.Common;
 public class OrderDaoImpl implements IOrderDAO {
 
 
+
     @Value("http://${WCHAT_SERVER_HOSTNAME}/unifiedorder")
     private String wchatServerHost;
 
@@ -171,10 +172,12 @@ public class OrderDaoImpl implements IOrderDAO {
                 GoodsEntity goods   = goodsDao.get(param.getKey());
 
                 if (goods == null) {
-                    throw new DbException("提供的商品id有误("+param.getKey()+")!");
+                    // throw new DbException("提供的商品id有误("+param.getKey()+")!");
+                } else {
+                    goodsList.put(goods, Integer.valueOf(param.getValue()));
                 }
 
-                goodsList.put(goods, Integer.valueOf(param.getValue()));
+
             }
         }
 
@@ -191,6 +194,68 @@ public class OrderDaoImpl implements IOrderDAO {
 
         if (goodsList.size() == 0)
             throw new DbException("请提供商品列表");
+
+
+        Boolean isFree   = false;
+
+        if (ticket != null) {
+
+            ArrayList<Date[]> freeDateList = new ArrayList<Date[]>() {{
+                add( new Date[] {
+                        new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH).parse("2016-08-06 13:00:00"),
+                        new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH).parse("2016-08-06 20:59:59")
+                });
+                add( new Date[] {
+                        new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH).parse("2016-08-13 13:00:00"),
+                        new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH).parse("2016-08-13 20:59:59")
+                });
+                add( new Date[] {
+                        new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH).parse("2016-08-20 13:00:00"),
+                        new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH).parse("2016-08-20 20:59:59")
+                });
+                add( new Date[] {
+                        new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH).parse("2016-08-27 13:00:00"),
+                        new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH).parse("2016-08-27 20:59:59")
+                });
+                add( new Date[] {
+                        new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH).parse("2016-09-03 13:00:00"),
+                        new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH).parse("2016-09-03 20:59:59")
+                });
+            }};
+//
+//            freeDateList.add(new Date[] {
+//                    new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH).parse("2016-08-01 22:00:00"),
+//                    new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH).parse("2016-08-05 11:59:59")
+//            });
+
+            // 1. 取得当前时间, 如果当前时间在指定时间范围内则将当前商品为免费商品
+            Date currentTime = Calendar.getInstance(TimeZone.getDefault()).getTime();
+
+            for (Date[] d : freeDateList) {
+
+                Date begin  = d[0];
+                Date end    = d[1];
+
+                if (currentTime.after(begin) && currentTime.before(end)) {
+                    isFree = true;
+                    break;
+                }
+            }
+
+            if (isFree) {
+                // 扫码免费下单
+                goodsList = new HashMap<GoodsEntity, Integer>();
+                goodsList.put(goodsDao.get("941174731906"), 1);                                                                                                                                                           //
+                                                                                                                                                                                   //             //
+                //INSERT INTO `damiaa_db`.`GOODS` (`GOODS_ID`, `GOODS_HTML_NAME`, `MARKET_PRICE`, `GOODS_NAME`, `ONSALE`, `PALCE`, `SUPER_VIP_PRICE`, `TRADE_PRICE`, `UNIT`, `VIP_P//RICE`, `WEIGHT`)
+                //VALUES ('941174731906', 'AA精米 2015新米上市<br />精米现磨（特惠装）', '0', 'AA精米 2015新米上市 精米现磨（特惠装）', 1, '黑龙江省绥化市双河镇', '0', '0', '袋', '0', '1.5kg');
+
+            }
+
+        }
+
+        System.out.println(isFree);
+
 
         OrderEntity order = new OrderEntity();
 

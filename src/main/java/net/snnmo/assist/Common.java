@@ -232,7 +232,7 @@ public class Common {
 
 
     public static String UnifiedOrder(String url, OrderEntity orderEntity) throws Exception {
-
+        System.out.println(url);
         Boolean isTest = "ofnVVw9aVxkxSfvvW373yuMYT7fs".equals(orderEntity.getOpenId());
         String endpoints_unified_order = url;//"http://localhost:8009/unifiedorder";
         Map<String, Object> params = new HashMap<>() ;
