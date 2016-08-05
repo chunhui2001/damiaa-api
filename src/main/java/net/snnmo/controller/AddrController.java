@@ -57,7 +57,7 @@ public class AddrController extends BaseController {
 //        --data '{"area":"南岗区", "city":"南岗区", "detail":"闽江小区13栋4单元302", "province":"黑龙江省", "street":"闽江路", "linkMan": "张春晖", "linkPone": "18500183080"}' http://127.0.0.1:8088/addr
 
 
-        AddressEntity newAddr = addrDao.add(userDao.findByName(this.getCurrentUserName()), addressEntity);
+        AddressEntity newAddr = addrDao.add(userDao.findByNameOrOpenId(this.getCurrentUserName()), addressEntity);
 
         result.setData(newAddr);
 
@@ -70,7 +70,7 @@ public class AddrController extends BaseController {
 
         ApiResult result = new ApiResult();
 
-        result.setData(addrDao.delete(userDao.findByName(this.getCurrentUserName()).getId(), addrid));
+        result.setData(addrDao.delete(userDao.findByNameOrOpenId(this.getCurrentUserName()).getId(), addrid));
 
         return new ResponseEntity<ApiResult>(result, HttpStatus.OK);
     }
@@ -83,7 +83,7 @@ public class AddrController extends BaseController {
 
         ApiResult result = new ApiResult();
 
-        result.setData(addrDao.userAddrList(userDao.findByName(this.getCurrentUserName()).getId()));
+        result.setData(addrDao.userAddrList(userDao.findByNameOrOpenId(this.getCurrentUserName()).getId()));
 
         return new ResponseEntity<ApiResult>(result, HttpStatus.OK);
     }
@@ -109,7 +109,7 @@ public class AddrController extends BaseController {
 //            result.setMessage("修改默认地址失败!");
 //        }
 
-        addrDao.setDefault(userDao.findByName(this.getCurrentUserName()).getId(), addrid);
+        addrDao.setDefault(userDao.findByNameOrOpenId(this.getCurrentUserName()).getId(), addrid);
 
 
         return new ResponseEntity<ApiResult>(result, HttpStatus.OK);
@@ -129,7 +129,7 @@ public class AddrController extends BaseController {
 
         ApiResult result = new ApiResult();
 
-        OrderEntity order = orderDao.get(orderId, userDao.findByName(this.getCurrentUserName()));
+        OrderEntity order = orderDao.get(orderId, userDao.findByNameOrOpenId(this.getCurrentUserName()));
         AddressEntity addr  = addrDao.get(addrid);
 
         order.setReceiveMan(addr.getLinkMan());

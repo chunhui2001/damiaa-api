@@ -66,16 +66,11 @@ public class UserServiceImpl implements UserDetailsService {
         User user = null;
 
         try {
-            System.out.println(password);
-            System.out.println(1);
             user = new User(username, password, true, true, true, true, authorities);
-            System.out.println(2);
 
             final Authentication auth = new UsernamePasswordAuthenticationToken(username, password, authorities);
 
-            System.out.println(3);
             SecurityContextHolder.getContext().setAuthentication(auth);
-            System.out.println(4);
 
         } catch (Exception e) {
             System.out.println(e.getMessage() + "dddd");

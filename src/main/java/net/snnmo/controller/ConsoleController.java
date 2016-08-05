@@ -51,7 +51,7 @@ public class ConsoleController extends BaseController {
             statusArr[i]    = OrderStatus.valueOf(statusStrArr[i]);
         }
 
-        UserEntity user = userDao.findByName(this.getCurrentUserName());
+        UserEntity user = userDao.findByNameOrOpenId(this.getCurrentUserName());
 
         if (!userDao.hasAnyRole(user, new UserRole[]{ UserRole.ROLE_ADMIN, UserRole.ROLE_SUPERADMIN })) {
             throw new OAuth2Exception("permission deny for list user orders!");
@@ -77,7 +77,7 @@ public class ConsoleController extends BaseController {
             @PathVariable("orderid") String orderid
     ) throws IllegalAccessException {
 
-        UserEntity user = userDao.findByName(this.getCurrentUserName());
+        UserEntity user = userDao.findByNameOrOpenId(this.getCurrentUserName());
 
         if (!userDao.hasAnyRole(user, new UserRole[]{ UserRole.ROLE_ADMIN, UserRole.ROLE_SUPERADMIN })) {
             throw new OAuth2Exception("permission deny for cancel sended operation!");
@@ -105,7 +105,7 @@ public class ConsoleController extends BaseController {
             @PathVariable("orderid") String orderid
     ) {
 
-        UserEntity user             = userDao.findByName(this.getCurrentUserName());
+        UserEntity user             = userDao.findByNameOrOpenId(this.getCurrentUserName());
         OrderEntity orderEntity     = orderDao.get(orderid, "");
 
         if (!user.getId().equals(orderEntity.getUserId())

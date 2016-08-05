@@ -48,7 +48,7 @@ public class QrcodeController extends BaseController {
     public void init() {
         String userName = this.getCurrentUserName();
 
-        UserEntity user = userDao.findByName(userName);
+        UserEntity user = userDao.findByNameOrOpenId(userName);
 
         if (!userDao.hasAnyRole(user
                 , new UserRole[]{ UserRole.ROLE_ADMIN, UserRole.ROLE_SUPERADMIN })) {

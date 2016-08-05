@@ -93,7 +93,7 @@ public class OrderController extends BaseController {
         // payMethod : 支付方式
         // addrid : 收货地址
 
-        UserEntity user = userDao.findByName(this.getCurrentUserName());
+        UserEntity user = userDao.findByNameOrOpenId(this.getCurrentUserName());
 
         OrderEntity order = orderDao.create(user, params);
 
@@ -111,7 +111,7 @@ public class OrderController extends BaseController {
 
         ApiResult result = new ApiResult();
         Collection<OrderEntity> orderList   = null;
-        UserEntity user = userDao.findByName(this.getCurrentUserName());
+        UserEntity user = userDao.findByNameOrOpenId(this.getCurrentUserName());
 
         orderList   = orderDao.list(user.getId());
 
@@ -133,7 +133,7 @@ public class OrderController extends BaseController {
             , HttpServletRequest request) throws DbException {
         ApiResult result = new ApiResult();
 
-        UserEntity user     = userDao.findByName(this.getCurrentUserName());
+        UserEntity user     = userDao.findByNameOrOpenId(this.getCurrentUserName());
         OrderEntity order   = orderDao.get(orderId, user);
 
         if (request.getMethod().toLowerCase().equals("put")) {
@@ -182,7 +182,7 @@ public class OrderController extends BaseController {
     public ResponseEntity<ApiResult> index(@PathVariable("orderid") String orderId) {
         ApiResult result = new ApiResult();
 
-        UserEntity user = userDao.findByName(this.getCurrentUserName());
+        UserEntity user = userDao.findByNameOrOpenId(this.getCurrentUserName());
 
         Map<String, Object> orderDetail = new HashMap<>();
 
@@ -205,7 +205,7 @@ public class OrderController extends BaseController {
                     , @PathVariable("openid") String openid) {
         ApiResult result = new ApiResult();
 
-        UserEntity user = userDao.findByName(this.getCurrentUserName());
+        UserEntity user = userDao.findByNameOrOpenId(this.getCurrentUserName());
 
         boolean isExists    = orderDao.exists(user.getId(), openid, preparid);
 

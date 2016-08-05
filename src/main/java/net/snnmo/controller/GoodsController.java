@@ -63,7 +63,7 @@ public class GoodsController extends BaseController {
     public ResponseEntity<ApiResult> index(@PathVariable("goodsid") String goodsid) {
 
         ApiResult result    = new ApiResult();
-        UserEntity user     = userDao.findByName(this.getCurrentUserName());
+        UserEntity user     = userDao.findByNameOrOpenId(this.getCurrentUserName());
 
         GoodsEntity currentGoods    = goodsDao.get(goodsid);
 
@@ -102,7 +102,7 @@ public class GoodsController extends BaseController {
 
         ApiResult result = new ApiResult();
 
-        UserEntity user = userDao.findByName(this.getCurrentUserName());
+        UserEntity user = userDao.findByNameOrOpenId(this.getCurrentUserName());
 
         if (user == null || user.getRoles().indexOf("ROLE_ADMIN") == -1) {
             throw new OAuth2Exception("permission deny for manager goods information");

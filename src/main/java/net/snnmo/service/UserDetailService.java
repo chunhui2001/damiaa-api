@@ -29,12 +29,12 @@ public class UserDetailService implements AuthenticationProvider {
 
 
         try {
-            UserEntity userEntity = userDao.findByName(username);
+            UserEntity userEntity = userDao.findByNameOrOpenId(username);
 
             Collection<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
             boolean isValid = true;
 
-            userEntity = userDao.findByName(username);
+            userEntity = userDao.findByNameOrOpenId(username);
 
 //            isValid = userEntity != null
 //                        && userEntity.getPasswd().equals(passwordEncoder.encode(password));

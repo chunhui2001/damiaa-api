@@ -83,8 +83,19 @@ public class UserDaoImpl implements IUserDAO {
 
         UserEntity user     = (UserEntity)criteria.uniqueResult();
 
+        return user;
+    }
+
+    @Override
+    @Transactional
+    public UserEntity findByNameOrOpenId(String usernameOrOpenid) {
+        Criteria criteria = this.sessionFactory.getCurrentSession().createCriteria(UserEntity.class);
+        criteria.add(Restrictions.eq("name", usernameOrOpenid));
+
+        UserEntity user     = (UserEntity)criteria.uniqueResult();
+
         if (user == null) {
-            user = this.findByOpenId(username);
+            user = this.findByOpenId(usernameOrOpenid);
         }
 
         return user;
@@ -169,7 +180,7 @@ public class UserDaoImpl implements IUserDAO {
     public String resetPassword(String username, String oldPwd, String newPwd)  throws Exception {
         String errorMessage = null;
 
-        UserEntity user = this.findByName(username);
+        UserEntity user = this.findByNameOrOpenId(username);
 
         if (user == null) {
             return errorMessage = "用户名不存在!";

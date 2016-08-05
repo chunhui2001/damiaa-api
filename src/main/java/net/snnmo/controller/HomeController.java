@@ -110,7 +110,7 @@ public class HomeController extends BaseController {
 
         ApiResult result = new ApiResult();
 
-        UserEntity user = userDao.findByName(this.getCurrentUserName());
+        UserEntity user = userDao.findByNameOrOpenId(this.getCurrentUserName());
 
         Map<String, Object> userInfo = new HashMap<>();
 
@@ -133,7 +133,7 @@ public class HomeController extends BaseController {
     public ResponseEntity<ApiResult> openid() {
         ApiResult result = new ApiResult();
 
-        UserEntity user = userDao.findByName(this.getCurrentUserName());
+        UserEntity user = userDao.findByNameOrOpenId(this.getCurrentUserName());
 
         result.setData(user.getOpenId());
 
@@ -144,7 +144,7 @@ public class HomeController extends BaseController {
     public ResponseEntity<ApiResult> statistic() {
         ApiResult result = new ApiResult();
 
-        UserEntity user     = userDao.findByName(this.getCurrentUserName());
+        UserEntity user     = userDao.findByNameOrOpenId(this.getCurrentUserName());
         boolean isAdmin     = userDao.hasAnyRole(user, new UserRole[]{ UserRole.ROLE_ADMIN, UserRole.ROLE_SUPERADMIN });
 
 
@@ -205,7 +205,7 @@ public class HomeController extends BaseController {
             result.setMessage(bindResult.getAllErrors().toString());
             result.setStatus(HttpStatus.BAD_REQUEST);
         } else {
-            Boolean isExists = userDao.findByName(user.getName()) != null;
+            Boolean isExists = userDao.findByNameOrOpenId(user.getName()) != null;
 
             if (isExists) {
                 result.setMessage("exists:用户名已经存在!");
