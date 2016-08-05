@@ -31,6 +31,8 @@ public interface IOrderDAO {
 
     public long count(String userid);
 
+    public boolean exists(String openid, String goodsid, Date start, Date end);
+
     public OrderEntity get(String orderid, UserEntity user);
 
     public OrderEntity get(String orderid, String useridOrOpenid);

@@ -112,6 +112,32 @@ public class OrderDaoImpl implements IOrderDAO {
 
 
 
+    @Override
+    @Transactional
+    public boolean exists(String openid, String goodsid, Date start, Date end) {
+
+        Session s = this.sessionFactory.getCurrentSession();
+
+        Query query = s.createQuery("select count(*) from OrderItemsEntity " +
+                "where goods.id = :goodsId and " +
+                "order.id in (" +
+                "SELECT id " +
+                "FROM OrderEntity " +
+                "where openId = :openid and " +
+                "createTime >= :start \n" +
+                "and createTime <= :end)");
+
+        query.setParameter("goodsId", goodsid);
+        query.setParameter("openid", openid);
+        query.setParameter("start", start);
+        query.setParameter("end", end);
+
+
+        return (long)query.uniqueResult() > 0;
+
+    }
+
+
 
     @Override
     @Transactional
@@ -196,7 +222,8 @@ public class OrderDaoImpl implements IOrderDAO {
             throw new DbException("请提供商品列表");
 
 
-        Boolean isFree   = false;
+        Boolean isFree      = false;
+        String freeGoodsId  = "941174731906";
 
         if (ticket != null) {
 
@@ -222,10 +249,10 @@ public class OrderDaoImpl implements IOrderDAO {
                         new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH).parse("2016-09-03 20:59:59")
                 });
             }};
-//
+
 //            freeDateList.add(new Date[] {
-//                    new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH).parse("2016-08-01 22:00:00"),
-//                    new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH).parse("2016-08-05 11:59:59")
+//                    new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH).parse("2016-08-06 01:00:00"),
+//                    new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH).parse("2016-08-06 05:59:59")
 //            });
 
             // 1. 取得当前时间, 如果当前时间在指定时间范围内则将当前商品为免费商品
@@ -237,15 +264,25 @@ public class OrderDaoImpl implements IOrderDAO {
                 Date end    = d[1];
 
                 if (currentTime.after(begin) && currentTime.before(end)) {
-                    isFree = true;
+                    // userOpenid
+                    // 根据用户openid查看该用户当前时间段内是否是重复下单
+                    // 如果在当前时间段内没有下单,则 isFree = true
+
+                    if(this.exists(userOpenid, freeGoodsId, begin, end)) {
+                        isFree = false;
+                    } else {
+                        isFree = true;
+                    }
+
                     break;
                 }
             }
 
+
             if (isFree) {
                 // 扫码免费下单
                 goodsList = new HashMap<GoodsEntity, Integer>();
-                goodsList.put(goodsDao.get("941174731906"), 1);                                                                                                                                                           //
+                goodsList.put(goodsDao.get(freeGoodsId), 1);                                                                                                                                                           //
                                                                                                                                                                                    //             //
                 //INSERT INTO `damiaa_db`.`GOODS` (`GOODS_ID`, `GOODS_HTML_NAME`, `MARKET_PRICE`, `GOODS_NAME`, `ONSALE`, `PALCE`, `SUPER_VIP_PRICE`, `TRADE_PRICE`, `UNIT`, `VIP_P//RICE`, `WEIGHT`)
                 //VALUES ('941174731906', 'AA精米 2015新米上市<br />精米现磨（特惠装）', '0', 'AA精米 2015新米上市 精米现磨（特惠装）', 1, '黑龙江省绥化市双河镇', '0', '0', '袋', '0', '1.5kg');
