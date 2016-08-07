@@ -125,12 +125,14 @@ public class OrderDaoImpl implements IOrderDAO {
                 "FROM OrderEntity " +
                 "where openId = :openid and " +
                 "createTime >= :start \n" +
-                "and createTime <= :end)");
+                "and createTime <= :end and status not in (:deleted,:cancel))");
 
         query.setParameter("goodsId", goodsid);
         query.setParameter("openid", openid);
         query.setParameter("start", start);
         query.setParameter("end", end);
+        query.setParameter("deleted", OrderStatus.DELETED);
+        query.setParameter("cancel", OrderStatus.CANCEL);
 
 
         return (long)query.uniqueResult() > 0;
